@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security+ Study Guide · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            position: relative;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            border-left: 10px solid #b91c1c;
+            padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            margin-top: 0.2rem;
+            padding-left: 2.2rem;
+            font-weight: 400;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem;
+        }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #b91c1c;
+            border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.2rem 0;
+            border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6;
+            border-left: 8px solid #fbbf24;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05);
+            position: relative;
+            font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:";
+            font-weight: 700;
+            font-style: normal;
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right;
+            width: 200px;
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            padding: 0.8rem;
+            margin: 0 0 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            columns: 2 250px;
+            column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🔐 Security+ Study Guide</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · CompTIA SY0-701</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Threats, Attacks & Vulnerabilities</a></li>
+            <li><a href="#part2">2. Cryptography & PKI</a></li>
+            <li><a href="#part3">3. Identity & Access Management</a></li>
+            <li><a href="#part4">4. Network & Cloud Security</a></li>
+            <li><a href="#part5">5. Endpoint & Application Security</a></li>
+            <li><a href="#part6">6. Governance, Risk & Compliance</a></li>
+            <li><a href="#part7">7. Incident Response & Forensics</a></li>
+            <li><a href="#part8">8. Troubleshooting & Tools</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Threats, Attacks & Vulnerabilities</h2>
+
+    <h3>1.1 Malware Types</h3>
+    <table>
+        <tr><th>Type</th><th>What It Does</th><th>Key Detail</th></tr>
+        <tr><td><strong>Virus</strong></td><td>Attaches to files, spreads when executed</td><td>Requires user action to spread</td></tr>
+        <tr><td><strong>Worm</strong></td><td>Self-replicates across networks</td><td>No user action needed — spreads automatically</td></tr>
+        <tr><td><strong>Trojan</strong></td><td>Disguised as legitimate software</td><td>Creates backdoor for attacker</td></tr>
+        <tr><td><strong>Ransomware</strong></td><td>Encrypts files, demands payment</td><td>Backup strategy is your only real defense</td></tr>
+        <tr><td><strong>Rootkit</strong></td><td>Hides deep in OS, gives persistent access</td><td>Very hard to detect — may require OS reinstall</td></tr>
+        <tr><td><strong>Spyware</strong></td><td>Secretly collects user data</td><td>Keyloggers are a type of spyware</td></tr>
+        <tr><td><strong>Adware</strong></td><td>Displays unwanted ads</td><td>Often bundled with free software</td></tr>
+        <tr><td><strong>Botnet</strong></td><td>Infected machines controlled remotely</td><td>Used for DDoS, spam, crypto mining</td></tr>
+    </table>
+
+    <h3>1.2 Social Engineering Attacks</h3>
+    <div class="sidenote">
+        <p>🎭 <strong>Exam tip:</strong> Security+ LOVES social engineering questions. Know every type and how to tell them apart.</p>
+    </div>
+    <table>
+        <tr><th>Attack</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Phishing</strong></td><td>Fraudulent emails to steal credentials</td><td>Fake bank email with malicious link</td></tr>
+        <tr><td><strong>Spear Phishing</strong></td><td>Targeted phishing at specific person/org</td><td>Email using victim's name, job title</td></tr>
+        <tr><td><strong>Whaling</strong></td><td>Spear phishing targeting executives</td><td>Fake IRS notice sent to CFO</td></tr>
+        <tr><td><strong>Vishing</strong></td><td>Voice phishing over phone</td><td>"This is IT support, give me your password"</td></tr>
+        <tr><td><strong>Smishing</strong></td><td>SMS phishing via text message</td><td>Fake package delivery text with link</td></tr>
+        <tr><td><strong>Pretexting</strong></td><td>Fabricated scenario to gain trust</td><td>Attacker poses as auditor needing access</td></tr>
+        <tr><td><strong>Baiting</strong></td><td>Leaving infected media for victim to find</td><td>USB drive labeled "Payroll 2024" in parking lot</td></tr>
+        <tr><td><strong>Tailgating</strong></td><td>Following authorized person through secure door</td><td>Walking in behind badge-holder</td></tr>
+    </table>
+
+    <h3>1.3 Password Attacks</h3>
+    <table>
+        <tr><th>Attack</th><th>How It Works</th><th>Defense</th></tr>
+        <tr><td><strong>Brute Force</strong></td><td>Try every possible combination</td><td>Account lockout, long passwords</td></tr>
+        <tr><td><strong>Dictionary</strong></td><td>Try list of common words/passwords</td><td>Complex passwords, passphrases</td></tr>
+        <tr><td><strong>Rainbow Table</strong></td><td>Pre-computed hash lookup table</td><td>Password salting</td></tr>
+        <tr><td><strong>Credential Stuffing</strong></td><td>Use leaked username/password combos</td><td>Unique passwords per site, MFA</td></tr>
+        <tr><td><strong>Password Spraying</strong></td><td>Try one common password against many accounts</td><td>MFA, lockout policies</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Salting passwords:</strong> A random value added to a password before hashing. Even if two users have the same password, their hashes will be different. This defeats rainbow table attacks. Always salt — never store plain text passwords.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Cryptography & PKI</h2>
+
+    <h3>2.1 Encryption Types</h3>
+    <table>
+        <tr><th>Type</th><th>How It Works</th><th>Use Case</th><th>Examples</th></tr>
+        <tr><td><strong>Symmetric</strong></td><td>Same key encrypts & decrypts</td><td>Fast — bulk data encryption</td><td>AES, DES, 3DES, Blowfish</td></tr>
+        <tr><td><strong>Asymmetric</strong></td><td>Public key encrypts, private key decrypts</td><td>Key exchange, digital signatures</td><td>RSA, ECC, Diffie-Hellman</td></tr>
+        <tr><td><strong>Hashing</strong></td><td>One-way — produces fixed-length digest</td><td>Integrity verification, passwords</td><td>MD5, SHA-1, SHA-256</td></tr>
+    </table>
+
+    <h3>2.2 Common Algorithms — Know These Cold</h3>
+    <table>
+        <tr><th>Algorithm</th><th>Type</th><th>Key Size</th><th>Status</th></tr>
+        <tr><td>AES</td><td>Symmetric</td><td>128/192/256-bit</td><td>✅ Current standard — use it</td></tr>
+        <tr><td>DES</td><td>Symmetric</td><td>56-bit</td><td>❌ Broken — too short</td></tr>
+        <tr><td>3DES</td><td>Symmetric</td><td>112/168-bit</td><td>⚠️ Legacy — being phased out</td></tr>
+        <tr><td>RSA</td><td>Asymmetric</td><td>2048+ bit</td><td>✅ Standard for key exchange</td></tr>
+        <tr><td>ECC</td><td>Asymmetric</td><td>256-bit = RSA 3072</td><td>✅ Efficient — used in mobile/TLS</td></tr>
+        <tr><td>MD5</td><td>Hash</td><td>128-bit output</td><td>❌ Broken — collision vulnerable</td></tr>
+        <tr><td>SHA-1</td><td>Hash</td><td>160-bit output</td><td>❌ Deprecated — don't use</td></tr>
+        <tr><td>SHA-256</td><td>Hash</td><td>256-bit output</td><td>✅ Current standard</td></tr>
+    </table>
+
+    <h3>2.3 PKI & Certificates</h3>
+    <ul>
+        <li><strong>CA (Certificate Authority):</strong> Trusted entity that issues digital certificates</li>
+        <li><strong>Root CA:</strong> Top of the trust chain — offline for security</li>
+        <li><strong>Intermediate CA:</strong> Issues end-entity certs on behalf of Root CA</li>
+        <li><strong>Certificate:</strong> Binds a public key to an identity (name, domain)</li>
+        <li><strong>CRL (Certificate Revocation List):</strong> List of revoked certs</li>
+        <li><strong>OCSP:</strong> Online check if a cert is revoked — faster than CRL</li>
+        <li><strong>CSR (Certificate Signing Request):</strong> Request you send to CA to get a cert</li>
+    </ul>
+
+    <div class="note">
+        <strong>How HTTPS works (simplified):</strong> Server sends its certificate → browser verifies it's signed by a trusted CA → they use asymmetric crypto to exchange a symmetric session key → all traffic encrypted with that session key. Asymmetric for the handshake, symmetric for speed.
+    </div>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Identity & Access Management</h2>
+
+    <h3>3.1 Authentication Factors</h3>
+    <table>
+        <tr><th>Factor</th><th>Type</th><th>Examples</th></tr>
+        <tr><td><strong>Something you know</strong></td><td>Knowledge</td><td>Password, PIN, security question</td></tr>
+        <tr><td><strong>Something you have</strong></td><td>Possession</td><td>Smart card, token, phone (OTP)</td></tr>
+        <tr><td><strong>Something you are</strong></td><td>Inherence</td><td>Fingerprint, retina, face scan</td></tr>
+        <tr><td><strong>Somewhere you are</strong></td><td>Location</td><td>GPS location, IP geolocation</td></tr>
+        <tr><td><strong>Something you do</strong></td><td>Behavior</td><td>Typing rhythm, gait analysis</td></tr>
+    </table>
+
+    <h3>3.2 Access Control Models</h3>
+    <table>
+        <tr><th>Model</th><th>How Access is Granted</th><th>Example</th></tr>
+        <tr><td><strong>DAC</strong> (Discretionary)</td><td>Owner decides who gets access</td><td>Linux file permissions — you set who reads your files</td></tr>
+        <tr><td><strong>MAC</strong> (Mandatory)</td><td>System enforces labels — owner can't override</td><td>Top Secret / Secret / Unclassified (military)</td></tr>
+        <tr><td><strong>RBAC</strong> (Role-Based)</td><td>Access granted by job role</td><td>HR role gets HR files, IT role gets servers</td></tr>
+        <tr><td><strong>ABAC</strong> (Attribute-Based)</td><td>Access based on multiple attributes</td><td>Allow if: role=nurse AND location=hospital AND time=business hours</td></tr>
+        <tr><td><strong>Rule-Based</strong></td><td>Fixed rules regardless of identity</td><td>Firewall ACLs — block port 23 for everyone</td></tr>
+    </table>
+
+    <h3>3.3 AAA Protocols</h3>
+    <pre><code>AAA = Authentication, Authorization, Accounting
+
+RADIUS  - UDP ports 1812/1813
+        - Encrypts only the password
+        - Common for network access (Wi-Fi, VPN)
+
+TACACS+ - TCP port 49
+        - Encrypts the ENTIRE payload
+        - Cisco proprietary
+        - Better for device administration (routers, switches)
+
+LDAP    - TCP port 389 (636 for LDAPS)
+        - Directory services — Active Directory uses this
+        - Stores user/group info
+
+Kerberos - UDP/TCP port 88
+         - Ticket-based authentication
+         - Default in Windows Active Directory domains
+         - Uses KDC (Key Distribution Center)</code></pre>
+
+    <div class="sidenote">
+        <p>🔑 <strong>MFA tip:</strong> Two factors must be from DIFFERENT categories. Password + PIN = NOT MFA (both are "something you know"). Password + phone OTP = real MFA.</p>
+    </div>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Network & Cloud Security</h2>
+
+    <h3>4.1 Firewall & Network Security Concepts</h3>
+    <table>
+        <tr><th>Concept</th><th>Description</th></tr>
+        <tr><td><strong>DMZ</strong></td><td>Screened subnet between two firewalls — hosts public-facing servers (web, email, DNS)</td></tr>
+        <tr><td><strong>NAC</strong></td><td>Network Access Control — checks device health before granting access</td></tr>
+        <tr><td><strong>Jump Server</strong></td><td>Hardened host used as single entry point to manage internal servers</td></tr>
+        <tr><td><strong>Honeypot</strong></td><td>Decoy system to attract and study attackers</td></tr>
+        <tr><td><strong>Honeynet</strong></td><td>Network of honeypots</td></tr>
+        <tr><td><strong>Sinkhole</strong></td><td>Redirects malicious traffic to a controlled server for analysis</td></tr>
+    </table>
+
+    <h3>4.2 VPN Types</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>Use Case</th></tr>
+        <tr><td><strong>Site-to-Site</strong></td><td>Connects two networks permanently</td><td>Branch office to HQ</td></tr>
+        <tr><td><strong>Remote Access</strong></td><td>Individual user connects to corp network</td><td>Work from home</td></tr>
+        <tr><td><strong>Split Tunnel</strong></td><td>Only corporate traffic goes through VPN</td><td>Saves bandwidth — internet goes direct</td></tr>
+        <tr><td><strong>Full Tunnel</strong></td><td>ALL traffic goes through VPN</td><td>Maximum control — slower</td></tr>
+    </table>
+
+    <h3>4.3 Cloud Security Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Meaning</th></tr>
+        <tr><td><strong>Shared Responsibility</strong></td><td>Cloud provider secures the infrastructure; YOU secure your data and configs</td></tr>
+        <tr><td><strong>CASB</strong></td><td>Cloud Access Security Broker — enforces security policies between users and cloud services</td></tr>
+        <tr><td><strong>CSPM</strong></td><td>Cloud Security Posture Management — finds misconfigurations in cloud environments</td></tr>
+        <tr><td><strong>FaaS / Serverless</strong></td><td>Functions as a Service — you write code, provider manages everything else</td></tr>
+        <tr><td><strong>IaC</strong></td><td>Infrastructure as Code — provision cloud resources via scripts (Terraform, CloudFormation)</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Shared Responsibility in plain English:</strong> AWS/Azure/GCP won't let someone physically steal their servers. But if YOU misconfigure an S3 bucket to be public and expose customer data — that's on YOU, not them. The cloud provider secures the building; you secure what's inside it.
+    </div>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Endpoint & Application Security</h2>
+
+    <h3>5.1 Endpoint Protection</h3>
+    <table>
+        <tr><th>Tool</th><th>Purpose</th></tr>
+        <tr><td><strong>AV / Anti-malware</strong></td><td>Detects known malware via signatures</td></tr>
+        <tr><td><strong>EDR</strong></td><td>Endpoint Detection & Response — behavioral monitoring, threat hunting</td></tr>
+        <tr><td><strong>DLP</strong></td><td>Data Loss Prevention — stops sensitive data leaving the org</td></tr>
+        <tr><td><strong>HIDS/HIPS</strong></td><td>Host-based IDS/IPS — monitors activity on a single endpoint</td></tr>
+        <tr><td><strong>FDE</strong></td><td>Full Disk Encryption — BitLocker (Windows), FileVault (Mac)</td></tr>
+        <tr><td><strong>TPM</strong></td><td>Trusted Platform Module — hardware chip that stores encryption keys securely</td></tr>
+    </table>
+
+    <h3>5.2 Application Attacks</h3>
+    <table>
+        <tr><th>Attack</th><th>Description</th><th>Defense</th></tr>
+        <tr><td><strong>SQL Injection</strong></td><td>Malicious SQL inserted into input fields</td><td>Parameterized queries, input validation</td></tr>
+        <tr><td><strong>XSS</strong></td><td>Malicious scripts injected into web pages</td><td>Input sanitization, CSP headers</td></tr>
+        <tr><td><strong>CSRF</strong></td><td>Tricks user's browser into making unauthorized requests</td><td>CSRF tokens, SameSite cookies</td></tr>
+        <tr><td><strong>Buffer Overflow</strong></td><td>Overwrites memory beyond allocated buffer</td><td>Input validation, ASLR, DEP</td></tr>
+        <tr><td><strong>Directory Traversal</strong></td><td>Access files outside web root using ../</td><td>Input validation, chroot jail</td></tr>
+        <tr><td><strong>IDOR</strong></td><td>Access another user's object by changing an ID</td><td>Authorization checks on every request</td></tr>
+    </table>
+
+    <div class="sidenote">
+        <p>💉 <strong>SQL Injection</strong> is still the #1 web app attack. If a login field lets you type <code>' OR '1'='1</code> and it works — the app is vulnerable. Always use parameterized queries!</p>
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Governance, Risk & Compliance</h2>
+
+    <h3>6.1 Risk Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Threat</strong></td><td>Anything that could cause harm (hurricane, hacker, disgruntled employee)</td></tr>
+        <tr><td><strong>Vulnerability</strong></td><td>Weakness that can be exploited</td></tr>
+        <tr><td><strong>Risk</strong></td><td>Likelihood × Impact — probability of a threat exploiting a vulnerability</td></tr>
+        <tr><td><strong>Asset</strong></td><td>Anything of value to the organization</td></tr>
+        <tr><td><strong>Exploit</strong></td><td>Tool or technique that takes advantage of a vulnerability</td></tr>
+    </table>
+
+    <h3>6.2 Risk Response Strategies</h3>
+    <table>
+        <tr><th>Strategy</th><th>What You Do</th><th>Example</th></tr>
+        <tr><td><strong>Accept</strong></td><td>Acknowledge risk, do nothing</td><td>Low-impact risk not worth fixing cost</td></tr>
+        <tr><td><strong>Avoid</strong></td><td>Stop the activity creating the risk</td><td>Don't collect data you don't need</td></tr>
+        <tr><td><strong>Transfer</strong></td><td>Shift risk to another party</td><td>Buy cyber insurance</td></tr>
+        <tr><td><strong>Mitigate</strong></td><td>Reduce likelihood or impact</td><td>Patch the vulnerability, add MFA</td></tr>
+    </table>
+
+    <h3>6.3 Important Frameworks & Regulations</h3>
+    <pre><code>NIST CSF    - Cybersecurity Framework: Identify, Protect, Detect, Respond, Recover
+ISO 27001   - International standard for information security management
+HIPAA       - Protects healthcare data (PHI) — US law
+PCI-DSS     - Payment card data security standard
+GDPR        - EU data privacy regulation — affects any org handling EU citizens' data
+SOX         - Sarbanes-Oxley — financial data integrity for public companies
+CMMC        - Cybersecurity Maturity Model Certification — required for DoD contractors</code></pre>
+
+    <div class="note">
+        <strong>Security Controls by Type:</strong> <strong>Preventive</strong> (stops attack — firewall, locks), <strong>Detective</strong> (finds attack — IDS, logs, cameras), <strong>Corrective</strong> (fixes after attack — backups, patches), <strong>Deterrent</strong> (discourages attack — warning signs, policies). Know all four for the exam.
+    </div>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Incident Response & Forensics</h2>
+
+    <h3>7.1 Incident Response Steps</h3>
+    <ol>
+        <li><strong>Preparation</strong> — Policies, tools, trained team ready before incident occurs</li>
+        <li><strong>Identification</strong> — Detect and confirm an incident has occurred</li>
+        <li><strong>Containment</strong> — Stop the spread — isolate affected systems (short-term then long-term)</li>
+        <li><strong>Eradication</strong> — Remove the threat — malware, backdoors, compromised accounts</li>
+        <li><strong>Recovery</strong> — Restore systems to normal operation, monitor closely</li>
+        <li><strong>Lessons Learned</strong> — Document what happened, update policies, prevent recurrence</li>
+    </ol>
+
+    <h3>7.2 Digital Forensics Concepts</h3>
+    <table>
+        <tr><th>Concept</th><th>Description</th></tr>
+        <tr><td><strong>Chain of Custody</strong></td><td>Documented trail of who handled evidence and when — required for court</td></tr>
+        <tr><td><strong>Order of Volatility</strong></td><td>Collect most volatile evidence first: RAM → swap → disk → logs → archives</td></tr>
+        <tr><td><strong>Legal Hold</strong></td><td>Preserve all evidence related to litigation — stop normal deletion</td></tr>
+        <tr><td><strong>Write Blocker</strong></td><td>Hardware device preventing any writes to evidence drive</td></tr>
+        <tr><td><strong>Forensic Image</strong></td><td>Bit-for-bit copy of storage — never work on original evidence</td></tr>
+    </table>
+
+    <div class="sidenote">
+        <p>🧊 <strong>First rule of forensics:</strong> Never work on original evidence. Always image it first. If you alter the original, it may be inadmissible in court.</p>
+    </div>
+
+    <h3>7.3 Log Sources for Investigations</h3>
+    <pre><code># Where to look when investigating an incident:
+SIEM         - Aggregates logs from all sources — your investigation hub
+Firewall     - What traffic was allowed/blocked, when, from where
+DNS logs     - What domains were resolved — catches C2 callbacks
+Auth logs    - Login successes/failures — who accessed what, when
+Endpoint     - Process execution, file changes, network connections
+Email logs   - Phishing delivery, malicious attachments
+NetFlow      - Traffic volume/patterns — spot data exfiltration</code></pre>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Troubleshooting & Tools</h2>
+
+    <h3>Security Troubleshooting Commands</h3>
+    <pre><code># Check open ports and connections
+netstat -an              # All connections and listening ports
+ss -tulpn                # Linux — listening ports with process names
+
+# Check running processes (spot malware)
+ps aux                   # Linux process list
+tasklist                 # Windows process list
+
+# File integrity
+md5sum file.txt          # Generate MD5 hash
+sha256sum file.txt       # Generate SHA-256 hash (preferred)
+# Compare hashes before/after to verify integrity
+
+# Check scheduled tasks (persistence mechanism)
+crontab -l               # Linux cron jobs
+schtasks /query          # Windows scheduled tasks
+
+# Network traffic analysis
+tcpdump -i eth0          # Capture packets (Linux)
+wireshark                # GUI packet analyzer
+
+# Log review
+journalctl -xe           # Recent system errors (Linux)
+tail -f /var/log/auth.log  # Live auth log monitoring</code></pre>
+
+    <h3>Quick Security Checklist</h3>
+    <table>
+        <tr><th>Check</th><th>Why</th></tr>
+        <tr><td>Patches up to date?</td><td>Most exploits target known, unpatched vulnerabilities</td></tr>
+        <tr><td>MFA enabled?</td><td>Stops 99%+ of credential-based attacks</td></tr>
+        <tr><td>Principle of Least Privilege?</td><td>Users should only have access they need — nothing more</td></tr>
+        <tr><td>Backups tested?</td><td>Untested backups are not backups — verify restores work</td></tr>
+        <tr><td>Default credentials changed?</td><td>Admin/admin is the first thing attackers try</td></tr>
+        <tr><td>Logging & monitoring on?</td><td>You can't respond to what you can't see</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The Security+ exam mindset:</strong> CompTIA wants you to think like a security professional, not just memorize definitions. When you see a scenario question, ask yourself: "What is the BEST control that addresses the ROOT cause?" Preventive controls are usually preferred over detective ones — it's better to stop an attack than detect it after the damage is done.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF. <br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep learning, and go pass that Security+ exam!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
