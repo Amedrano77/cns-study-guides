@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA 2: Switching, Routing & Wireless · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .exam-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .lab-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🔵 CCNA 2: Switching, Routing & Wireless</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · Cisco NetAcad SRWE v7.02</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Basic Device Configuration Review</a></li>
+            <li><a href="#part2">2. Switching Concepts</a></li>
+            <li><a href="#part3">3. VLANs</a></li>
+            <li><a href="#part4">4. Inter-VLAN Routing</a></li>
+            <li><a href="#part5">5. STP — Spanning Tree Protocol</a></li>
+            <li><a href="#part6">6. EtherChannel</a></li>
+            <li><a href="#part7">7. DHCPv4</a></li>
+            <li><a href="#part8">8. SLAAC & DHCPv6</a></li>
+            <li><a href="#part9">9. FHRP — First Hop Redundancy</a></li>
+            <li><a href="#part10">10. LAN Security Concepts</a></li>
+            <li><a href="#part11">11. Switch Security Configuration</a></li>
+            <li><a href="#part12">12. WLAN Concepts</a></li>
+            <li><a href="#part13">13. WLAN Configuration</a></li>
+            <li><a href="#part14">14. Routing Concepts</a></li>
+            <li><a href="#part15">15. IP Static Routing</a></li>
+            <li><a href="#part16">16. Troubleshooting Static & Default Routes</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Basic Device Configuration Review <span class="exam-tag">Module 1</span></h2>
+
+    <h3>1.1 Switch Boot Sequence</h3>
+    <ol>
+        <li>Switch loads POST (Power-On Self Test) from ROM</li>
+        <li>Boot loader software is loaded from ROM</li>
+        <li>Boot loader initializes CPU and flash memory</li>
+        <li>Boot loader locates and loads IOS image from flash</li>
+        <li>IOS loads startup-config from NVRAM into RAM as running-config</li>
+        <li>If no startup-config exists → Setup Mode launches</li>
+    </ol>
+
+    <h3>1.2 Full Switch Initial Configuration</h3>
+    <pre><code>Switch> enable
+Switch# configure terminal
+
+! Identity & Security
+Switch(config)# hostname S1
+S1(config)# no ip domain-lookup
+S1(config)# enable secret class
+S1(config)# service password-encryption
+
+! Console line
+S1(config)# line console 0
+S1(config-line)# password cisco
+S1(config-line)# login
+S1(config-line)# logging synchronous
+S1(config-line)# exec-timeout 10 0
+S1(config-line)# exit
+
+! VTY lines for remote access
+S1(config)# line vty 0 15
+S1(config-line)# password cisco
+S1(config-line)# login
+S1(config-line)# transport input ssh telnet
+S1(config-line)# exec-timeout 10 0
+S1(config-line)# exit
+
+! Management IP on SVI
+S1(config)# interface vlan 1
+S1(config-if)# ip address 192.168.1.2 255.255.255.0
+S1(config-if)# no shutdown
+S1(config-if)# exit
+
+! Default gateway
+S1(config)# ip default-gateway 192.168.1.1
+
+! Banner
+S1(config)# banner motd #
+Authorized Access Only — TSTC CNS Lab
+#
+
+! SSH setup
+S1(config)# ip domain-name tstc.edu
+S1(config)# crypto key generate rsa modulus 2048
+S1(config)# ip ssh version 2
+S1(config)# line vty 0 15
+S1(config-line)# login local
+S1(config-line)# transport input ssh
+S1(config-line)# exit
+S1(config)# username admin secret Admin123!
+
+S1(config)# end
+S1# copy running-config startup-config</code></pre>
+
+    <h3>1.3 Duplex & Speed Configuration</h3>
+    <pre><code>S1(config)# interface fastethernet 0/1
+S1(config-if)# duplex full          ! full / half / auto
+S1(config-if)# speed 100            ! 10 / 100 / 1000 / auto
+S1(config-if)# description Link to R1
+S1(config-if)# no shutdown
+
+! Best practice — always set speed/duplex on uplinks
+! Leave access ports on auto for end devices
+! Duplex mismatch = slow speeds, late collisions, errors</code></pre>
+
+    <div class="note">
+        <strong>Duplex mismatch</strong> is one of the most common causes of poor performance on a switch port. One side set to full, other set to half = both think they're right, collisions happen constantly, throughput tanks. Always match duplex on both ends, or set both to auto.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Switching Concepts <span class="exam-tag">Module 2</span></h2>
+
+    <h3>2.1 Frame Forwarding Methods</h3>
+    <table>
+        <tr><th>Method</th><th>How It Works</th><th>Latency</th><th>Error Checking</th></tr>
+        <tr><td><strong>Store-and-Forward</strong></td><td>Receives entire frame, checks FCS, then forwards</td><td>Higher</td><td>✅ Full CRC check — drops corrupt frames</td></tr>
+        <tr><td><strong>Cut-Through</strong></td><td>Starts forwarding after reading destination MAC (first 6 bytes)</td><td>Very Low</td><td>❌ No error check — forwards corrupt frames</td></tr>
+        <tr><td><strong>Fragment-Free</strong></td><td>Reads first 64 bytes (collision fragment size) then forwards</td><td>Low</td><td>⚠️ Partial — catches most collision fragments</td></tr>
+    </table>
+
+    <h3>2.2 Switch MAC Address Table</h3>
+    <ul>
+        <li>Switch builds MAC table by <strong>learning</strong> source MACs from incoming frames</li>
+        <li>Switch forwards frames by <strong>looking up</strong> destination MAC in the table</li>
+        <li>If destination MAC <strong>not found</strong> → switch <strong>floods</strong> frame out all ports except source (unknown unicast flooding)</li>
+        <li>If destination MAC <strong>found</strong> → switch <strong>forwards</strong> only out the matching port (unicast)</li>
+        <li>If destination is <strong>broadcast/multicast</strong> → switch floods out all ports except source</li>
+        <li>MAC entries have an aging timer — default <strong>300 seconds</strong> (5 minutes) of inactivity = removed</li>
+    </ul>
+
+    <pre><code>! View the MAC address table
+S1# show mac address-table
+S1# show mac address-table dynamic           ! Only learned entries
+S1# show mac address-table address aaaa.bbbb.cccc  ! Specific MAC
+S1# show mac address-table interface fa0/1   ! MACs on specific port
+
+! Clear the MAC table (forces relearning)
+S1# clear mac address-table dynamic
+
+! Add a static MAC entry (permanent — won't age out)
+S1(config)# mac address-table static aaaa.bbbb.cccc vlan 1 interface fa0/1</code></pre>
+
+    <h3>2.3 Switch Memory Buffers</h3>
+    <table>
+        <tr><th>Buffer Type</th><th>How It Works</th><th>Pro / Con</th></tr>
+        <tr><td><strong>Port-based (Input)</strong></td><td>Each port has its own queue</td><td>Simple — HOL (head-of-line) blocking possible</td></tr>
+        <tr><td><strong>Shared Memory</strong></td><td>All ports share one large memory pool</td><td>More efficient — one busy port doesn't block others</td></tr>
+    </table>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. VLANs — Virtual Local Area Networks <span class="exam-tag">Module 3</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>3.1 VLAN Concepts</h3>
+    <ul>
+        <li>VLANs create <strong>logical broadcast domains</strong> within a physical switch</li>
+        <li>Traffic in one VLAN <strong>cannot reach</strong> another VLAN without a Layer 3 device (router or L3 switch)</li>
+        <li>Benefits: Security, traffic reduction, flexibility, easier management</li>
+        <li>VLAN 1 = Default VLAN — all ports start here — <strong>change this for security</strong></li>
+        <li>VLANs 1002–1005 = Legacy Token Ring/FDDI — reserved, cannot be deleted</li>
+        <li>Normal range VLANs: 1–1005 | Extended range: 1006–4094</li>
+    </ul>
+
+    <h3>3.2 Port Types</h3>
+    <table>
+        <tr><th>Port Type</th><th>Carries</th><th>Tagged?</th><th>Connected To</th></tr>
+        <tr><td><strong>Access Port</strong></td><td>One VLAN only</td><td>No — untagged</td><td>End devices (PCs, printers, phones)</td></tr>
+        <tr><td><strong>Trunk Port</strong></td><td>Multiple VLANs</td><td>Yes — 802.1Q tags</td><td>Other switches, routers, servers</td></tr>
+        <tr><td><strong>Voice Port</strong></td><td>Data VLAN + Voice VLAN</td><td>Voice tagged, data untagged</td><td>IP phones (phone passes PC traffic)</td></tr>
+    </table>
+
+    <h3>3.3 VLAN Configuration — Full Lab Commands</h3>
+    <pre><code>! ===== CREATE VLANs =====
+S1(config)# vlan 10
+S1(config-vlan)# name FACULTY
+S1(config-vlan)# exit
+
+S1(config)# vlan 20
+S1(config-vlan)# name STUDENTS
+S1(config-vlan)# exit
+
+S1(config)# vlan 30
+S1(config-vlan)# name GUEST
+S1(config-vlan)# exit
+
+S1(config)# vlan 99
+S1(config-vlan)# name MANAGEMENT
+S1(config-vlan)# exit
+
+! ===== ASSIGN ACCESS PORTS =====
+S1(config)# interface fastethernet 0/6
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 10
+S1(config-if)# exit
+
+S1(config)# interface range fa0/7 - 12    ! Configure range of ports at once
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 20
+S1(config-if-range)# exit
+
+! ===== CONFIGURE VOICE VLAN =====
+S1(config)# interface fa0/18
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 20      ! Data VLAN for PC behind phone
+S1(config-if)# switchport voice vlan 150      ! Voice VLAN for IP phone
+S1(config-if)# mls qos trust cos              ! Trust CoS markings from phone
+S1(config-if)# exit
+
+! ===== DELETE A VLAN =====
+S1(config)# no vlan 30
+
+! ===== MOVE PORT BACK TO DEFAULT VLAN =====
+S1(config)# interface fa0/6
+S1(config-if)# no switchport access vlan     ! Removes VLAN assignment
+
+! ===== VERIFICATION =====
+S1# show vlan brief                          ! All VLANs and port assignments
+S1# show vlan id 10                          ! Specific VLAN detail
+S1# show interfaces fa0/6 switchport         ! Switchport details for one port
+S1# show interfaces vlan 99                  ! SVI interface status</code></pre>
+
+    <h3>3.4 Trunk Configuration <span class="lab-tag">Lab Heavy</span></h3>
+    <pre><code>! ===== CONFIGURE TRUNK PORT =====
+S1(config)# interface gigabitethernet 0/1
+S1(config-if)# switchport mode trunk
+
+! Set native VLAN (untagged traffic) — MUST match on both ends
+S1(config-if)# switchport trunk native vlan 99
+
+! Specify which VLANs are allowed on the trunk
+S1(config-if)# switchport trunk allowed vlan 10,20,30,99
+
+! Add a VLAN to existing allowed list (doesn't overwrite)
+S1(config-if)# switchport trunk allowed vlan add 40
+
+! Remove a VLAN from the trunk
+S1(config-if)# switchport trunk allowed vlan remove 30
+
+! ===== VERIFICATION =====
+S1# show interfaces trunk                    ! All trunks, allowed VLANs, native VLAN
+S1# show interfaces gi0/1 trunk             ! Specific trunk details
+S1# show interfaces gi0/1 switchport        ! Full switchport info</code></pre>
+
+    <h3>3.5 802.1Q Tagging</h3>
+    <ul>
+        <li>IEEE 802.1Q inserts a <strong>4-byte tag</strong> into the Ethernet frame between Source MAC and Type fields</li>
+        <li>Tag contains: TPID (0x8100), PCP (priority), DEI (drop eligible), <strong>VLAN ID (12 bits = 4096 VLANs)</strong></li>
+        <li><strong>Native VLAN</strong> frames are sent <strong>untagged</strong> on a trunk — both sides must agree on which VLAN is native</li>
+        <li>Native VLAN mismatch = CDP warning + possible VLAN hopping vulnerability</li>
+    </ul>
+
+    <div class="note">
+        <strong>Native VLAN security:</strong> Change the native VLAN from VLAN 1 to an unused VLAN (like 99) that has no devices. VLAN 1 is the default and attackers know it. Also tag the native VLAN explicitly: <code>vlan dot1q tag native</code> under global config. This prevents double-tagging VLAN hopping attacks.
+    </div>
+
+    <h3>3.6 DTP — Dynamic Trunking Protocol</h3>
+    <table>
+        <tr><th>DTP Mode</th><th>Behavior</th><th>Forms Trunk With</th></tr>
+        <tr><td><code>dynamic auto</code></td><td>Passively waits — will trunk if other side asks</td><td>trunk, dynamic desirable</td></tr>
+        <tr><td><code>dynamic desirable</code></td><td>Actively tries to negotiate trunk</td><td>trunk, dynamic auto, dynamic desirable</td></tr>
+        <tr><td><code>trunk</code></td><td>Forced trunk — always trunks</td><td>Any mode (except access)</td></tr>
+        <tr><td><code>access</code></td><td>Forced access — never trunks</td><td>Never forms trunk</td></tr>
+        <tr><td><code>nonegotiate</code></td><td>Disables DTP — no negotiation frames sent</td><td>Use with <code>trunk</code> mode on both ends</td></tr>
+    </table>
+
+    <pre><code>! Disable DTP (best practice on all non-trunk ports)
+S1(config)# interface fa0/1
+S1(config-if)# switchport mode access       ! Forces access, no negotiation
+S1(config-if)# switchport nonegotiate       ! Stops sending DTP frames
+
+! On trunk ports to another switch
+S1(config)# interface gi0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport nonegotiate       ! Hardcode trunk, no DTP</code></pre>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Inter-VLAN Routing <span class="exam-tag">Module 4</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>4.1 Three Methods of Inter-VLAN Routing</h3>
+    <table>
+        <tr><th>Method</th><th>Description</th><th>Pros</th><th>Cons</th></tr>
+        <tr><td><strong>Legacy (Router on a Stick)</strong></td><td>One router port per VLAN — physical interfaces</td><td>Simple</td><td>One port per VLAN — doesn't scale</td></tr>
+        <tr><td><strong>Router-on-a-Stick (ROAS)</strong></td><td>One trunk link, subinterfaces for each VLAN</td><td>Only needs one port</td><td>Bandwidth bottleneck, single point of failure</td></tr>
+        <tr><td><strong>Layer 3 Switch (SVIs)</strong></td><td>Switch does routing internally using SVIs</td><td>Fast, scalable, no external router needed</td><td>More expensive switch required</td></tr>
+    </table>
+
+    <h3>4.2 Router-on-a-Stick Configuration</h3>
+    <pre><code>! ===== ROUTER SIDE =====
+R1(config)# interface gigabitethernet 0/0   ! Physical interface — no IP
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Subinterface for VLAN 10
+R1(config)# interface gigabitethernet 0/0.10
+R1(config-subif)# encapsulation dot1Q 10          ! Tag = VLAN 10
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# exit
+
+! Subinterface for VLAN 20
+R1(config)# interface gigabitethernet 0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# exit
+
+! Subinterface for VLAN 99 (Management — native VLAN)
+R1(config)# interface gigabitethernet 0/0.99
+R1(config-subif)# encapsulation dot1Q 99 native    ! Native keyword for native VLAN
+R1(config-subif)# ip address 192.168.99.1 255.255.255.0
+R1(config-subif)# exit
+
+! ===== SWITCH SIDE — trunk to router =====
+S1(config)# interface gi0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 99
+S1(config-if)# switchport trunk allowed vlan 10,20,99
+S1(config-if)# no shutdown
+
+! ===== VERIFICATION =====
+R1# show ip route                            ! Should see routes for each VLAN subnet
+R1# show interfaces gi0/0.10                 ! Subinterface status
+R1# show vlans                               ! VLANs on router (if supported)</code></pre>
+
+    <h3>4.3 Layer 3 Switch — SVI Inter-VLAN Routing <span class="lab-tag">Lab Heavy</span></h3>
+    <pre><code>! ===== LAYER 3 SWITCH CONFIGURATION =====
+
+! Step 1: Create VLANs
+SW(config)# vlan 10
+SW(config-vlan)# name FACULTY
+SW(config)# vlan 20
+SW(config-vlan)# name STUDENTS
+
+! Step 2: Enable IP routing on the switch
+SW(config)# ip routing                       ! CRITICAL — without this, no routing!
+
+! Step 3: Create SVIs (Switch Virtual Interfaces) — one per VLAN
+SW(config)# interface vlan 10
+SW(config-if)# ip address 192.168.10.1 255.255.255.0
+SW(config-if)# no shutdown
+SW(config-if)# description Gateway for VLAN 10
+SW(config-if)# exit
+
+SW(config)# interface vlan 20
+SW(config-if)# ip address 192.168.20.1 255.255.255.0
+SW(config-if)# no shutdown
+SW(config-if)# exit
+
+! Step 4: Assign access ports to VLANs
+SW(config)# interface fa0/6
+SW(config-if)# switchport mode access
+SW(config-if)# switchport access vlan 10
+
+! Step 5: Configure routed port toward router/ISP (optional)
+SW(config)# interface gi0/1
+SW(config-if)# no switchport               ! Convert to Layer 3 routed port
+SW(config-if)# ip address 10.0.0.2 255.255.255.252
+SW(config-if)# no shutdown
+
+! Step 6: Default route to upstream router
+SW(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.1
+
+! ===== VERIFICATION =====
+SW# show ip route                           ! Routing table — C routes for each SVI
+SW# show interfaces vlan 10                 ! SVI status — must be up/up
+SW# show ip interface brief                 ! All interfaces summary
+SW# ping 192.168.20.1 source vlan 10        ! Test routing between VLANs</code></pre>
+
+    <div class="note">
+        <strong>SVI must be up/up to route:</strong> An SVI will only be up if (1) the VLAN exists in the VLAN database, AND (2) at least one access or trunk port carrying that VLAN is in an up state. If your SVI shows "down/down" — check that the VLAN exists (<code>show vlan brief</code>) and that a port is active in that VLAN.
+    </div>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Spanning Tree Protocol (STP) <span class="exam-tag">Module 5</span></h2>
+
+    <h3>5.1 Why STP Exists</h3>
+    <p>Redundant switch links are great for uptime — but without STP, they create <strong>broadcast storms</strong>. A broadcast frame enters the loop, gets duplicated endlessly, consumes all bandwidth, and crashes the network within seconds. STP prevents this by <strong>blocking redundant paths</strong> while keeping them available for failover.</p>
+
+    <h3>5.2 STP Port States</h3>
+    <table>
+        <tr><th>State</th><th>Sends BPDUs?</th><th>Learns MACs?</th><th>Forwards Traffic?</th><th>Duration</th></tr>
+        <tr><td><strong>Blocking</strong></td><td>Receives only</td><td>No</td><td>No</td><td>Up to 20 sec (Max Age)</td></tr>
+        <tr><td><strong>Listening</strong></td><td>Yes</td><td>No</td><td>No</td><td>15 sec (Forward Delay)</td></tr>
+        <tr><td><strong>Learning</strong></td><td>Yes</td><td>Yes</td><td>No</td><td>15 sec (Forward Delay)</td></tr>
+        <tr><td><strong>Forwarding</strong></td><td>Yes</td><td>Yes</td><td>✅ Yes</td><td>Normal operation</td></tr>
+        <tr><td><strong>Disabled</strong></td><td>No</td><td>No</td><td>No</td><td>Admin shutdown</td></tr>
+    </table>
+
+    <div class="sidenote">
+        <p>⏱️ <strong>STP convergence time:</strong> Classic 802.1D takes up to 50 seconds to converge (20 max age + 15 listening + 15 learning). RSTP converges in ~1–2 seconds. Always use RSTP!</p>
+    </div>
+
+    <h3>5.3 STP Election Process</h3>
+    <ol>
+        <li><strong>Elect Root Bridge</strong> — Switch with lowest Bridge ID wins. Bridge ID = Priority (default 32768) + VLAN ID + MAC address. Tie on priority → lowest MAC wins.</li>
+        <li><strong>Elect Root Ports</strong> — Each non-root switch picks one Root Port — the port with the lowest path cost to the Root Bridge.</li>
+        <li><strong>Elect Designated Ports</strong> — One Designated Port per segment — the port with the lowest path cost to Root Bridge on that segment.</li>
+        <li><strong>Block remaining ports</strong> — All non-Root, non-Designated ports go into Blocking state.</li>
+    </ol>
+
+    <h3>5.4 STP Port Cost Values</h3>
+    <table>
+        <tr><th>Link Speed</th><th>STP Cost (802.1D)</th><th>RSTP Cost (802.1w)</th></tr>
+        <tr><td>10 Mbps</td><td>100</td><td>2,000,000</td></tr>
+        <tr><td>100 Mbps</td><td>19</td><td>200,000</td></tr>
+        <tr><td>1 Gbps</td><td>4</td><td>20,000</td></tr>
+        <tr><td>10 Gbps</td><td>2</td><td>2,000</td></tr>
+    </table>
+
+    <h3>5.5 STP Configuration & RSTP</h3>
+    <pre><code>! ===== CHECK CURRENT STP =====
+S1# show spanning-tree                       ! Full STP info all VLANs
+S1# show spanning-tree vlan 10               ! STP for specific VLAN
+S1# show spanning-tree summary               ! Quick summary
+
+! ===== SET ROOT BRIDGE =====
+! Method 1 — Set priority manually (must be multiple of 4096)
+S1(config)# spanning-tree vlan 10 priority 4096      ! Lower = more likely to win
+S1(config)# spanning-tree vlan 20 priority 8192
+
+! Method 2 — Use macro (sets primary or secondary automatically)
+S1(config)# spanning-tree vlan 10 root primary       ! Sets priority to 24576
+S1(config)# spanning-tree vlan 20 root secondary     ! Sets priority to 28672
+
+! ===== CONFIGURE RSTP (Rapid Spanning Tree) =====
+S1(config)# spanning-tree mode rapid-pvst            ! Enable RPVST+ (per-VLAN RSTP)
+
+! ===== PORTFAST — for access ports connected to end devices =====
+! Skips listening/learning — goes straight to forwarding
+S1(config)# interface fa0/6
+S1(config-if)# spanning-tree portfast               ! On individual port
+
+S1(config)# spanning-tree portfast default          ! Enable on ALL access ports globally
+
+! ===== BPDU GUARD — protect PortFast ports =====
+! Shuts down port if BPDU received (prevents rogue switches)
+S1(config-if)# spanning-tree bpduguard enable       ! On individual port
+S1(config)# spanning-tree portfast bpduguard default ! On all PortFast ports
+
+! ===== MODIFY PORT COST & PRIORITY =====
+S1(config)# interface gi0/1
+S1(config-if)# spanning-tree vlan 10 cost 1         ! Lower cost = preferred path
+S1(config-if)# spanning-tree vlan 10 port-priority 64  ! Lower = more likely Root Port</code></pre>
+
+    <div class="note">
+        <strong>PortFast + BPDU Guard together:</strong> Always configure both on access ports. PortFast skips the 30-second delay so PCs get connectivity immediately. BPDU Guard protects against someone plugging a rogue switch into that port — the moment a BPDU arrives, the port goes into err-disabled state. To recover: <code>shutdown</code> then <code>no shutdown</code> or configure <code>errdisable recovery cause bpduguard</code>.
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. EtherChannel <span class="exam-tag">Module 6</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>6.1 EtherChannel Concepts</h3>
+    <ul>
+        <li>Bundles 2–8 physical links into one logical link</li>
+        <li>STP sees it as a single link — no blocking of bundled ports</li>
+        <li>Load balancing across all active links</li>
+        <li>If one link fails, traffic redistributes to remaining links automatically</li>
+        <li>All links in bundle must have identical: speed, duplex, VLAN config, trunk/access mode</li>
+    </ul>
+
+    <h3>6.2 EtherChannel Protocols</h3>
+    <table>
+        <tr><th>Protocol</th><th>Full Name</th><th>Vendor</th><th>Modes</th></tr>
+        <tr><td><strong>PAgP</strong></td><td>Port Aggregation Protocol</td><td>Cisco proprietary</td><td>auto, desirable</td></tr>
+        <tr><td><strong>LACP</strong></td><td>Link Aggregation Control Protocol (802.3ad)</td><td>Open standard</td><td>passive, active</td></tr>
+        <tr><td><strong>Static</strong></td><td>On (no negotiation)</td><td>Any</td><td>on</td></tr>
+    </table>
+
+    <h3>6.3 Mode Compatibility</h3>
+    <table>
+        <tr><th>Switch A Mode</th><th>Switch B Mode</th><th>Protocol</th><th>EtherChannel Forms?</th></tr>
+        <tr><td>desirable</td><td>desirable</td><td>PAgP</td><td>✅ Yes</td></tr>
+        <tr><td>desirable</td><td>auto</td><td>PAgP</td><td>✅ Yes</td></tr>
+        <tr><td>auto</td><td>auto</td><td>PAgP</td><td>❌ No — both passive</td></tr>
+        <tr><td>active</td><td>active</td><td>LACP</td><td>✅ Yes</td></tr>
+        <tr><td>active</td><td>passive</td><td>LACP</td><td>✅ Yes</td></tr>
+        <tr><td>passive</td><td>passive</td><td>LACP</td><td>❌ No — both passive</td></tr>
+        <tr><td>on</td><td>on</td><td>Static</td><td>✅ Yes</td></tr>
+        <tr><td>on</td><td>active/desirable</td><td>—</td><td>❌ No — can't mix static with negotiation</td></tr>
+    </table>
+
+    <h3>6.4 EtherChannel Configuration</h3>
+    <pre><code>! ===== LACP ETHERCHANNEL (Recommended — open standard) =====
+S1(config)# interface range gi0/1 - 2       ! Select the physical ports
+S1(config-if-range)# channel-group 1 mode active    ! LACP active
+S1(config-if-range)# exit
+
+! Configure the logical Port-Channel interface
+S1(config)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 99
+S1(config-if)# switchport trunk allowed vlan 10,20,99
+
+! ===== PAgP ETHERCHANNEL =====
+S1(config)# interface range fa0/1 - 2
+S1(config-if-range)# channel-group 1 mode desirable  ! PAgP desirable
+
+! ===== STATIC ETHERCHANNEL (no negotiation) =====
+S1(config)# interface range fa0/1 - 2
+S1(config-if-range)# channel-group 1 mode on
+
+! ===== LOAD BALANCING =====
+S1(config)# port-channel load-balance src-dst-mac    ! Based on source-destination MAC
+! Options: src-mac, dst-mac, src-dst-mac, src-ip, dst-ip, src-dst-ip
+
+! ===== VERIFICATION =====
+S1# show etherchannel summary               ! Channel status, protocol, ports
+S1# show etherchannel port-channel          ! Detailed port-channel info
+S1# show etherchannel load-balance          ! Load balancing method
+S1# show interfaces port-channel 1          ! Logical interface stats
+S1# show spanning-tree vlan 10              ! STP sees port-channel as single link</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. DHCPv4 <span class="exam-tag">Module 7</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>7.1 DHCPv4 Server Configuration on IOS Router</h3>
+    <pre><code>! ===== CONFIGURE DHCP SERVER =====
+
+! Exclude addresses from DHCP pool (routers, servers, printers)
+R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10
+R1(config)# ip dhcp excluded-address 192.168.20.1 192.168.20.10
+
+! Create DHCP pool for VLAN 10
+R1(config)# ip dhcp pool VLAN10-POOL
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0    ! Subnet to assign from
+R1(dhcp-config)# default-router 192.168.10.1           ! Gateway
+R1(dhcp-config)# dns-server 8.8.8.8 8.8.4.4           ! DNS servers
+R1(dhcp-config)# domain-name tstc.edu                  ! Domain suffix
+R1(dhcp-config)# lease 7                               ! Lease time in days (default = 1 day)
+R1(dhcp-config)# exit
+
+! Create DHCP pool for VLAN 20
+R1(config)# ip dhcp pool VLAN20-POOL
+R1(dhcp-config)# network 192.168.20.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.20.1
+R1(dhcp-config)# dns-server 8.8.8.8
+
+! ===== DISABLE DHCP (if needed) =====
+R1(config)# no service dhcp
+
+! ===== VERIFICATION =====
+R1# show ip dhcp binding                    ! All leases (IP, MAC, expiry)
+R1# show ip dhcp pool                       ! Pool statistics
+R1# show ip dhcp conflict                   ! IPs that had conflicts
+R1# show running-config | section dhcp      ! DHCP config from running-config</code></pre>
+
+    <h3>7.2 DHCP Relay Agent (ip helper-address)</h3>
+    <pre><code>! Problem: DHCP uses broadcasts — broadcasts don't cross routers
+! Solution: ip helper-address forwards DHCP broadcasts as unicast to DHCP server
+
+! Configured on the router interface CLOSEST to the client (not the server)
+R1(config)# interface gi0/0                 ! Interface facing VLAN 10 clients
+R1(config-if)# ip helper-address 10.1.1.5  ! IP of DHCP server on another subnet
+
+! If using ROAS — configure on each subinterface
+R1(config)# interface gi0/0.10
+R1(config-subif)# ip helper-address 10.1.1.5
+
+R1(config)# interface gi0/0.20
+R1(config-subif)# ip helper-address 10.1.1.5
+
+! Verification — confirm helper is set
+R1# show ip interface gi0/0 | include Helper</code></pre>
+
+    <div class="note">
+        <strong>ip helper-address forwards more than just DHCP:</strong> By default it forwards 8 UDP broadcast services: DHCP (67/68), TFTP (69), DNS (53), Time (37), NetBIOS name service (137), NetBIOS datagram (138), TACACS (49), and BootP (67/68). If you only want DHCP forwarding, you can restrict it, but for the CCNA exam just know it primarily solves the DHCP-across-router problem.
+    </div>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. SLAAC & DHCPv6 <span class="exam-tag">Module 8</span></h2>
+
+    <h3>8.1 IPv6 Address Assignment Methods</h3>
+    <table>
+        <tr><th>Method</th><th>How It Works</th><th>Gets From Router?</th><th>Gets From DHCPv6?</th></tr>
+        <tr><td><strong>SLAAC only</strong></td><td>Device auto-generates address from RA prefix + EUI-64/random</td><td>Prefix, gateway</td><td>Nothing</td></tr>
+        <tr><td><strong>SLAAC + Stateless DHCPv6</strong></td><td>SLAAC for address, DHCPv6 for extras (DNS)</td><td>Prefix, gateway</td><td>DNS, domain name</td></tr>
+        <tr><td><strong>Stateful DHCPv6</strong></td><td>DHCPv6 assigns full address + config (like IPv4 DHCP)</td><td>Gateway only (from RA)</td><td>Address, prefix, DNS</td></tr>
+    </table>
+
+    <h3>8.2 RA Flags (M and O bits)</h3>
+    <table>
+        <tr><th>M Flag</th><th>O Flag</th><th>Method Used</th></tr>
+        <tr><td>0</td><td>0</td><td>SLAAC only — no DHCPv6 at all</td></tr>
+        <tr><td>0</td><td>1</td><td>SLAAC + Stateless DHCPv6 (get DNS from DHCPv6)</td></tr>
+        <tr><td>1</td><td>0/1</td><td>Stateful DHCPv6 — DHCPv6 provides full config</td></tr>
+    </table>
+
+    <h3>8.3 DHCPv6 Configuration</h3>
+    <pre><code>! ===== STATELESS DHCPv6 (SLAAC + DNS from DHCPv6) =====
+R1(config)# ipv6 dhcp pool IPV6-STATELESS
+R1(config-dhcpv6)# dns-server 2001:4860:4860::8888     ! Google DNS v6
+R1(config-dhcpv6)# domain-name tstc.edu
+R1(config-dhcpv6)# exit
+
+R1(config)# interface gi0/0
+R1(config-if)# ipv6 dhcp server IPV6-STATELESS
+R1(config-if)# ipv6 nd other-config-flag               ! Sets O flag = 1
+
+! ===== STATEFUL DHCPv6 =====
+R1(config)# ipv6 dhcp pool IPV6-STATEFUL
+R1(config-dhcpv6)# address prefix 2001:DB8:ACAD:1::/64 lifetime 172800 86400
+R1(config-dhcpv6)# dns-server 2001:4860:4860::8888
+R1(config-dhcpv6)# domain-name tstc.edu
+R1(config-dhcpv6)# exit
+
+R1(config)# interface gi0/0
+R1(config-if)# ipv6 dhcp server IPV6-STATEFUL
+R1(config-if)# ipv6 nd managed-config-flag             ! Sets M flag = 1
+
+! ===== DHCPv6 RELAY =====
+R1(config)# interface gi0/0                            ! Facing clients
+R1(config-if)# ipv6 dhcp relay destination 2001:DB8:5::5  ! DHCPv6 server address
+
+! ===== VERIFICATION =====
+R1# show ipv6 dhcp pool
+R1# show ipv6 dhcp binding
+R1# show ipv6 interface gi0/0  | include managed</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. FHRP — First Hop Redundancy Protocols <span class="exam-tag">Module 9</span></h2>
+
+    <h3>9.1 The Problem FHRP Solves</h3>
+    <p>End devices are configured with a single default gateway IP. If that router fails, the device has no gateway and loses connectivity — even if another router is available. FHRPs create a <strong>virtual IP (VIP)</strong> and <strong>virtual MAC</strong> shared between two routers. Clients point to the VIP. If the active router fails, the standby takes over the VIP automatically.</p>
+
+    <h3>9.2 FHRP Comparison</h3>
+    <table>
+        <tr><th>Protocol</th><th>Vendor</th><th>Standard</th><th>Term for Active</th><th>Term for Standby</th></tr>
+        <tr><td><strong>HSRP v1/v2</strong></td><td>Cisco</td><td>Proprietary</td><td>Active</td><td>Standby</td></tr>
+        <tr><td><strong>VRRP</strong></td><td>Open</td><td>RFC 5798</td><td>Master</td><td>Backup</td></tr>
+        <tr><td><strong>GLBP</strong></td><td>Cisco</td><td>Proprietary</td><td>AVG (Active Virtual Gateway)</td><td>AVF (Active Virtual Forwarder)</td></tr>
+    </table>
+
+    <h3>9.3 HSRP Configuration <span class="lab-tag">Lab Heavy</span></h3>
+    <pre><code>! ===== HSRP on R1 (Active — higher priority wins) =====
+R1(config)# interface gi0/0
+R1(config-if)# ip address 192.168.1.2 255.255.255.0      ! Real IP
+R1(config-if)# standby version 2                          ! Use HSRPv2
+R1(config-if)# standby 1 ip 192.168.1.1                  ! Virtual IP (group 1)
+R1(config-if)# standby 1 priority 150                     ! Higher priority = Active (default=100)
+R1(config-if)# standby 1 preempt                          ! Take back Active role when restored
+R1(config-if)# standby 1 track 1 decrement 60            ! If tracked interface fails, drop priority by 60
+
+! Track the WAN interface — if it goes down, drop priority so R2 takes over
+R1(config)# track 1 interface gi0/1 line-protocol
+
+! ===== HSRP on R2 (Standby) =====
+R2(config)# interface gi0/0
+R2(config-if)# ip address 192.168.1.3 255.255.255.0      ! Real IP — different from R1!
+R2(config-if)# standby version 2
+R2(config-if)# standby 1 ip 192.168.1.1                  ! SAME virtual IP as R1
+R2(config-if)# standby 1 priority 100                     ! Lower priority = Standby
+R2(config-if)# standby 1 preempt
+
+! ===== VERIFICATION =====
+R1# show standby                            ! Full HSRP status
+R1# show standby brief                      ! Summary — shows Active/Standby state
+R1# show standby gi0/0                     ! Specific interface</code></pre>
+
+    <div class="note">
+        <strong>HSRP virtual MAC address:</strong> HSRPv1 uses <code>0000.0c07.acXX</code> (XX = group number in hex). HSRPv2 uses <code>0000.0c9f.fXXX</code>. Clients ARP for the virtual IP and get the virtual MAC back. When failover happens, the new active router sends a gratuitous ARP to update switches' MAC tables — traffic rerouting happens in milliseconds.
+    </div>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. LAN Security Concepts <span class="exam-tag">Module 10</span></h2>
+
+    <h3>10.1 Common LAN Attacks</h3>
+    <table>
+        <tr><th>Attack</th><th>How It Works</th><th>Defense</th></tr>
+        <tr><td><strong>MAC Flooding</strong></td><td>Attacker floods switch with fake MACs — fills CAM table — switch becomes a hub</td><td>Port Security</td></tr>
+        <tr><td><strong>VLAN Hopping</strong></td><td>Double-tagging or DTP spoofing to reach other VLANs</td><td>Disable DTP, change native VLAN, tag native VLAN</td></tr>
+        <tr><td><strong>DHCP Spoofing</strong></td><td>Rogue DHCP server hands out attacker's gateway — MITM</td><td>DHCP Snooping</td></tr>
+        <tr><td><strong>DHCP Starvation</strong></td><td>Attacker leases all IPs with fake MACs — legitimate clients get nothing</td><td>DHCP Snooping rate limiting</td></tr>
+        <tr><td><strong>ARP Spoofing</strong></td><td>Fake ARP replies poison ARP cache — redirect traffic to attacker</td><td>Dynamic ARP Inspection (DAI)</td></tr>
+        <tr><td><strong>STP Attack</strong></td><td>Rogue switch sends BPDUs to become Root Bridge — intercepts traffic</td><td>BPDU Guard, Root Guard</td></tr>
+        <tr><td><strong>CDP/LLDP Reconnaissance</strong></td><td>Attacker reads CDP info — gets IOS version, IP, platform info</td><td>Disable CDP/LLDP on edge ports</td></tr>
+    </table>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Switch Security Configuration <span class="exam-tag">Module 11</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>11.1 Port Security</h3>
+    <pre><code>! Port Security restricts which MACs can use a port
+
+! ===== BASIC PORT SECURITY =====
+S1(config)# interface fa0/6
+S1(config-if)# switchport mode access             ! Must be access port
+S1(config-if)# switchport port-security           ! Enable port security
+
+! Set maximum allowed MACs (default = 1)
+S1(config-if)# switchport port-security maximum 2
+
+! Manually define allowed MAC
+S1(config-if)# switchport port-security mac-address aaaa.bbbb.cccc
+
+! Sticky learning — dynamically learn and save MACs to running-config
+S1(config-if)# switchport port-security mac-address sticky
+
+! ===== VIOLATION MODES =====
+S1(config-if)# switchport port-security violation shutdown   ! Default — err-disables port, sends SNMP trap, logs
+S1(config-if)# switchport port-security violation restrict   ! Drops violating frames, increments counter, logs
+S1(config-if)# switchport port-security violation protect    ! Silently drops violating frames — no log
+
+! ===== RECOVER FROM ERR-DISABLED =====
+S1(config)# interface fa0/6
+S1(config-if)# shutdown
+S1(config-if)# no shutdown
+
+! Or configure automatic recovery
+S1(config)# errdisable recovery cause psecure-violation
+S1(config)# errdisable recovery interval 300     ! Recover after 300 seconds
+
+! ===== VERIFICATION =====
+S1# show port-security                           ! Summary of all port-security
+S1# show port-security interface fa0/6           ! Detail for one port
+S1# show port-security address                   ! All secure MAC addresses</code></pre>
+
+    <h3>11.2 DHCP Snooping</h3>
+    <pre><code>! DHCP Snooping distinguishes trusted (uplink to real server) vs untrusted ports
+
+! Enable DHCP snooping globally
+S1(config)# ip dhcp snooping
+
+! Enable on specific VLANs
+S1(config)# ip dhcp snooping vlan 10,20
+
+! Mark uplink port (toward DHCP server) as trusted
+S1(config)# interface gi0/1                      ! Uplink to router/server
+S1(config-if)# ip dhcp snooping trust
+
+! Untrusted ports (access ports to clients) — rate limit DHCP
+S1(config)# interface fa0/6
+S1(config-if)# ip dhcp snooping limit rate 15    ! Max 15 DHCP packets/second
+
+! ===== VERIFICATION =====
+S1# show ip dhcp snooping
+S1# show ip dhcp snooping binding               ! Snooping table (MAC, IP, VLAN, port)</code></pre>
+
+    <h3>11.3 Dynamic ARP Inspection (DAI)</h3>
+    <pre><code>! DAI validates ARP packets against the DHCP snooping binding table
+
+! Enable DAI on VLANs
+S1(config)# ip arp inspection vlan 10,20
+
+! Mark trusted ports (uplinks to routers/other switches)
+S1(config)# interface gi0/1
+S1(config-if)# ip arp inspection trust
+
+! Rate limit ARP on untrusted ports
+S1(config)# interface fa0/6
+S1(config-if)# ip arp inspection limit rate 100  ! Max 100 ARP/second
+
+! ===== VERIFICATION =====
+S1# show ip arp inspection
+S1# show ip arp inspection vlan 10</code></pre>
+
+    <h3>11.4 Additional Security Best Practices</h3>
+    <pre><code>! Disable unused ports — put in unused VLAN, shutdown
+S1(config)# interface range fa0/13 - 24
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 999  ! Black hole VLAN
+S1(config-if-range)# shutdown
+
+! Disable CDP on edge/access ports (leave on uplinks)
+S1(config)# interface fa0/6
+S1(config-if)# no cdp enable
+
+! Disable DTP on access ports
+S1(config)# interface fa0/6
+S1(config-if)# switchport nonegotiate
+
+! Enable storm control (limits broadcast/multicast/unicast storms)
+S1(config)# interface fa0/6
+S1(config-if)# storm-control broadcast level 20   ! Block if broadcast > 20% of bandwidth
+S1(config-if)# storm-control action shutdown</code></pre>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. WLAN Concepts <span class="exam-tag">Module 12</span></h2>
+
+    <h3>12.1 WLAN Standards Summary</h3>
+    <table>
+        <tr><th>Standard</th><th>Wi-Fi</th><th>Frequency</th><th>Max Throughput</th><th>Key Feature</th></tr>
+        <tr><td>802.11a</td><td>—</td><td>5 GHz</td><td>54 Mbps</td><td>First 5GHz — short range</td></tr>
+        <tr><td>802.11b</td><td>—</td><td>2.4 GHz</td><td>11 Mbps</td><td>First widely adopted</td></tr>
+        <tr><td>802.11g</td><td>—</td><td>2.4 GHz</td><td>54 Mbps</td><td>Backward compat with b</td></tr>
+        <tr><td>802.11n</td><td>Wi-Fi 4</td><td>2.4 / 5 GHz</td><td>600 Mbps</td><td>MIMO introduced</td></tr>
+        <tr><td>802.11ac</td><td>Wi-Fi 5</td><td>5 GHz</td><td>3.5 Gbps</td><td>MU-MIMO, beamforming</td></tr>
+        <tr><td>802.11ax</td><td>Wi-Fi 6/6E</td><td>2.4/5/6 GHz</td><td>9.6 Gbps</td><td>OFDMA, better density</td></tr>
+    </table>
+
+    <h3>12.2 WLAN Architectures</h3>
+    <table>
+        <tr><th>Architecture</th><th>Description</th><th>Management</th></tr>
+        <tr><td><strong>Autonomous AP</strong></td><td>Each AP configured individually — standalone</td><td>Per-device SSH/web GUI</td></tr>
+        <tr><td><strong>Lightweight AP (LWAP)</strong></td><td>APs controlled centrally by WLC</td><td>WLC (Wireless LAN Controller)</td></tr>
+        <tr><td><strong>Cloud-Based</strong></td><td>APs managed via cloud dashboard</td><td>Cisco Meraki, Aruba Central</td></tr>
+    </table>
+
+    <h3>12.3 CAPWAP — Control and Provisioning of WAPs</h3>
+    <ul>
+        <li>Protocol used between Lightweight APs and WLC</li>
+        <li>CAPWAP control channel: <strong>UDP 5246</strong></li>
+        <li>CAPWAP data channel: <strong>UDP 5247</strong></li>
+        <li>All traffic tunneled from AP to WLC — WLC handles all 802.11 management</li>
+        <li>APs can be in different subnets from WLC — CAPWAP tunnel crosses routers</li>
+    </ul>
+
+    <h3>12.4 Wireless Security Standards</h3>
+    <table>
+        <tr><th>Standard</th><th>Encryption</th><th>Auth</th><th>Use?</th></tr>
+        <tr><td>WEP</td><td>RC4 (40/104-bit)</td><td>Open/Shared Key</td><td>❌ Never — broken in minutes</td></tr>
+        <tr><td>WPA</td><td>TKIP (RC4-based)</td><td>PSK or 802.1X</td><td>❌ Legacy only — deprecated</td></tr>
+        <tr><td>WPA2-Personal</td><td>AES-CCMP</td><td>PSK (passphrase)</td><td>✅ Home/small office</td></tr>
+        <tr><td>WPA2-Enterprise</td><td>AES-CCMP</td><td>802.1X + RADIUS</td><td>✅ Corporate — per-user auth</td></tr>
+        <tr><td>WPA3-Personal</td><td>AES-GCMP-128</td><td>SAE (replaces PSK)</td><td>✅ Best — use when available</td></tr>
+        <tr><td>WPA3-Enterprise</td><td>AES-GCMP-256</td><td>802.1X + RADIUS</td><td>✅ Highest security</td></tr>
+    </table>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. WLAN Configuration <span class="exam-tag">Module 13</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>13.1 Configuring a Home Wireless Router</h3>
+    <ul>
+        <li><strong>SSID:</strong> Network name — keep it non-identifying (don't use your address)</li>
+        <li><strong>Channel:</strong> For 2.4GHz use 1, 6, or 11 (non-overlapping). For 5GHz channels don't overlap.</li>
+        <li><strong>Security:</strong> WPA2-Personal minimum — WPA3 if devices support it</li>
+        <li><strong>Passphrase:</strong> Long and random — at least 12 characters</li>
+        <li><strong>Guest network:</strong> Separate SSID/VLAN for visitors — isolated from main LAN</li>
+    </ul>
+
+    <h3>13.2 WLC Basic Configuration Steps</h3>
+    <ol>
+        <li>Connect to WLC via console or initial web setup wizard</li>
+        <li>Set management IP, subnet mask, default gateway</li>
+        <li>Configure WLAN (SSID, security profile, VLAN mapping)</li>
+        <li>Configure RADIUS server for WPA2-Enterprise (if used)</li>
+        <li>Deploy APs — they discover WLC via DHCP option 43 or DNS</li>
+        <li>APs join WLC and download config automatically</li>
+    </ol>
+
+    <pre><code>! ===== SWITCH CONFIG FOR WLC =====
+! WLC uplink port — trunk to carry management + WLAN VLANs
+S1(config)# interface gi0/2
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk allowed vlan 1,10,20,99
+S1(config-if)# no shutdown
+
+! AP uplink ports — access ports in management VLAN
+S1(config)# interface range fa0/7 - 9
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 99
+S1(config-if-range)# spanning-tree portfast
+S1(config-if-range)# no shutdown</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. Routing Concepts <span class="exam-tag">Module 14</span></h2>
+
+    <h3>14.1 Router Functions</h3>
+    <ul>
+        <li><strong>Path determination:</strong> Uses routing table to find best path to destination</li>
+        <li><strong>Packet forwarding:</strong> De-encapsulate frame, make routing decision, re-encapsulate in new frame, forward</li>
+        <li>Each router hop decrements TTL by 1 — packet dropped if TTL reaches 0</li>
+        <li>Router never forwards broadcasts — segments broadcast domains</li>
+    </ul>
+
+    <h3>14.2 Administrative Distance (AD)</h3>
+    <table>
+        <tr><th>Route Source</th><th>Admin Distance</th><th>Trustworthiness</th></tr>
+        <tr><td>Directly Connected</td><td>0</td><td>Most trusted</td></tr>
+        <tr><td>Static Route</td><td>1</td><td>Very trusted</td></tr>
+        <tr><td>EIGRP Summary</td><td>5</td><td>—</td></tr>
+        <tr><td>OSPF</td><td>110</td><td>—</td></tr>
+        <tr><td>RIP</td><td>120</td><td>—</td></tr>
+        <tr><td>Unknown / Untrustworthy</td><td>255</td><td>Never used</td></tr>
+    </table>
+
+    <h3>14.3 Routing Table Entries</h3>
+    <pre><code>R1# show ip route
+! Output:
+! Codes: C - connected, S - static, O - OSPF, R - RIP, * - default route
+!
+! Gateway of last resort is 10.0.0.2 to network 0.0.0.0
+!
+! S*   0.0.0.0/0 [1/0] via 10.0.0.2         (default route, AD=1, metric=0)
+! C    10.0.0.0/30 is directly connected, Gi0/1
+! L    10.0.0.1/32 is directly connected, Gi0/1   (local — router's own IP)
+! C    192.168.10.0/24 is directly connected, Gi0/0.10
+! O    192.168.30.0/24 [110/2] via 10.0.0.2   (OSPF route, AD=110, metric=2)
+!
+! Format: [AD/metric] via next-hop-IP, age, out-interface</code></pre>
+
+    <!-- PART 15 -->
+    <h2 id="part15">15. IP Static Routing <span class="exam-tag">Module 15</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>15.1 Types of Static Routes</h3>
+    <table>
+        <tr><th>Type</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><strong>Standard Static</strong></td><td>Route to specific network</td><td><code>ip route 192.168.2.0 255.255.255.0 10.0.0.2</code></td></tr>
+        <tr><td><strong>Default Static</strong></td><td>Catch-all — all unmatched traffic</td><td><code>ip route 0.0.0.0 0.0.0.0 10.0.0.1</code></td></tr>
+        <tr><td><strong>Summary Static</strong></td><td>One route covers multiple subnets</td><td><code>ip route 10.0.0.0 255.0.0.0 s0/0/0</code></td></tr>
+        <tr><td><strong>Floating Static</strong></td><td>Backup route with higher AD — only used if primary fails</td><td><code>ip route 0.0.0.0 0.0.0.0 10.0.0.5 5</code> (AD=5)</td></tr>
+    </table>
+
+    <h3>15.2 Static Route Configuration</h3>
+    <pre><code>! Syntax: ip route [network] [mask] [next-hop IP | exit-interface] [AD]
+
+! ===== NEXT-HOP STATIC ROUTE (recommended for Ethernet) =====
+R1(config)# ip route 192.168.2.0 255.255.255.0 10.0.0.2
+
+! ===== EXIT INTERFACE STATIC ROUTE (use for serial/point-to-point) =====
+R1(config)# ip route 192.168.2.0 255.255.255.0 serial 0/0/0
+
+! ===== FULLY SPECIFIED (both next-hop AND exit interface) =====
+R1(config)# ip route 192.168.2.0 255.255.255.0 gi0/1 10.0.0.2
+
+! ===== DEFAULT STATIC ROUTE =====
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.1    ! Via next-hop
+R1(config)# ip route 0.0.0.0 0.0.0.0 gi0/1        ! Via interface
+
+! ===== FLOATING STATIC (backup route) =====
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.1      ! Primary (AD=1)
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.5 5    ! Floating backup (AD=5)
+
+! ===== IPv6 STATIC ROUTES =====
+R1(config)# ipv6 route 2001:DB8:ACAD:2::/64 2001:DB8:ACAD:1::2  ! Next-hop
+R1(config)# ipv6 route ::/0 2001:DB8:ACAD:1::2                   ! Default route
+
+! ===== VERIFICATION =====
+R1# show ip route static                    ! Only static routes
+R1# show ip route 192.168.2.0              ! Details about specific route
+R1# show running-config | include ip route  ! All static routes in config</code></pre>
+
+    <!-- PART 16 -->
+    <h2 id="part16">16. Troubleshooting Static & Default Routes <span class="exam-tag">Module 16</span></h2>
+
+    <h3>16.1 Common Static Route Problems</h3>
+    <table>
+        <tr><th>Problem</th><th>Symptom</th><th>Fix</th></tr>
+        <tr><td>Wrong next-hop IP</td><td>Route in table but ping fails</td><td>Verify next-hop is reachable, correct IP</td></tr>
+        <tr><td>Wrong subnet mask</td><td>Route not matching expected traffic</td><td>Check mask matches destination network</td></tr>
+        <tr><td>Missing route on other side</td><td>Ping works one way, fails other way</td><td>Add return route on remote router</td></tr>
+        <tr><td>Exit interface down</td><td>Route may be absent from table</td><td><code>no shutdown</code> on interface</td></tr>
+        <tr><td>Recursive lookup failure</td><td>Next-hop not reachable</td><td>Use fully specified route or fix next-hop reachability</td></tr>
+    </table>
+
+    <h3>16.2 Troubleshooting Commands</h3>
+    <pre><code>! ===== LAYER 3 VERIFICATION =====
+R1# show ip route                           ! Is the route in the table?
+R1# show ip interface brief                 ! Are all interfaces up/up?
+R1# show interfaces gi0/0                  ! Is there a line protocol error?
+R1# show ip arp                             ! ARP cache — can we resolve next-hop?
+
+! ===== TEST CONNECTIVITY =====
+R1# ping 192.168.2.1                        ! Basic ping
+R1# ping 192.168.2.1 source gi0/0          ! Ping from specific interface
+R1# ping 192.168.2.1 repeat 100            ! Extended ping, 100 packets
+R1# ping 192.168.2.1 size 1500             ! Test with large packet (check MTU)
+
+! ===== TRACE THE PATH =====
+R1# traceroute 192.168.2.1                  ! Find where packets stop
+R1# traceroute 192.168.2.1 source gi0/0    ! Traceroute from specific source
+
+! ===== DEBUG (use with caution on production!) =====
+R1# debug ip routing                        ! Watch routing table changes
+R1# debug ip packet                         ! Watch every packet — HIGH CPU!
+R1# no debug all                            ! ALWAYS turn off debug when done!
+
+! ===== CHECK CONFIG =====
+R1# show running-config | section ip route  ! All static route commands
+R1# show ip route 0.0.0.0                   ! Is default route installed?</code></pre>
+
+    <div class="note">
+        <strong>The golden troubleshooting rule for static routes:</strong> For every path you want traffic to flow, you need a route in BOTH directions. If PC-A can reach PC-B but PC-B can't reach PC-A, there's a missing return route somewhere in the middle. Draw out the topology, trace the packet both ways, and add whatever route is missing. Asymmetric routing causes more headaches than almost anything else.
+    </div>
+
+    <h3>16.3 Complete CCNA 2 Lab Verification Checklist</h3>
+    <pre><code>! ===== SWITCH VERIFICATION =====
+show vlan brief                  ! VLANs exist, correct ports assigned
+show interfaces trunk            ! Trunks up, correct VLANs, correct native VLAN
+show spanning-tree               ! Correct root bridge, no unexpected blocking
+show etherchannel summary        ! Bundle up (P = bundled, I = individual/not bundled)
+show port-security               ! Secure MACs learned, no violations
+show ip dhcp snooping binding    ! DHCP leases visible
+
+! ===== ROUTER VERIFICATION =====
+show ip interface brief          ! All interfaces up/up
+show ip route                    ! All expected routes present
+show standby brief               ! HSRP active/standby state
+show ip dhcp binding             ! DHCP leases handed out
+show ip dhcp pool                ! Pool statistics
+
+! ===== CONNECTIVITY TESTS =====
+ping [default-gateway]           ! Can reach local gateway
+ping [remote-network-host]       ! Cross-VLAN routing works
+ping [outside-IP]                ! Internet connectivity
+traceroute [destination]         ! Path is as expected</code></pre>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep grinding, and go crush that CCNA!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
