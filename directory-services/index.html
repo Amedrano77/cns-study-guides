@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing Directory Services · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .exam-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .lab-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🗂️ Implementing Directory Services</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · Windows Server Active Directory</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Active Directory Overview</a></li>
+            <li><a href="#part2">2. AD Logical Structure</a></li>
+            <li><a href="#part3">3. AD Physical Structure</a></li>
+            <li><a href="#part4">4. Installing AD DS</a></li>
+            <li><a href="#part5">5. Users & Computer Accounts</a></li>
+            <li><a href="#part6">6. Groups</a></li>
+            <li><a href="#part7">7. Organizational Units (OUs)</a></li>
+            <li><a href="#part8">8. Group Policy (GPO)</a></li>
+            <li><a href="#part9">9. DNS Integration</a></li>
+            <li><a href="#part10">10. DHCP with Active Directory</a></li>
+            <li><a href="#part11">11. AD Replication & Sites</a></li>
+            <li><a href="#part12">12. Authentication — Kerberos & NTLM</a></li>
+            <li><a href="#part13">13. FSMO Roles</a></li>
+            <li><a href="#part14">14. AD Backup & Recovery</a></li>
+            <li><a href="#part15">15. PowerShell for AD Administration</a></li>
+            <li><a href="#part16">16. Troubleshooting Active Directory</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Active Directory Overview</h2>
+
+    <h3>1.1 What is Active Directory?</h3>
+    <p>Active Directory Domain Services (AD DS) is Microsoft's directory service — a centralized database that stores information about <strong>users, computers, groups, printers,</strong> and other network resources. It provides <strong>authentication</strong> (who are you?) and <strong>authorization</strong> (what can you access?) for an entire organization from a single point of administration.</p>
+
+    <h3>1.2 Key Benefits of AD DS</h3>
+    <ul>
+        <li><strong>Centralized authentication:</strong> One username/password works on any domain-joined computer</li>
+        <li><strong>Centralized policy:</strong> Group Policy pushes settings, software, and restrictions to all computers</li>
+        <li><strong>Single Sign-On (SSO):</strong> Log in once, access all authorized resources</li>
+        <li><strong>Scalability:</strong> Handles from 10 to millions of objects</li>
+        <li><strong>Delegation:</strong> Grant specific admin rights without full Domain Admin access</li>
+        <li><strong>Auditing:</strong> Track who accessed what and when</li>
+    </ul>
+
+    <h3>1.3 AD DS vs Workgroup</h3>
+    <table>
+        <tr><th>Feature</th><th>Workgroup</th><th>Active Directory Domain</th></tr>
+        <tr><td>User accounts</td><td>Local to each computer</td><td>Centralized on Domain Controllers</td></tr>
+        <tr><td>Authentication</td><td>Per-machine</td><td>Domain-wide via Kerberos</td></tr>
+        <tr><td>Policy management</td><td>Local Group Policy only</td><td>Domain Group Policy (GPO)</td></tr>
+        <tr><td>Scale</td><td>Up to ~20 computers</td><td>Unlimited</td></tr>
+        <tr><td>Administration</td><td>Per computer</td><td>Centralized</td></tr>
+        <tr><td>Security</td><td>Inconsistent</td><td>Consistent, auditable</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Domain Controller (DC) is the heart of AD.</strong> It runs AD DS, authenticates users, stores the AD database (NTDS.DIT), and applies Group Policy. Always have at least two DCs for redundancy — if your only DC goes down, nobody can log in. Ever.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. AD Logical Structure</h2>
+
+    <h3>2.1 AD Logical Components</h3>
+    <table>
+        <tr><th>Component</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Object</strong></td><td>Any resource stored in AD — the basic unit</td><td>User, computer, printer, group</td></tr>
+        <tr><td><strong>Organizational Unit (OU)</strong></td><td>Container for organizing objects — like a folder</td><td>OU=Faculty, OU=Students</td></tr>
+        <tr><td><strong>Domain</strong></td><td>Core unit of AD — boundary for security and replication</td><td>tstc.edu</td></tr>
+        <tr><td><strong>Tree</strong></td><td>One or more domains sharing a contiguous namespace</td><td>tstc.edu + west.tstc.edu</td></tr>
+        <tr><td><strong>Forest</strong></td><td>Collection of trees — top boundary of AD</td><td>tstc.edu forest containing tstc.edu + partner.org</td></tr>
+        <tr><td><strong>Schema</strong></td><td>Defines all object types and attributes in AD — forest-wide</td><td>Defines what attributes a User object has</td></tr>
+        <tr><td><strong>Global Catalog (GC)</strong></td><td>Partial replica of all objects in the forest — enables forest-wide searches</td><td>First DC in a domain is always a GC</td></tr>
+    </table>
+
+    <h3>2.2 Distinguished Names (DN)</h3>
+    <p>Every object in AD has a unique <strong>Distinguished Name</strong> that describes its exact location in the directory.</p>
+    <pre><code>! Format: CN=CommonName, OU=OrganizationalUnit, DC=DomainComponent
+
+! Example — User John Smith in the Faculty OU:
+CN=John Smith,OU=Faculty,OU=Staff,DC=tstc,DC=edu
+
+! Example — Computer LABPC01 in the Computers OU:
+CN=LABPC01,OU=Computers,OU=Labs,DC=tstc,DC=edu
+
+! Example — Group "IT Admins":
+CN=IT Admins,OU=Groups,DC=tstc,DC=edu
+
+! Components:
+! CN  = Common Name (the object's name)
+! OU  = Organizational Unit (container)
+! DC  = Domain Component (tstc.edu = DC=tstc,DC=edu)</code></pre>
+
+    <h3>2.3 Trust Relationships</h3>
+    <table>
+        <tr><th>Trust Type</th><th>Direction</th><th>Description</th></tr>
+        <tr><td><strong>Parent-Child</strong></td><td>Two-way transitive</td><td>Auto-created when child domain added to tree</td></tr>
+        <tr><td><strong>Tree-Root</strong></td><td>Two-way transitive</td><td>Auto-created between tree roots in same forest</td></tr>
+        <tr><td><strong>Shortcut</strong></td><td>One or two-way</td><td>Manual — speeds up auth between distant domains</td></tr>
+        <tr><td><strong>External</strong></td><td>One-way non-transitive</td><td>To a domain in another forest (not full forest trust)</td></tr>
+        <tr><td><strong>Forest</strong></td><td>One or two-way transitive</td><td>Between two forest root domains — broadest trust</td></tr>
+        <tr><td><strong>Realm</strong></td><td>One or two-way</td><td>Between AD and non-Windows Kerberos realm (Unix/Linux)</td></tr>
+    </table>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. AD Physical Structure</h2>
+
+    <h3>3.1 Domain Controllers</h3>
+    <ul>
+        <li>Servers running <strong>AD DS role</strong> — store and replicate the AD database</li>
+        <li><strong>NTDS.DIT</strong> — the actual AD database file (located in <code>C:\Windows\NTDS\</code>)</li>
+        <li><strong>SYSVOL</strong> — shared folder replicated to all DCs — contains GPO templates and logon scripts (<code>C:\Windows\SYSVOL\</code>)</li>
+        <li>All DCs are <strong>peers</strong> — multi-master replication (any DC can accept changes)</li>
+        <li>Read-Only Domain Controllers (<strong>RODC</strong>) — used in branch offices — receive but don't originate changes</li>
+    </ul>
+
+    <h3>3.2 AD Sites</h3>
+    <ul>
+        <li>A <strong>site</strong> represents a physical location with fast, reliable network connectivity</li>
+        <li>Defined by one or more IP subnets</li>
+        <li>AD uses site information to optimize <strong>authentication</strong> (clients authenticate to nearest DC) and <strong>replication</strong> (control when and how much replication traffic crosses slow WAN links)</li>
+        <li><strong>Site Link:</strong> Defines connection between sites — set cost and replication interval</li>
+        <li><strong>Site Link Bridge:</strong> Connects site links — usually all site links are bridged by default</li>
+        <li>Default replication interval within a site: <strong>15 seconds</strong></li>
+        <li>Default replication interval between sites: <strong>180 minutes</strong> (configurable)</li>
+    </ul>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Installing AD DS <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>4.1 Prerequisites</h3>
+    <ul>
+        <li>Windows Server 2016/2019/2022 (Standard or Datacenter)</li>
+        <li>Static IP address configured on the server</li>
+        <li>DNS server configured — ideally point to itself after AD install</li>
+        <li>Computer name set before promotion (can't easily change after)</li>
+        <li>Strong password for DSRM (Directory Services Restore Mode)</li>
+    </ul>
+
+    <h3>4.2 Installing AD DS via PowerShell</h3>
+    <pre><code># Step 1: Install the AD DS role
+Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+
+# Step 2a: Promote to NEW forest (first DC)
+Install-ADDSForest `
+    -DomainName "tstc.edu" `
+    -DomainNetbiosName "TSTC" `
+    -DomainMode "WinThreshold" `       # Windows Server 2016 functional level
+    -ForestMode "WinThreshold" `
+    -InstallDns:$true `                # Install DNS with AD
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) `
+    -Force:$true
+
+# Step 2b: Promote to ADDITIONAL DC in existing domain
+Install-ADDSDomainController `
+    -DomainName "tstc.edu" `
+    -InstallDns:$true `
+    -Credential (Get-Credential) `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) `
+    -Force:$true
+
+# Step 2c: Add a CHILD domain
+Install-ADDSDomain `
+    -NewDomainName "west" `
+    -ParentDomainName "tstc.edu" `     # Creates west.tstc.edu
+    -DomainMode "WinThreshold" `
+    -InstallDns:$true `
+    -Credential (Get-Credential) `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) `
+    -Force:$true</code></pre>
+
+    <h3>4.3 Post-Installation Verification</h3>
+    <pre><code># Verify AD is running
+Get-Service adws, kdc, netlogon, dns
+
+# Check DC info
+Get-ADDomainController
+
+# Check domain info
+Get-ADDomain
+
+# Check forest info
+Get-ADForest
+
+# View AD event logs
+Get-EventLog -LogName "Directory Service" -Newest 20
+
+# Test replication (if multiple DCs)
+repadmin /showrepl
+repadmin /replsummary</code></pre>
+
+    <div class="note">
+        <strong>DSRM password — don't forget it.</strong> Directory Services Restore Mode is the recovery mode for AD. You need this password to restore AD from backup or repair a corrupted database. It's separate from the normal admin password. Write it down and store it securely — if your AD breaks and you don't have this, you're in serious trouble.
+    </div>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Users & Computer Accounts <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>5.1 User Account Properties</h3>
+    <table>
+        <tr><th>Tab/Property</th><th>Key Settings</th></tr>
+        <tr><td><strong>General</strong></td><td>First/last name, display name, description, office, phone, email</td></tr>
+        <tr><td><strong>Account</strong></td><td>Logon name (UPN), logon hours, workstation restrictions, account expiry, password options</td></tr>
+        <tr><td><strong>Profile</strong></td><td>Profile path, logon script, home folder mapping</td></tr>
+        <tr><td><strong>Member Of</strong></td><td>Group memberships</td></tr>
+        <tr><td><strong>Dial-in</strong></td><td>Remote access permissions (VPN)</td></tr>
+    </table>
+
+    <h3>5.2 User Account Management — PowerShell</h3>
+    <pre><code># ===== CREATE USER =====
+New-ADUser `
+    -Name "John Smith" `
+    -GivenName "John" `
+    -Surname "Smith" `
+    -SamAccountName "jsmith" `
+    -UserPrincipalName "jsmith@tstc.edu" `
+    -Path "OU=Faculty,OU=Staff,DC=tstc,DC=edu" `
+    -AccountPassword (ConvertTo-SecureString "P@ssw0rd!" -AsPlainText -Force) `
+    -Enabled $true `
+    -ChangePasswordAtLogon $true `
+    -Description "Faculty - CNS Department" `
+    -Department "CNS" `
+    -Title "Instructor"
+
+# ===== MODIFY USER =====
+Set-ADUser -Identity "jsmith" -Title "Senior Instructor" -Department "IT"
+Set-ADUser -Identity "jsmith" -EmailAddress "jsmith@tstc.edu"
+
+# ===== DISABLE / ENABLE USER =====
+Disable-ADAccount -Identity "jsmith"
+Enable-ADAccount -Identity "jsmith"
+
+# ===== RESET PASSWORD =====
+Set-ADAccountPassword -Identity "jsmith" `
+    -NewPassword (ConvertTo-SecureString "NewP@ss123!" -AsPlainText -Force) `
+    -Reset
+Set-ADUser -Identity "jsmith" -ChangePasswordAtLogon $true
+
+# ===== UNLOCK ACCOUNT =====
+Unlock-ADAccount -Identity "jsmith"
+
+# ===== DELETE USER =====
+Remove-ADUser -Identity "jsmith" -Confirm:$false
+
+# ===== SEARCH FOR USERS =====
+Get-ADUser -Filter {Department -eq "CNS"} -Properties *
+Get-ADUser -Identity "jsmith" -Properties *
+Get-ADUser -Filter {Enabled -eq $false}   # All disabled accounts
+Get-ADUser -Filter * -SearchBase "OU=Faculty,DC=tstc,DC=edu"
+
+# ===== BULK CREATE FROM CSV =====
+Import-Csv "C:\users.csv" | ForEach-Object {
+    New-ADUser `
+        -Name $_.Name `
+        -SamAccountName $_.Username `
+        -UserPrincipalName "$($_.Username)@tstc.edu" `
+        -Path "OU=Students,DC=tstc,DC=edu" `
+        -AccountPassword (ConvertTo-SecureString $_.Password -AsPlainText -Force) `
+        -Enabled $true
+}</code></pre>
+
+    <h3>5.3 Computer Account Management</h3>
+    <pre><code># ===== JOIN COMPUTER TO DOMAIN (run on the client computer) =====
+Add-Computer -DomainName "tstc.edu" -Credential (Get-Credential) -Restart
+
+# ===== CREATE COMPUTER ACCOUNT IN SPECIFIC OU =====
+New-ADComputer `
+    -Name "LABPC01" `
+    -Path "OU=Computers,OU=Labs,DC=tstc,DC=edu" `
+    -Description "CNS Lab Computer 1"
+
+# ===== FIND ALL COMPUTERS IN DOMAIN =====
+Get-ADComputer -Filter * -Properties *
+Get-ADComputer -Filter {OperatingSystem -like "*Windows 10*"}
+
+# ===== MOVE COMPUTER TO DIFFERENT OU =====
+Move-ADObject `
+    -Identity "CN=LABPC01,CN=Computers,DC=tstc,DC=edu" `
+    -TargetPath "OU=Computers,OU=Labs,DC=tstc,DC=edu"
+
+# ===== REMOVE STALE COMPUTER ACCOUNTS =====
+# Find computers inactive for 90+ days
+$cutoff = (Get-Date).AddDays(-90)
+Get-ADComputer -Filter {LastLogonDate -lt $cutoff} -Properties LastLogonDate</code></pre>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Groups <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>6.1 Group Types</h3>
+    <table>
+        <tr><th>Type</th><th>Purpose</th><th>Can Contain</th></tr>
+        <tr><td><strong>Security Group</strong></td><td>Assign permissions to resources</td><td>Users, computers, other groups</td></tr>
+        <tr><td><strong>Distribution Group</strong></td><td>Email distribution lists only — Exchange/Outlook</td><td>Users only</td></tr>
+    </table>
+
+    <h3>6.2 Group Scopes</h3>
+    <table>
+        <tr><th>Scope</th><th>Members Can Be From</th><th>Can Be Used In</th><th>Use Case</th></tr>
+        <tr><td><strong>Domain Local</strong></td><td>Any domain in forest + external trusted domains</td><td>Same domain only</td><td>Assign permissions to resources in THIS domain</td></tr>
+        <tr><td><strong>Global</strong></td><td>Same domain only</td><td>Any domain in forest</td><td>Organize users from same domain by job function</td></tr>
+        <tr><td><strong>Universal</strong></td><td>Any domain in forest</td><td>Any domain in forest</td><td>Cross-domain resource access — stored in Global Catalog</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>AGDLP — the Microsoft best practice for group nesting:</strong>
+        <strong>A</strong>ccounts → <strong>G</strong>lobal groups → <strong>D</strong>omain <strong>L</strong>ocal groups → <strong>P</strong>ermissions.
+        Put users in Global groups (organized by job). Put Global groups in Domain Local groups (organized by resource). Assign permissions to Domain Local groups. This makes managing access clean and scalable.
+    </div>
+
+    <h3>6.3 Group Management — PowerShell</h3>
+    <pre><code># ===== CREATE GROUP =====
+New-ADGroup `
+    -Name "CNS-Faculty" `
+    -GroupScope Global `
+    -GroupCategory Security `
+    -Path "OU=Groups,DC=tstc,DC=edu" `
+    -Description "All CNS Faculty members"
+
+# ===== ADD MEMBERS =====
+Add-ADGroupMember -Identity "CNS-Faculty" -Members "jsmith","amedrano"
+Add-ADGroupMember -Identity "CNS-Faculty" -Members (Get-ADUser -Filter {Department -eq "CNS"})
+
+# ===== REMOVE MEMBER =====
+Remove-ADGroupMember -Identity "CNS-Faculty" -Members "jsmith" -Confirm:$false
+
+# ===== VIEW GROUP MEMBERS =====
+Get-ADGroupMember -Identity "CNS-Faculty"
+Get-ADGroupMember -Identity "CNS-Faculty" -Recursive   # Includes nested groups
+
+# ===== VIEW USER'S GROUP MEMBERSHIPS =====
+Get-ADPrincipalGroupMembership -Identity "jsmith"
+
+# ===== NESTED GROUPS (AGDLP) =====
+# Step 1: Global group with users
+New-ADGroup -Name "G-CNS-Faculty" -GroupScope Global -GroupCategory Security -Path "OU=Groups,DC=tstc,DC=edu"
+Add-ADGroupMember -Identity "G-CNS-Faculty" -Members "jsmith","amedrano"
+
+# Step 2: Domain Local group for resource access
+New-ADGroup -Name "DL-FileShare-Read" -GroupScope DomainLocal -GroupCategory Security -Path "OU=Groups,DC=tstc,DC=edu"
+
+# Step 3: Nest Global into Domain Local
+Add-ADGroupMember -Identity "DL-FileShare-Read" -Members "G-CNS-Faculty"
+
+# Step 4: Assign permission to the Domain Local group on the file share</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Organizational Units (OUs) <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>7.1 OU Design Principles</h3>
+    <ul>
+        <li>OUs are containers for organizing AD objects — users, computers, groups, printers</li>
+        <li>GPOs are linked to OUs — objects in an OU inherit its GPOs</li>
+        <li>Delegation of control is applied at the OU level</li>
+        <li>Design OUs based on <strong>GPO application needs</strong> and <strong>delegation needs</strong> — not just org chart</li>
+        <li>Keep OU structure as flat as possible — deep nesting = complex GPO troubleshooting</li>
+    </ul>
+
+    <h3>7.2 Common OU Structure</h3>
+    <pre><code>tstc.edu
+├── OU=Staff
+│   ├── OU=Faculty
+│   │   ├── CN=John Smith (user)
+│   │   └── CN=Adrian Medrano (user)
+│   └── OU=Administrative
+├── OU=Students
+│   ├── OU=CNS
+│   └── OU=IT
+├── OU=Computers
+│   ├── OU=Labs
+│   │   ├── OU=CNS-Lab
+│   │   └── OU=IT-Lab
+│   └── OU=Faculty-Computers
+├── OU=Groups
+│   ├── OU=Security-Groups
+│   └── OU=Distribution-Groups
+└── OU=Service-Accounts</code></pre>
+
+    <h3>7.3 OU Management — PowerShell</h3>
+    <pre><code># ===== CREATE OUs =====
+New-ADOrganizationalUnit -Name "Faculty" -Path "OU=Staff,DC=tstc,DC=edu" -ProtectedFromAccidentalDeletion $true
+
+# ===== PROTECT FROM ACCIDENTAL DELETION =====
+Set-ADOrganizationalUnit -Identity "OU=Faculty,OU=Staff,DC=tstc,DC=edu" -ProtectedFromAccidentalDeletion $true
+
+# ===== REMOVE PROTECTION (required before deleting) =====
+Set-ADOrganizationalUnit -Identity "OU=Faculty,OU=Staff,DC=tstc,DC=edu" -ProtectedFromAccidentalDeletion $false
+
+# ===== DELETE OU =====
+Remove-ADOrganizationalUnit -Identity "OU=Faculty,OU=Staff,DC=tstc,DC=edu" -Recursive -Confirm:$false
+
+# ===== DELEGATION OF CONTROL =====
+# Grant HelpDesk group ability to reset passwords in Students OU
+# This is done in GUI: ADUC → Right-click OU → Delegate Control
+# PowerShell version:
+$ou = "OU=Students,DC=tstc,DC=edu"
+$group = Get-ADGroup "HelpDesk"
+$acl = Get-Acl "AD:$ou"
+# Full delegation scripting requires System.DirectoryServices — use GUI for simple cases</code></pre>
+
+    <div class="note">
+        <strong>Always enable "Protect from accidental deletion"</strong> on every OU you create. Without it, someone with the right permissions can delete an OU and everything inside it with one click — users, computers, groups, all gone. The protection adds a deny ACE that prevents deletion without first removing the protection.
+    </div>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Group Policy (GPO) <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>8.1 GPO Basics</h3>
+    <ul>
+        <li>Group Policy Objects (GPOs) define settings applied to users and computers</li>
+        <li>GPOs are linked to: <strong>Sites, Domains, or OUs</strong></li>
+        <li>Settings are divided: <strong>Computer Configuration</strong> (applied at startup) and <strong>User Configuration</strong> (applied at logon)</li>
+        <li>Stored in SYSVOL and AD — replicated to all DCs</li>
+        <li>Default GPOs: <strong>Default Domain Policy</strong> (password policy, account lockout) and <strong>Default Domain Controllers Policy</strong> (DC security settings)</li>
+    </ul>
+
+    <h3>8.2 GPO Processing Order — LSDOU</h3>
+    <ol>
+        <li><strong>L</strong>ocal — local Group Policy on the machine itself (lowest priority)</li>
+        <li><strong>S</strong>ite — GPOs linked to the AD site</li>
+        <li><strong>D</strong>omain — GPOs linked to the domain</li>
+        <li><strong>OU</strong> — GPOs linked to OUs, parent to child order (highest priority — wins conflicts)</li>
+    </ol>
+
+    <div class="sidenote">
+        <p>🧠 <strong>Remember:</strong> Last applied wins. OU GPOs override Domain GPOs which override Site GPOs which override Local. The deeper the OU, the higher the priority.</p>
+    </div>
+
+    <h3>8.3 GPO Inheritance & Enforcement</h3>
+    <table>
+        <tr><th>Option</th><th>Where Set</th><th>Effect</th></tr>
+        <tr><td><strong>Block Inheritance</strong></td><td>On OU</td><td>Prevents parent GPOs from flowing down to this OU</td></tr>
+        <tr><td><strong>Enforced (No Override)</strong></td><td>On GPO link</td><td>GPO settings cannot be blocked — always wins regardless of Block Inheritance</td></tr>
+        <tr><td><strong>Link Enabled/Disabled</strong></td><td>On GPO link</td><td>Temporarily disable a GPO link without deleting</td></tr>
+        <tr><td><strong>GPO Enabled/Disabled</strong></td><td>On GPO</td><td>Disable entire GPO or just Computer/User portion</td></tr>
+        <tr><td><strong>Security Filtering</strong></td><td>On GPO</td><td>Apply GPO only to specific users/groups — default is Authenticated Users</td></tr>
+    </table>
+
+    <h3>8.4 Common GPO Settings</h3>
+    <pre><code>! ===== PASSWORD POLICY (Domain level — Default Domain Policy) =====
+Computer Config → Policies → Windows Settings → Security Settings → Account Policies → Password Policy:
+  - Minimum password length: 12
+  - Maximum password age: 90 days
+  - Minimum password age: 1 day
+  - Password history: 24 passwords remembered
+  - Complexity requirements: Enabled
+  - Reversible encryption: Disabled
+
+! ===== ACCOUNT LOCKOUT POLICY =====
+Computer Config → Account Policies → Account Lockout Policy:
+  - Account lockout threshold: 5 attempts
+  - Account lockout duration: 30 minutes
+  - Reset lockout counter after: 30 minutes
+
+! ===== COMMON COMPUTER SETTINGS =====
+Computer Config → Policies → Windows Settings → Security Settings:
+  - Rename administrator account
+  - Disable guest account
+  - Restrict access to Control Panel
+  - Configure Windows Firewall
+  - Deploy software (MSI packages)
+  - Configure startup/shutdown scripts
+
+! ===== COMMON USER SETTINGS =====
+User Config → Policies → Administrative Templates:
+  - Remove Run from Start menu
+  - Prevent access to registry editing tools
+  - Disable command prompt
+  - Map network drives (User Config → Windows Settings → Drive Maps via Preferences)
+  - Configure Internet Explorer/Edge settings
+  - Folder Redirection (My Documents → network share)</code></pre>
+
+    <h3>8.5 GPO Management — PowerShell</h3>
+    <pre><code># ===== CREATE GPO =====
+New-GPO -Name "CNS-Lab-Restrictions" -Comment "Restrictions for CNS lab computers"
+
+# ===== LINK GPO TO OU =====
+New-GPLink -Name "CNS-Lab-Restrictions" -Target "OU=CNS-Lab,OU=Labs,OU=Computers,DC=tstc,DC=edu"
+
+# ===== SET GPO SETTINGS via PowerShell =====
+# Set registry-based settings
+Set-GPRegistryValue -Name "CNS-Lab-Restrictions" `
+    -Key "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    -ValueName "NoRun" -Type DWord -Value 1
+
+# ===== FORCE GPO UPDATE on remote computers =====
+Invoke-GPUpdate -Computer "LABPC01" -Force
+gpupdate /force                              # Run locally on client
+
+# ===== VIEW APPLIED GPOS =====
+gpresult /r                                  # Summary of applied GPOs
+gpresult /h C:\gpo-report.html              # Detailed HTML report
+
+# ===== BACKUP ALL GPOS =====
+Backup-GPO -All -Path "C:\GPO-Backups"
+
+# ===== RESTORE GPO =====
+Restore-GPO -Name "CNS-Lab-Restrictions" -Path "C:\GPO-Backups"</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. DNS Integration with Active Directory</h2>
+
+    <h3>9.1 Why AD Needs DNS</h3>
+    <ul>
+        <li>AD is <strong>completely dependent on DNS</strong> — everything uses DNS to find DCs and services</li>
+        <li>Clients use DNS to locate Domain Controllers via <strong>SRV records</strong></li>
+        <li>AD-integrated DNS stores zone data <strong>in AD itself</strong> — replicated automatically to all DCs</li>
+        <li>Without proper DNS, domain joins fail, authentication fails, GPO fails</li>
+    </ul>
+
+    <h3>9.2 Key DNS Records for AD</h3>
+    <table>
+        <tr><th>Record Type</th><th>Example</th><th>Purpose</th></tr>
+        <tr><td><strong>A Record</strong></td><td>dc1.tstc.edu → 192.168.1.10</td><td>Resolves DC hostname to IP</td></tr>
+        <tr><td><strong>SRV Record</strong></td><td>_ldap._tcp.tstc.edu → dc1.tstc.edu:389</td><td>Locates LDAP/Kerberos/GC services</td></tr>
+        <tr><td><strong>SOA Record</strong></td><td>Start of Authority</td><td>Identifies authoritative DNS server for zone</td></tr>
+        <tr><td><strong>NS Record</strong></td><td>tstc.edu nameserver</td><td>Lists DNS servers for the zone</td></tr>
+        <tr><td><strong>PTR Record</strong></td><td>192.168.1.10 → dc1.tstc.edu</td><td>Reverse lookup — IP to hostname</td></tr>
+    </table>
+
+    <h3>9.3 DNS Configuration & Troubleshooting</h3>
+    <pre><code># ===== VERIFY DNS SRV RECORDS =====
+nslookup -type=SRV _ldap._tcp.tstc.edu
+nslookup -type=SRV _kerberos._tcp.tstc.edu
+
+# ===== TEST DC LOCATOR =====
+nltest /dsgetdc:tstc.edu               # Find a DC for the domain
+nltest /dsgetdc:tstc.edu /force        # Force rediscovery
+
+# ===== DNS TROUBLESHOOTING =====
+ipconfig /flushdns                     # Clear DNS cache
+ipconfig /registerdns                  # Re-register computer in DNS
+dcdiag /test:dns                       # Full DNS health check for DC
+dcdiag /test:dns /v                    # Verbose DNS diagnostics
+
+# ===== ADD DNS RECORDS via PowerShell =====
+Add-DnsServerResourceRecordA -ZoneName "tstc.edu" -Name "fileserver" -IPv4Address "192.168.1.20"
+Add-DnsServerResourceRecordPtr -ZoneName "1.168.192.in-addr.arpa" -Name "20" -PtrDomainName "fileserver.tstc.edu"
+
+# ===== CREATE REVERSE LOOKUP ZONE =====
+Add-DnsServerPrimaryZone -NetworkID "192.168.1.0/24" -ReplicationScope "Forest"</code></pre>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. DHCP with Active Directory</h2>
+
+    <h3>10.1 DHCP Server Authorization</h3>
+    <ul>
+        <li>In an AD domain, DHCP servers must be <strong>authorized</strong> in AD before they can serve addresses</li>
+        <li>Prevents rogue DHCP servers from handing out bad addresses</li>
+        <li>Only domain admins (or delegated users) can authorize DHCP servers</li>
+        <li>Unauthorized DHCP server detects authorized server and shuts down automatically</li>
+    </ul>
+
+    <h3>10.2 DHCP Installation & Configuration</h3>
+    <pre><code># ===== INSTALL DHCP ROLE =====
+Install-WindowsFeature -Name DHCP -IncludeManagementTools
+
+# ===== AUTHORIZE DHCP IN AD =====
+Add-DhcpServerInDC -DnsName "dc1.tstc.edu" -IPAddress 192.168.1.10
+
+# ===== CREATE SCOPE =====
+Add-DhcpServerv4Scope `
+    -Name "Main-LAN" `
+    -StartRange 192.168.1.100 `
+    -EndRange 192.168.1.200 `
+    -SubnetMask 255.255.255.0 `
+    -Description "Main office DHCP scope" `
+    -State Active
+
+# ===== SET SCOPE OPTIONS =====
+Set-DhcpServerv4OptionValue -ScopeId 192.168.1.0 `
+    -Router 192.168.1.1 `
+    -DnsServer 192.168.1.10 `
+    -DnsDomain "tstc.edu"
+
+# ===== ADD EXCLUSIONS =====
+Add-DhcpServerv4ExclusionRange -ScopeId 192.168.1.0 -StartRange 192.168.1.1 -EndRange 192.168.1.20
+
+# ===== CREATE RESERVATION (static by MAC) =====
+Add-DhcpServerv4Reservation `
+    -ScopeId 192.168.1.0 `
+    -IPAddress 192.168.1.50 `
+    -ClientId "AA-BB-CC-DD-EE-FF" `
+    -Description "Printer reservation"
+
+# ===== VERIFY =====
+Get-DhcpServerv4Scope
+Get-DhcpServerv4Lease -ScopeId 192.168.1.0
+Get-DhcpServerInDC</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. AD Replication & Sites</h2>
+
+    <h3>11.1 Replication Concepts</h3>
+    <ul>
+        <li>AD uses <strong>multi-master replication</strong> — changes can be made on any DC</li>
+        <li>Changes replicate to all other DCs — eventually consistent</li>
+        <li><strong>USN (Update Sequence Number):</strong> Tracks changes per DC — monotonically increasing</li>
+        <li><strong>Originating write:</strong> The first DC to receive a change</li>
+        <li><strong>Replication latency:</strong> Time for change to propagate to all DCs</li>
+        <li><strong>Replication conflicts:</strong> Same attribute changed on two DCs — last writer wins (based on timestamp)</li>
+    </ul>
+
+    <h3>11.2 Replication Topology</h3>
+    <ul>
+        <li><strong>KCC (Knowledge Consistency Checker):</strong> Automatic process that builds the replication topology</li>
+        <li>Creates a ring topology within a site — max 3 hops between any two DCs</li>
+        <li>Between sites — uses site links you define manually</li>
+        <li><strong>Connection objects:</strong> Define replication partnerships between DCs</li>
+    </ul>
+
+    <h3>11.3 Replication Management</h3>
+    <pre><code># ===== CHECK REPLICATION STATUS =====
+repadmin /showrepl                         # Replication status for all partners
+repadmin /replsummary                      # Summary — quick health check
+repadmin /showrepl dc1.tstc.edu            # Specific DC replication status
+
+# ===== FORCE IMMEDIATE REPLICATION =====
+repadmin /syncall                          # Sync all DCs
+repadmin /syncall dc1.tstc.edu /AdeP       # Sync specific DC — all partitions
+
+# ===== CHECK FOR REPLICATION ERRORS =====
+repadmin /showrepl * /errorsonly           # Only show errors
+dcdiag /test:replications                 # Replication diagnostics
+
+# ===== SITE AND SITE LINK MANAGEMENT =====
+# Create a site
+New-ADReplicationSite -Name "West-Campus"
+
+# Create a subnet and associate with site
+New-ADReplicationSubnet -Name "10.10.0.0/24" -Site "West-Campus"
+
+# Create site link between sites
+New-ADReplicationSiteLink `
+    -Name "HQ-West-Link" `
+    -SitesIncluded "Default-First-Site-Name","West-Campus" `
+    -Cost 100 `
+    -ReplicationFrequencyInMinutes 60</code></pre>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Authentication — Kerberos & NTLM</h2>
+
+    <h3>12.1 Kerberos Authentication</h3>
+    <p>Kerberos is the default authentication protocol in Active Directory. It uses <strong>tickets</strong> issued by the KDC (Key Distribution Center — part of every DC) to grant access to resources without sending passwords over the network.</p>
+
+    <ol>
+        <li><strong>AS-REQ:</strong> Client sends encrypted timestamp to KDC (Authentication Service)</li>
+        <li><strong>AS-REP:</strong> KDC returns TGT (Ticket Granting Ticket) encrypted with user's password hash</li>
+        <li><strong>TGS-REQ:</strong> Client presents TGT to KDC's Ticket Granting Service, requests service ticket</li>
+        <li><strong>TGS-REP:</strong> KDC returns service ticket (encrypted with server's key)</li>
+        <li><strong>AP-REQ:</strong> Client presents service ticket directly to target server</li>
+        <li><strong>AP-REP:</strong> Server validates ticket, grants access — no password ever sent on network</li>
+    </ol>
+
+    <h3>12.2 Kerberos Requirements</h3>
+    <ul>
+        <li><strong>Time synchronization:</strong> All machines within 5 minutes of DC — Kerberos rejects stale tickets</li>
+        <li><strong>DNS:</strong> Forward and reverse DNS must work properly</li>
+        <li><strong>SPNs (Service Principal Names):</strong> Register services so Kerberos can find the right server key</li>
+        <li>Kerberos uses <strong>UDP/TCP port 88</strong></li>
+    </ul>
+
+    <h3>12.3 NTLM — Fallback Authentication</h3>
+    <ul>
+        <li>Used when Kerberos fails — older servers, IP address connections, non-domain systems</li>
+        <li>Challenge-response protocol — less secure than Kerberos</li>
+        <li>NTLMv2 is acceptable; NTLMv1 is broken — disable it via GPO</li>
+        <li>NTLM doesn't support mutual authentication — server can't prove its identity to client</li>
+    </ul>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. FSMO Roles</h2>
+
+    <h3>13.1 The Five FSMO Roles</h3>
+    <p>Flexible Single Master Operation roles handle tasks that can only be performed by one DC at a time (to avoid conflicts). There are 5 FSMO roles — 2 forest-wide, 3 domain-wide.</p>
+
+    <table>
+        <tr><th>Role</th><th>Scope</th><th>Responsible For</th></tr>
+        <tr><td><strong>Schema Master</strong></td><td>Forest-wide (1 per forest)</td><td>All changes to the AD schema (object types and attributes)</td></tr>
+        <tr><td><strong>Domain Naming Master</strong></td><td>Forest-wide (1 per forest)</td><td>Adding and removing domains from the forest</td></tr>
+        <tr><td><strong>RID Master</strong></td><td>Domain-wide (1 per domain)</td><td>Allocates pools of RIDs (Relative IDs) to DCs — RIDs are part of SIDs</td></tr>
+        <tr><td><strong>PDC Emulator</strong></td><td>Domain-wide (1 per domain)</td><td>Password changes, account lockouts, time sync source, legacy NT compatibility</td></tr>
+        <tr><td><strong>Infrastructure Master</strong></td><td>Domain-wide (1 per domain)</td><td>Updates cross-domain group-to-user references</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>PDC Emulator is the most critical FSMO role.</strong> It handles password changes and account lockouts — if it goes down, users can't change passwords and lockout policies may not work correctly. It's also the time source for all other DCs in the domain. Make sure it's on a reliable, well-connected DC.
+    </div>
+
+    <h3>13.2 FSMO Role Management</h3>
+    <pre><code># ===== VIEW CURRENT FSMO ROLE HOLDERS =====
+netdom query fsmo                          # Quick view of all 5 roles
+Get-ADForest | Select-Object SchemaMaster, DomainNamingMaster
+Get-ADDomain | Select-Object RIDMaster, PDCEmulator, InfrastructureMaster
+
+# ===== TRANSFER FSMO ROLES (graceful — old DC must be online) =====
+Move-ADDirectoryServerOperationMasterRole `
+    -Identity "DC2" `
+    -OperationMasterRole PDCEmulator, RIDMaster, InfrastructureMaster
+
+# ===== SEIZE FSMO ROLES (old DC is dead — use with caution) =====
+# Never bring the old DC back online after seizing!
+Move-ADDirectoryServerOperationMasterRole `
+    -Identity "DC2" `
+    -OperationMasterRole PDCEmulator `
+    -Force</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. AD Backup & Recovery <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>14.1 AD Backup Strategy</h3>
+    <ul>
+        <li>Back up <strong>System State</strong> — includes AD database (NTDS.DIT), SYSVOL, registry, boot files</li>
+        <li>Back up at least one DC per domain — ideally all DCs</li>
+        <li>Test restores regularly — a backup you've never tested is not a backup</li>
+        <li><strong>AD Recycle Bin</strong> (enabled feature) — recover accidentally deleted objects without restore</li>
+        <li>Backup should be more recent than the <strong>tombstone lifetime</strong> (default 180 days)</li>
+    </ul>
+
+    <h3>14.2 Backup & Restore Commands</h3>
+    <pre><code># ===== INSTALL WINDOWS SERVER BACKUP =====
+Install-WindowsFeature Windows-Server-Backup
+
+# ===== BACKUP SYSTEM STATE (includes AD) =====
+wbadmin start systemstatebackup -backuptarget:E: -quiet
+
+# ===== BACKUP ENTIRE SERVER =====
+wbadmin start backup -backuptarget:\\server\share -include:C: -allCritical -quiet
+
+# ===== ENABLE AD RECYCLE BIN (do this early!) =====
+Enable-ADOptionalFeature `
+    -Identity "Recycle Bin Feature" `
+    -Scope ForestOrConfigurationSet `
+    -Target "tstc.edu" `
+    -Confirm:$false
+
+# ===== RESTORE DELETED OBJECT FROM RECYCLE BIN =====
+Get-ADObject -Filter {DisplayName -eq "John Smith"} -IncludeDeletedObjects
+Restore-ADObject -Identity <ObjectGUID>
+
+# ===== AUTHORITATIVE RESTORE (boot into DSRM) =====
+# Used when AD data was accidentally deleted and Recycle Bin not enabled
+# 1. Reboot DC, press F8, select "Directory Services Restore Mode"
+# 2. Log in with DSRM password
+# 3. Restore system state backup:
+#    wbadmin start systemstaterecovery -version:<version-ID>
+# 4. Mark objects as authoritative so they replicate outward:
+#    ntdsutil → authoritative restore → restore subtree "OU=Faculty,DC=tstc,DC=edu"
+# 5. Restart normally</code></pre>
+
+    <!-- PART 15 -->
+    <h2 id="part15">15. PowerShell for AD Administration</h2>
+
+    <h3>15.1 Essential AD PowerShell Commands Reference</h3>
+    <pre><code># ===== MODULE IMPORT =====
+Import-Module ActiveDirectory              # Load AD module (auto on DC)
+
+# ===== DOMAIN & FOREST INFO =====
+Get-ADDomain
+Get-ADForest
+Get-ADDomainController -Filter *           # All DCs in domain
+
+# ===== USERS =====
+Get-ADUser -Identity username -Properties *
+Get-ADUser -Filter {Enabled -eq $true} -Properties LastLogonDate | Sort LastLogonDate
+Search-ADAccount -LockedOut               # All locked out accounts
+Search-ADAccount -AccountDisabled         # All disabled accounts
+Search-ADAccount -AccountExpired          # All expired accounts
+Search-ADAccount -PasswordExpired         # All expired passwords
+Search-ADAccount -AccountInactive -TimeSpan 90.00:00:00  # Inactive 90+ days
+
+# ===== GROUPS =====
+Get-ADGroup -Filter {GroupCategory -eq "Security"}
+Get-ADGroupMember "Domain Admins" -Recursive
+
+# ===== COMPUTERS =====
+Get-ADComputer -Filter * -Properties OperatingSystem | Group-Object OperatingSystem
+Get-ADComputer -Filter {Enabled -eq $false}
+
+# ===== USEFUL ONE-LINERS =====
+# Count all users
+(Get-ADUser -Filter *).Count
+
+# Find all users NOT in any group (except Domain Users)
+Get-ADUser -Filter * | Where-Object {(Get-ADPrincipalGroupMembership $_).Count -le 1}
+
+# Get all users with passwords set to never expire
+Get-ADUser -Filter {PasswordNeverExpires -eq $true} -Properties PasswordNeverExpires
+
+# Export all users to CSV
+Get-ADUser -Filter * -Properties * | Select Name,SamAccountName,EmailAddress,Department,Enabled |
+    Export-Csv "C:\AD-Users.csv" -NoTypeInformation
+
+# Find empty OUs
+Get-ADOrganizationalUnit -Filter * | Where-Object {
+    -not (Get-ADObject -Filter * -SearchBase $_.DistinguishedName -SearchScope OneLevel)
+}</code></pre>
+
+    <!-- PART 16 -->
+    <h2 id="part16">16. Troubleshooting Active Directory</h2>
+
+    <h3>16.1 Common AD Problems & Solutions</h3>
+    <table>
+        <tr><th>Problem</th><th>Likely Cause</th><th>Fix</th></tr>
+        <tr><td>Can't join domain</td><td>DNS misconfigured, DC unreachable, time skew</td><td>Check DNS, ping DC, sync time with <code>w32tm /resync</code></td></tr>
+        <tr><td>Can't log in to domain</td><td>Account locked/disabled, wrong domain, DC unreachable</td><td>Check account status, verify DC reachable, check DNS</td></tr>
+        <tr><td>GPO not applying</td><td>GPO not linked, blocked inheritance, security filtering, replication delay</td><td>Run <code>gpresult /r</code>, check link, run <code>gpupdate /force</code></td></tr>
+        <tr><td>Replication failing</td><td>Network issue, DNS, firewall blocking AD ports, time skew</td><td><code>repadmin /showrepl</code>, check event logs, verify ports open</td></tr>
+        <tr><td>Time skew errors</td><td>Client/DC clocks differ by more than 5 minutes</td><td><code>w32tm /resync /force</code> on affected machines</td></tr>
+        <tr><td>Password not working</td><td>Caps lock, account locked, password expired, replication delay</td><td>Reset on PDC Emulator first — it replicates fastest</td></tr>
+    </table>
+
+    <h3>16.2 AD Diagnostic Tools</h3>
+    <pre><code># ===== DCDIAG — comprehensive DC health check =====
+dcdiag                                     # Run all tests
+dcdiag /test:replications                 # Replication only
+dcdiag /test:dns                           # DNS health
+dcdiag /test:netlogons                    # Netlogon service
+dcdiag /test:fsmocheck                    # FSMO roles accessible
+dcdiag /s:dc2.tstc.edu                    # Run against remote DC
+
+# ===== NETLOGON =====
+nltest /sc_verify:tstc.edu                # Verify secure channel to domain
+nltest /dsgetdc:tstc.edu                  # Find a DC
+nltest /dbflag:0x2080ffff                 # Enable verbose Netlogon logging
+# Log written to C:\Windows\debug\netlogon.log
+
+# ===== EVENT LOGS TO CHECK =====
+# System log — general OS errors
+# Directory Service log — AD-specific events (most important)
+# DNS Server log — DNS errors
+# File Replication Service / DFS Replication — SYSVOL replication
+
+Get-EventLog -LogName "Directory Service" -EntryType Error,Warning -Newest 50
+
+# ===== PORTS REQUIRED FOR AD =====
+# 53   — DNS (TCP/UDP)
+# 88   — Kerberos (TCP/UDP)
+# 135  — RPC Endpoint Mapper
+# 139  — NetBIOS Session Service
+# 389  — LDAP (TCP/UDP)
+# 445  — SMB (SYSVOL replication)
+# 464  — Kerberos password change
+# 636  — LDAPS (encrypted LDAP)
+# 3268 — Global Catalog LDAP
+# 3269 — Global Catalog LDAPS
+# 49152-65535 — Dynamic RPC ports (replication)</code></pre>
+
+    <div class="note">
+        <strong>Always change passwords on the PDC Emulator first.</strong> When you reset a password in AD, it replicates to all DCs — but replication takes time. If a user gets locked out and you reset their password on DC2, but they try to log in through DC1 which hasn't replicated yet, it may still reject them. Reset on the PDC Emulator, which replicates the change out immediately to all other DCs.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Master the directory, master the domain!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
