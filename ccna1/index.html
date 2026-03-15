@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA 1: Intro to Networks · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            position: relative;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            border-left: 10px solid #b91c1c;
+            padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            margin-top: 0.2rem;
+            padding-left: 2.2rem;
+            font-weight: 400;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem;
+        }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #b91c1c;
+            border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.2rem 0;
+            border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6;
+            border-left: 8px solid #fbbf24;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05);
+            position: relative;
+            font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:";
+            font-weight: 700;
+            font-style: normal;
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right;
+            width: 210px;
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            padding: 0.8rem;
+            margin: 0 0 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            columns: 2 250px;
+            column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .exam-tag {
+            display: inline-block;
+            background: #1e3a5f;
+            color: #facc15;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🔵 CCNA 1: Introduction to Networks</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · Cisco NetAcad ITN v7.02</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Networking Today</a></li>
+            <li><a href="#part2">2. Basic Switch & End Device Config</a></li>
+            <li><a href="#part3">3. Protocols & Models</a></li>
+            <li><a href="#part4">4. Physical Layer</a></li>
+            <li><a href="#part5">5. Data Link Layer</a></li>
+            <li><a href="#part6">6. Network Layer</a></li>
+            <li><a href="#part7">7. Transport Layer</a></li>
+            <li><a href="#part8">8. Application Layer</a></li>
+            <li><a href="#part9">9. Address Resolution (ARP)</a></li>
+            <li><a href="#part10">10. Basic Router Configuration</a></li>
+            <li><a href="#part11">11. IPv4 Addressing & Subnetting</a></li>
+            <li><a href="#part12">12. IPv6 Addressing</a></li>
+            <li><a href="#part13">13. ICMP & Network Testing</a></li>
+            <li><a href="#part14">14. IOS CLI Reference</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Networking Today <span class="exam-tag">Module 1</span></h2>
+
+    <h3>1.1 Network Components</h3>
+    <table>
+        <tr><th>Component</th><th>Role</th><th>Examples</th></tr>
+        <tr><td><strong>End Devices (Hosts)</strong></td><td>Source or destination of data — originate or receive messages</td><td>PC, laptop, phone, printer, IP camera, server</td></tr>
+        <tr><td><strong>Intermediary Devices</strong></td><td>Forward and direct data through the network</td><td>Switch, router, wireless AP, firewall, modem</td></tr>
+        <tr><td><strong>Network Media</strong></td><td>The channel over which data travels</td><td>Copper cable, fiber optic, wireless (radio waves)</td></tr>
+    </table>
+
+    <h3>1.2 Network Types</h3>
+    <table>
+        <tr><th>Type</th><th>Scope</th><th>Key Detail</th></tr>
+        <tr><td><strong>PAN</strong></td><td>Personal Area Network — within reach of a person</td><td>Bluetooth headset to phone</td></tr>
+        <tr><td><strong>LAN</strong></td><td>Local Area Network — single building or campus</td><td>Privately owned, high speed (1–100 Gbps)</td></tr>
+        <tr><td><strong>WAN</strong></td><td>Wide Area Network — connects LANs across cities/countries</td><td>Managed by ISPs — slower than LAN</td></tr>
+        <tr><td><strong>MAN</strong></td><td>Metropolitan Area Network — city-wide</td><td>Connects multiple buildings in same city</td></tr>
+        <tr><td><strong>WLAN</strong></td><td>Wireless LAN</td><td>Uses 802.11 Wi-Fi standards</td></tr>
+        <tr><td><strong>SAN</strong></td><td>Storage Area Network</td><td>High-speed network dedicated to storage devices</td></tr>
+    </table>
+
+    <h3>1.3 Network Topologies</h3>
+    <table>
+        <tr><th>Topology</th><th>Physical Description</th><th>Notes</th></tr>
+        <tr><td><strong>Bus</strong></td><td>All devices on one cable — terminated at each end</td><td>Legacy — one break kills the network</td></tr>
+        <tr><td><strong>Ring</strong></td><td>Devices form a closed loop</td><td>Token Ring — legacy, one break = failure</td></tr>
+        <tr><td><strong>Star</strong></td><td>All devices connect to a central switch/hub</td><td>Most common today — one link failure = one device down</td></tr>
+        <tr><td><strong>Extended Star</strong></td><td>Stars connected to stars</td><td>Typical enterprise campus topology</td></tr>
+        <tr><td><strong>Mesh</strong></td><td>Every device connected to every other device</td><td>Most redundant — used in WANs and critical links</td></tr>
+        <tr><td><strong>Hybrid</strong></td><td>Combination of topologies</td><td>Real-world networks are always hybrid</td></tr>
+    </table>
+
+    <h3>1.4 Reliable Network Characteristics</h3>
+    <ul>
+        <li><strong>Fault Tolerance:</strong> Ability to continue operating when components fail — redundant paths</li>
+        <li><strong>Scalability:</strong> Ability to grow and add users/devices without degrading performance</li>
+        <li><strong>Quality of Service (QoS):</strong> Prioritizes certain traffic — voice/video over file downloads</li>
+        <li><strong>Security:</strong> Confidentiality, Integrity, Availability (CIA triad)</li>
+    </ul>
+
+    <div class="note">
+        <strong>Bandwidth vs Throughput vs Goodput:</strong> Bandwidth = theoretical maximum (like a highway speed limit). Throughput = actual measured data rate (real speed you get). Goodput = useful data only — excludes overhead, retransmissions. Goodput ≤ Throughput ≤ Bandwidth. Always.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Basic Switch & End Device Configuration <span class="exam-tag">Module 2</span></h2>
+
+    <h3>2.1 Cisco IOS Overview</h3>
+    <table>
+        <tr><th>Mode</th><th>Prompt</th><th>Access / Purpose</th></tr>
+        <tr><td><strong>User EXEC</strong></td><td><code>Switch&gt;</code></td><td>Default login — limited view commands only</td></tr>
+        <tr><td><strong>Privileged EXEC</strong></td><td><code>Switch#</code></td><td>Type <code>enable</code> — full show commands, can view/save configs</td></tr>
+        <tr><td><strong>Global Config</strong></td><td><code>Switch(config)#</code></td><td>Type <code>configure terminal</code> — make system-wide changes</td></tr>
+        <tr><td><strong>Interface Config</strong></td><td><code>Switch(config-if)#</code></td><td>Type <code>interface fa0/1</code> — configure specific interface</td></tr>
+        <tr><td><strong>Line Config</strong></td><td><code>Switch(config-line)#</code></td><td>Type <code>line console 0</code> — configure console/VTY lines</td></tr>
+    </table>
+
+    <h3>2.2 Essential Navigation Commands</h3>
+    <pre><code>Switch> enable                    ! Enter privileged EXEC
+Switch# configure terminal        ! Enter global config (or 'conf t')
+Switch(config)# exit              ! Go back one level
+Switch(config)# end               ! Jump straight to privileged EXEC
+Switch# show running-config       ! View current config in RAM
+Switch# show startup-config       ! View saved config in NVRAM
+Switch# copy running-config startup-config  ! Save config (CRITICAL!)
+Switch# reload                    ! Reboot device</code></pre>
+
+    <div class="sidenote">
+        <p>💾 <strong>ALWAYS save your config!</strong> Unsaved config lives in RAM. Power cycle = config gone. <code>copy run start</code> is your best friend.</p>
+    </div>
+
+    <h3>2.3 Basic Device Hardening</h3>
+    <pre><code>! Set hostname
+Switch(config)# hostname SW1
+
+! Secure privileged EXEC with encrypted password
+SW1(config)# enable secret Cisco123!
+
+! Secure console port
+SW1(config)# line console 0
+SW1(config-line)# password Cisco123!
+SW1(config-line)# login
+SW1(config-line)# exec-timeout 5 0    ! Timeout after 5 minutes idle
+
+! Secure VTY lines (Telnet/SSH access)
+SW1(config)# line vty 0 15
+SW1(config-line)# password Cisco123!
+SW1(config-line)# login
+SW1(config-line)# exec-timeout 5 0
+
+! Encrypt all plaintext passwords in config
+SW1(config)# service password-encryption
+
+! Add a login banner (legal warning)
+SW1(config)# banner motd #
+Authorized Access Only. Violators will be prosecuted.
+#
+
+! Disable DNS lookup (stops annoying waits on typos)
+SW1(config)# no ip domain-lookup</code></pre>
+
+    <h3>2.4 Cisco IOS Memory Types</h3>
+    <table>
+        <tr><th>Memory</th><th>Stores</th><th>Persistent?</th></tr>
+        <tr><td><strong>RAM</strong></td><td>Running config, routing table, ARP cache — active operations</td><td>❌ Lost on reboot</td></tr>
+        <tr><td><strong>NVRAM</strong></td><td>Startup config — what loads on boot</td><td>✅ Survives reboot</td></tr>
+        <tr><td><strong>Flash</strong></td><td>Cisco IOS operating system image</td><td>✅ Survives reboot</td></tr>
+        <tr><td><strong>ROM</strong></td><td>POST, bootstrap, ROMMON (recovery mode)</td><td>✅ Read-only</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The config file flow:</strong> When the device boots, it loads IOS from Flash, runs POST from ROM, then copies startup-config from NVRAM into RAM as the running-config. Changes you make go into running-config (RAM). <code>copy running-config startup-config</code> pushes those changes to NVRAM so they survive a reboot.
+    </div>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Protocols & Models <span class="exam-tag">Module 3</span></h2>
+
+    <h3>3.1 The OSI Model — All 7 Layers</h3>
+    <div class="sidenote">
+        <p>🧠 <strong>Mnemonic (top→bottom):</strong> "All People Seem To Need Data Processing" — Application, Presentation, Session, Transport, Network, Data Link, Physical</p>
+    </div>
+    <table>
+        <tr><th>#</th><th>Layer</th><th>PDU Name</th><th>Key Protocols/Devices</th></tr>
+        <tr><td>7</td><td><strong>Application</strong></td><td>Data</td><td>HTTP, HTTPS, FTP, DNS, DHCP, SMTP, Telnet, SSH</td></tr>
+        <tr><td>6</td><td><strong>Presentation</strong></td><td>Data</td><td>SSL/TLS, JPEG, GIF, ASCII, encryption/compression</td></tr>
+        <tr><td>5</td><td><strong>Session</strong></td><td>Data</td><td>NetBIOS, RPC — establishes/manages/terminates sessions</td></tr>
+        <tr><td>4</td><td><strong>Transport</strong></td><td>Segment</td><td>TCP, UDP — end-to-end delivery, port numbers</td></tr>
+        <tr><td>3</td><td><strong>Network</strong></td><td>Packet</td><td>IP, ICMP, ARP — logical addressing, routing, Router</td></tr>
+        <tr><td>2</td><td><strong>Data Link</strong></td><td>Frame</td><td>Ethernet, Wi-Fi — MAC addressing, Switch, NIC</td></tr>
+        <tr><td>1</td><td><strong>Physical</strong></td><td>Bit</td><td>Cables, hubs, repeaters, signals, encoding</td></tr>
+    </table>
+
+    <h3>3.2 TCP/IP Model vs OSI</h3>
+    <table>
+        <tr><th>TCP/IP Layer</th><th>OSI Equivalent</th><th>Protocols</th></tr>
+        <tr><td><strong>Application</strong></td><td>7 + 6 + 5</td><td>HTTP, FTP, DNS, DHCP, SMTP, SSH, Telnet</td></tr>
+        <tr><td><strong>Transport</strong></td><td>4</td><td>TCP, UDP</td></tr>
+        <tr><td><strong>Internet</strong></td><td>3</td><td>IPv4, IPv6, ICMP, ARP</td></tr>
+        <tr><td><strong>Network Access</strong></td><td>2 + 1</td><td>Ethernet, 802.11 Wi-Fi, PPP</td></tr>
+    </table>
+
+    <h3>3.3 Encapsulation & PDUs</h3>
+    <p>Data travels down the stack — each layer adds a header (and sometimes trailer). This is called <strong>encapsulation</strong>. At the destination, each layer strips its header — called <strong>de-encapsulation</strong>.</p>
+    <pre><code>Application Data
+    → Transport adds TCP/UDP header    = SEGMENT
+    → Network adds IP header           = PACKET
+    → Data Link adds Frame header+FCS  = FRAME
+    → Physical converts to bits        = BITS on wire</code></pre>
+
+    <h3>3.4 Protocol Standards Organizations</h3>
+    <table>
+        <tr><th>Organization</th><th>What They Do</th><th>Example Standards</th></tr>
+        <tr><td><strong>IEEE</strong></td><td>LAN/WAN standards</td><td>802.3 (Ethernet), 802.11 (Wi-Fi)</td></tr>
+        <tr><td><strong>IETF</strong></td><td>Internet protocols — publishes RFCs</td><td>TCP/IP, HTTP, DNS</td></tr>
+        <tr><td><strong>IANA</strong></td><td>IP address/port number allocation</td><td>Assigns IP ranges, port numbers</td></tr>
+        <tr><td><strong>ISO</strong></td><td>International standards</td><td>OSI model</td></tr>
+        <tr><td><strong>TIA/EIA</strong></td><td>Cabling standards</td><td>568A/568B wiring standards</td></tr>
+    </table>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Physical Layer <span class="exam-tag">Module 4</span></h2>
+
+    <h3>4.1 Physical Layer Functions</h3>
+    <ul>
+        <li>Encodes frames from Data Link into a series of signals (bits)</li>
+        <li>Transmits those signals across the media</li>
+        <li>Three physical layer standards: <strong>copper</strong>, <strong>fiber optic</strong>, <strong>wireless</strong></li>
+        <li>Bandwidth measured in bits per second (bps)</li>
+    </ul>
+
+    <h3>4.2 Copper Cabling</h3>
+    <table>
+        <tr><th>Type</th><th>Standard</th><th>Max Speed</th><th>Max Distance</th><th>Notes</th></tr>
+        <tr><td>Cat 5e UTP</td><td>802.3u</td><td>1 Gbps</td><td>100m</td><td>Minimum for modern installs</td></tr>
+        <tr><td>Cat 6 UTP</td><td>802.3ab</td><td>1 Gbps / 10G@55m</td><td>100m</td><td>Current standard</td></tr>
+        <tr><td>Cat 6a UTP</td><td>802.3an</td><td>10 Gbps</td><td>100m</td><td>Data centers, high-speed runs</td></tr>
+        <tr><td>STP</td><td>Various</td><td>Same as UTP equiv.</td><td>100m</td><td>Shielded — used in high-interference areas</td></tr>
+        <tr><td>Coaxial</td><td>Various</td><td>Varies</td><td>500m</td><td>Cable internet (DOCSIS), legacy</td></tr>
+    </table>
+
+    <h3>4.3 UTP Cable Pinouts</h3>
+    <table>
+        <tr><th>Cable Type</th><th>Pinout</th><th>Use Case</th></tr>
+        <tr><td><strong>Straight-through</strong></td><td>568B both ends (or 568A both ends)</td><td>PC to Switch, PC to Hub — different device types</td></tr>
+        <tr><td><strong>Crossover</strong></td><td>568A one end, 568B other end</td><td>PC to PC, Switch to Switch — same device types</td></tr>
+        <tr><td><strong>Rollover/Console</strong></td><td>Pin 1↔8, 2↔7, 3↔6, etc.</td><td>PC to Cisco console port — blue Cisco cable</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Auto-MDIX:</strong> Modern Cisco devices detect cable type automatically and adjust. You can use a straight-through where a crossover is needed. However, the exam still tests you on which cable SHOULD be used — know both.
+    </div>
+
+    <h3>4.4 Fiber Optic Cabling</h3>
+    <table>
+        <tr><th>Type</th><th>Core Size</th><th>Light Source</th><th>Distance</th><th>Use Case</th></tr>
+        <tr><td><strong>Single-Mode (SMF)</strong></td><td>8–10 µm</td><td>Laser</td><td>Up to 100km</td><td>Long-haul WAN, ISP backbone</td></tr>
+        <tr><td><strong>Multi-Mode (MMF)</strong></td><td>50–62.5 µm</td><td>LED</td><td>Up to 2km</td><td>Campus backbone, data centers</td></tr>
+    </table>
+    <ul>
+        <li><strong>Fiber connectors:</strong> ST (bayonet twist), SC (push-pull square), LC (small form factor — most common today), MTRJ</li>
+        <li><strong>Advantages over copper:</strong> Immune to EMI/RFI, no electrical hazard, longer distances, higher bandwidth</li>
+        <li><strong>Disadvantages:</strong> More expensive, harder to splice, requires specialized tools and training</li>
+    </ul>
+
+    <h3>4.5 Wireless Media</h3>
+    <ul>
+        <li><strong>802.11 (Wi-Fi):</strong> WLAN — 2.4 GHz (farther, slower, more interference) or 5/6 GHz (shorter, faster, less interference)</li>
+        <li><strong>802.15 (Bluetooth):</strong> WPAN — short range, low power, &lt;10m typical</li>
+        <li><strong>802.16 (WiMAX):</strong> Wireless MAN — long range broadband access</li>
+        <li><strong>Cellular (LTE/5G):</strong> Wide area wireless — used for mobile data</li>
+        <li><strong>Wireless concerns:</strong> Coverage area, interference, security (open medium — anyone can receive)</li>
+    </ul>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Data Link Layer <span class="exam-tag">Module 5 & 6</span></h2>
+
+    <h3>5.1 Data Link Layer Functions</h3>
+    <ul>
+        <li>Accepts packets from Network layer and packages them into <strong>frames</strong></li>
+        <li>Controls how data is placed on and received from media</li>
+        <li>Provides <strong>error detection</strong> (not correction) via FCS (Frame Check Sequence)</li>
+        <li>Two sublayers: <strong>LLC</strong> (Logical Link Control — interfaces with Network layer) and <strong>MAC</strong> (Media Access Control — hardware addressing)</li>
+    </ul>
+
+    <h3>5.2 MAC Addresses</h3>
+    <ul>
+        <li>48-bit (6-byte) address burned into NIC by manufacturer</li>
+        <li>Written as hex: <code>AA:BB:CC:DD:EE:FF</code> or <code>AA-BB-CC-DD-EE-FF</code></li>
+        <li>First 3 bytes = <strong>OUI</strong> (Organizationally Unique Identifier) — identifies manufacturer</li>
+        <li>Last 3 bytes = device-specific identifier assigned by manufacturer</li>
+        <li><strong>Unicast:</strong> One specific device</li>
+        <li><strong>Broadcast:</strong> <code>FF:FF:FF:FF:FF:FF</code> — sent to ALL devices on segment</li>
+        <li><strong>Multicast:</strong> Sent to a group of devices (begins with <code>01:00:5E</code> for IPv4 multicast)</li>
+    </ul>
+
+    <h3>5.3 Ethernet Frame Structure</h3>
+    <table>
+        <tr><th>Field</th><th>Size</th><th>Purpose</th></tr>
+        <tr><td>Preamble</td><td>7 bytes</td><td>Synchronization — alerts devices frame is coming</td></tr>
+        <tr><td>SFD (Start Frame Delimiter)</td><td>1 byte</td><td>Marks end of preamble, start of frame</td></tr>
+        <tr><td>Destination MAC</td><td>6 bytes</td><td>Where the frame is going</td></tr>
+        <tr><td>Source MAC</td><td>6 bytes</td><td>Where the frame came from</td></tr>
+        <tr><td>Type / Length</td><td>2 bytes</td><td>Identifies upper-layer protocol (0x0800 = IPv4, 0x86DD = IPv6)</td></tr>
+        <tr><td>Data (Payload)</td><td>46–1500 bytes</td><td>Encapsulated packet from Network layer</td></tr>
+        <tr><td>FCS</td><td>4 bytes</td><td>CRC error detection — receiver recalculates and compares</td></tr>
+    </table>
+
+    <h3>5.4 Media Access Control Methods</h3>
+    <table>
+        <tr><th>Method</th><th>Used By</th><th>How It Works</th></tr>
+        <tr><td><strong>CSMA/CD</strong></td><td>Half-duplex Ethernet (legacy)</td><td>Listen before transmit, detect collisions, back off and retry</td></tr>
+        <tr><td><strong>CSMA/CA</strong></td><td>802.11 Wi-Fi</td><td>Listen before transmit, try to AVOID collisions, use random backoff</td></tr>
+        <tr><td><strong>Full Duplex</strong></td><td>Modern switched Ethernet</td><td>Send and receive simultaneously — no collisions possible on switch ports</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Why Wi-Fi uses CA not CD:</strong> Wireless devices can't detect collisions while transmitting (they can't hear over their own signal). So Wi-Fi tries to AVOID collisions instead of detecting them. This is why Wi-Fi is inherently less efficient than wired Ethernet.
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Network Layer <span class="exam-tag">Module 7 & 8</span></h2>
+
+    <h3>6.1 Network Layer Functions</h3>
+    <ul>
+        <li><strong>Addressing:</strong> Adds source and destination IP addresses to packets</li>
+        <li><strong>Routing:</strong> Determines best path across networks to destination</li>
+        <li><strong>De-encapsulation:</strong> Receives frames from Data Link, strips header, passes packet up</li>
+        <li><strong>Encapsulation:</strong> Takes segments from Transport, adds IP header, passes frame down</li>
+    </ul>
+
+    <h3>6.2 IPv4 Packet Header Fields</h3>
+    <table>
+        <tr><th>Field</th><th>Size</th><th>Purpose</th></tr>
+        <tr><td>Version</td><td>4 bits</td><td>IPv4 = 4, IPv6 = 6</td></tr>
+        <tr><td>IHL (Header Length)</td><td>4 bits</td><td>Length of header in 32-bit words</td></tr>
+        <tr><td>DSCP/ECN</td><td>8 bits</td><td>QoS marking — traffic priority</td></tr>
+        <tr><td>Total Length</td><td>16 bits</td><td>Entire packet size including header</td></tr>
+        <tr><td>TTL (Time to Live)</td><td>8 bits</td><td>Decremented by 1 at each router — prevents routing loops. Reaches 0 = packet dropped.</td></tr>
+        <tr><td>Protocol</td><td>8 bits</td><td>Upper layer: 6=TCP, 17=UDP, 1=ICMP</td></tr>
+        <tr><td>Source IP</td><td>32 bits</td><td>Sender's IP address</td></tr>
+        <tr><td>Destination IP</td><td>32 bits</td><td>Receiver's IP address</td></tr>
+    </table>
+
+    <h3>6.3 How a Router Makes Forwarding Decisions</h3>
+    <ol>
+        <li>Receives a frame, checks destination MAC — if it matches, de-encapsulates to get packet</li>
+        <li>Checks destination IP in routing table for longest prefix match</li>
+        <li>Encapsulates packet in new frame with next-hop's MAC address as destination</li>
+        <li>Forwards out the appropriate interface</li>
+        <li>Decrements TTL by 1</li>
+    </ol>
+
+    <pre><code>! View routing table on Cisco router:
+Router# show ip route
+
+! Output legend:
+! C = Directly connected network
+! L = Local (router's own interface IP)
+! S = Static route (manually configured)
+! O = OSPF learned route
+! R = RIP learned route
+! * = default route candidate
+
+! Example routing table entry:
+! C    192.168.1.0/24 is directly connected, GigabitEthernet0/0
+! S    0.0.0.0/0 [1/0] via 10.0.0.1     (default route)</code></pre>
+
+    <h3>6.4 Routing Decision — Longest Prefix Match</h3>
+    <p>When multiple routes match a destination, the router picks the <strong>most specific</strong> (longest prefix/highest subnet mask). A /28 beats a /24 which beats a /0 (default route).</p>
+
+    <div class="note">
+        <strong>The default route (0.0.0.0/0):</strong> This is the "gateway of last resort" — if no other route matches, send it here. On a home router, this points to your ISP. On a corporate router, it points upstream toward the internet. Without a default route, unmatched packets are simply dropped.
+    </div>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Transport Layer <span class="exam-tag">Module 9</span></h2>
+
+    <h3>7.1 TCP vs UDP</h3>
+    <table>
+        <tr><th>Feature</th><th>TCP</th><th>UDP</th></tr>
+        <tr><td>Connection</td><td>Connection-oriented (3-way handshake)</td><td>Connectionless</td></tr>
+        <tr><td>Reliability</td><td>Guaranteed delivery — acknowledgments</td><td>Best effort — no guarantees</td></tr>
+        <tr><td>Ordering</td><td>Sequenced — reassembles in order</td><td>No sequencing</td></tr>
+        <tr><td>Flow Control</td><td>Yes — windowing</td><td>No</td></tr>
+        <tr><td>Error Recovery</td><td>Yes — retransmits lost segments</td><td>No retransmission</td></tr>
+        <tr><td>Speed</td><td>Slower — more overhead</td><td>Faster — minimal overhead</td></tr>
+        <tr><td>Header Size</td><td>20 bytes minimum</td><td>8 bytes</td></tr>
+        <tr><td>Use Cases</td><td>HTTP, email, FTP, SSH — accuracy critical</td><td>DNS, VoIP, video streaming, DHCP</td></tr>
+    </table>
+
+    <h3>7.2 TCP Three-Way Handshake</h3>
+    <pre><code>Client                          Server
+  |                                |
+  |---------- SYN (seq=x) -------->|   Client: "I want to connect, my seq starts at x"
+  |                                |
+  |<------ SYN-ACK (seq=y,        |   Server: "OK, my seq starts at y, got your x"
+  |          ack=x+1) ------------|
+  |                                |
+  |---------- ACK (ack=y+1) ------>|   Client: "Got it! Connection established."
+  |                                |
+  |====== Data Transfer ============|</code></pre>
+
+    <h3>7.3 Port Numbers</h3>
+    <table>
+        <tr><th>Range</th><th>Name</th><th>Description</th></tr>
+        <tr><td>0 – 1023</td><td>Well-Known Ports</td><td>Assigned to common services — HTTP (80), HTTPS (443), SSH (22)</td></tr>
+        <tr><td>1024 – 49151</td><td>Registered Ports</td><td>Registered by vendors — MySQL (3306), RDP (3389)</td></tr>
+        <tr><td>49152 – 65535</td><td>Dynamic/Ephemeral</td><td>Randomly assigned by OS to client applications</td></tr>
+    </table>
+
+    <h3>7.4 TCP Windowing & Flow Control</h3>
+    <ul>
+        <li><strong>Window size:</strong> How many bytes sender can transmit before waiting for ACK</li>
+        <li><strong>Sliding window:</strong> Window advances as ACKs are received — allows continuous flow</li>
+        <li><strong>Slow start:</strong> TCP begins with small window, grows exponentially until congestion detected</li>
+        <li><strong>Congestion avoidance:</strong> When packet loss detected, window size reduced</li>
+    </ul>
+
+    <div class="note">
+        <strong>Socket = IP + Port:</strong> A socket uniquely identifies a communication endpoint. <code>192.168.1.10:80</code> is a socket. A TCP connection is identified by the 4-tuple: Source IP, Source Port, Destination IP, Destination Port. This is how one server can have thousands of simultaneous HTTP connections on port 80.
+    </div>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Application Layer <span class="exam-tag">Module 10</span></h2>
+
+    <h3>8.1 Application Layer Protocols</h3>
+    <table>
+        <tr><th>Protocol</th><th>Port(s)</th><th>Transport</th><th>Function</th></tr>
+        <tr><td><strong>DNS</strong></td><td>53</td><td>UDP (queries) / TCP (zone transfers)</td><td>Resolves hostnames to IP addresses</td></tr>
+        <tr><td><strong>DHCP</strong></td><td>67 (server) / 68 (client)</td><td>UDP</td><td>Automatically assigns IP config to hosts</td></tr>
+        <tr><td><strong>HTTP</strong></td><td>80</td><td>TCP</td><td>Web pages — unencrypted</td></tr>
+        <tr><td><strong>HTTPS</strong></td><td>443</td><td>TCP</td><td>Web pages — TLS encrypted</td></tr>
+        <tr><td><strong>FTP</strong></td><td>20 (data) / 21 (control)</td><td>TCP</td><td>File transfer — unencrypted</td></tr>
+        <tr><td><strong>SFTP/SSH</strong></td><td>22</td><td>TCP</td><td>Secure file transfer / secure remote shell</td></tr>
+        <tr><td><strong>Telnet</strong></td><td>23</td><td>TCP</td><td>Remote CLI — unencrypted, avoid</td></tr>
+        <tr><td><strong>SMTP</strong></td><td>25</td><td>TCP</td><td>Send email between servers</td></tr>
+        <tr><td><strong>POP3</strong></td><td>110</td><td>TCP</td><td>Retrieve email — downloads to client</td></tr>
+        <tr><td><strong>IMAP</strong></td><td>143</td><td>TCP</td><td>Retrieve email — stays on server</td></tr>
+        <tr><td><strong>SNMP</strong></td><td>161/162</td><td>UDP</td><td>Network device monitoring and management</td></tr>
+        <tr><td><strong>NTP</strong></td><td>123</td><td>UDP</td><td>Time synchronization</td></tr>
+        <tr><td><strong>Syslog</strong></td><td>514</td><td>UDP</td><td>Send log messages to central server</td></tr>
+    </table>
+
+    <h3>8.2 DNS Resolution Process</h3>
+    <ol>
+        <li>User types <code>www.cisco.com</code> in browser</li>
+        <li>PC checks its local DNS cache — if found, done</li>
+        <li>If not cached, PC sends query to its configured DNS server (Recursive Resolver)</li>
+        <li>Resolver checks its cache — if found, returns answer</li>
+        <li>If not cached, Resolver queries Root DNS server → gets referral to .com TLD server</li>
+        <li>Resolver queries .com TLD server → gets referral to cisco.com Authoritative server</li>
+        <li>Resolver queries cisco.com Authoritative server → gets IP address</li>
+        <li>Resolver caches result, returns IP to PC</li>
+        <li>PC caches result, browser connects to IP address</li>
+    </ol>
+
+    <h3>8.3 DHCP DORA Process</h3>
+    <pre><code>Client                              DHCP Server
+  |                                       |
+  |---DISCOVER (broadcast)--------------> | "Is there a DHCP server? I need an IP!"
+  |                                       |
+  |<--OFFER (unicast/broadcast)---------- | "I can offer you 192.168.1.100"
+  |                                       |
+  |---REQUEST (broadcast)---------------> | "I'd like 192.168.1.100 please"
+  |                                       |
+  |<--ACKNOWLEDGE (unicast/broadcast)---- | "It's yours! Lease = 24 hours"
+  |                                       |
+  ! Client configures IP, mask, gateway, DNS from DHCP lease</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Address Resolution Protocol (ARP) <span class="exam-tag">Module 9</span></h2>
+
+    <h3>9.1 Why ARP Exists</h3>
+    <p>IP packets need to be wrapped in frames. Frames need MAC addresses. But you only know the destination IP. ARP maps <strong>IP addresses → MAC addresses</strong> on a local network segment.</p>
+
+    <h3>9.2 ARP Process</h3>
+    <pre><code>PC-A (192.168.1.10) wants to send to PC-B (192.168.1.20)
+
+1. PC-A checks ARP cache: "Do I know the MAC for 192.168.1.20?"
+   Command: arp -a    (view ARP cache)
+
+2. If NOT in cache:
+   PC-A sends ARP Request (BROADCAST):
+   "Who has 192.168.1.20? Tell 192.168.1.10"
+   Destination MAC: FF:FF:FF:FF:FF:FF (all devices receive this)
+
+3. PC-B receives broadcast, recognizes its own IP:
+   PC-B sends ARP Reply (UNICAST) back to PC-A:
+   "192.168.1.20 is at AA:BB:CC:DD:EE:FF"
+
+4. PC-A stores MAC in ARP cache (temporary — expires in ~4 hours)
+
+5. PC-A can now build the frame with PC-B's MAC address</code></pre>
+
+    <h3>9.3 ARP for Remote Destinations</h3>
+    <p>If destination is on a <strong>different network</strong>, the host ARPs for the <strong>default gateway's MAC</strong> — not the destination. The router then handles forwarding toward the destination.</p>
+
+    <div class="note">
+        <strong>ARP Spoofing (Security concern):</strong> ARP has no authentication — any device can send a fake ARP reply claiming to be any IP. Attackers use this for Man-in-the-Middle attacks. This is why Dynamic ARP Inspection (DAI) exists on managed switches. Know this for both CCNA and Security+.
+    </div>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Basic Router Configuration <span class="exam-tag">Module 11</span></h2>
+
+    <h3>10.1 Router Interface Configuration</h3>
+    <pre><code>Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+
+! Configure a LAN interface (GigabitEthernet)
+R1(config)# interface gigabitethernet 0/0
+R1(config-if)# description Link to LAN
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown          ! Interfaces are SHUT DOWN by default!
+
+! Configure a WAN interface
+R1(config)# interface gigabitethernet 0/1
+R1(config-if)# description Link to ISP
+R1(config-if)# ip address 10.0.0.1 255.255.255.252
+R1(config-if)# no shutdown
+
+! Configure a static default route
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
+!                    ^network  ^mask    ^next-hop IP
+
+! Save configuration
+R1# copy running-config startup-config</code></pre>
+
+    <h3>10.2 Verifying Router Configuration</h3>
+    <pre><code>R1# show interfaces                    ! Detailed interface status
+R1# show interfaces gigabitethernet 0/0 ! Specific interface
+R1# show ip interface brief            ! Summary — all interfaces, IP, status
+R1# show ip route                      ! Full routing table
+R1# show version                       ! IOS version, uptime, hardware
+R1# show running-config                ! Current config (RAM)
+R1# show startup-config                ! Saved config (NVRAM)
+R1# show arp                           ! ARP cache
+
+! Interface status meanings:
+! GigabitEthernet0/0 is up, line protocol is up   = WORKING ✅
+! GigabitEthernet0/0 is up, line protocol is down = Layer 1 OK, Layer 2 problem
+! GigabitEthernet0/0 is down, line protocol is down = Cable/layer 1 issue or 'shutdown'
+! GigabitEthernet0/0 is administratively down     = 'shutdown' command was used</code></pre>
+
+    <h3>10.3 Configuring SSH (Secure Remote Access)</h3>
+    <pre><code>! SSH replaces Telnet — always use SSH in production
+
+R1(config)# ip domain-name tstc.edu          ! Required for RSA key generation
+R1(config)# crypto key generate rsa           ! Generate RSA keys (2048 bits recommended)
+R1(config)# ip ssh version 2                  ! Force SSHv2 only
+
+! Configure VTY lines to use SSH only
+R1(config)# line vty 0 15
+R1(config-line)# transport input ssh          ! Block Telnet, allow only SSH
+R1(config-line)# login local                  ! Use local usernames
+
+! Create a local user account
+R1(config)# username admin secret Cisco123!
+
+! Verify SSH
+R1# show ip ssh
+R1# show ssh</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. IPv4 Addressing & Subnetting <span class="exam-tag">Module 11 & 12</span></h2>
+
+    <h3>11.1 IPv4 Address Structure</h3>
+    <ul>
+        <li>32-bit address — written as 4 octets in dotted decimal: <code>192.168.1.100</code></li>
+        <li>Two parts: <strong>Network portion</strong> (identified by subnet mask) and <strong>Host portion</strong></li>
+        <li>Subnet mask identifies which bits are network bits: <code>255.255.255.0</code> = first 3 octets are network</li>
+        <li>CIDR notation: <code>/24</code> means 24 network bits (same as 255.255.255.0)</li>
+    </ul>
+
+    <h3>11.2 Subnetting — The Magic Formula</h3>
+    <table>
+        <tr><th>CIDR</th><th>Subnet Mask</th><th>Network Bits Borrowed</th><th>Hosts per Subnet</th><th>Usable Hosts</th></tr>
+        <tr><td>/24</td><td>255.255.255.0</td><td>0 (from /24)</td><td>256</td><td>254</td></tr>
+        <tr><td>/25</td><td>255.255.255.128</td><td>1</td><td>128</td><td>126</td></tr>
+        <tr><td>/26</td><td>255.255.255.192</td><td>2</td><td>64</td><td>62</td></tr>
+        <tr><td>/27</td><td>255.255.255.224</td><td>3</td><td>32</td><td>30</td></tr>
+        <tr><td>/28</td><td>255.255.255.240</td><td>4</td><td>16</td><td>14</td></tr>
+        <tr><td>/29</td><td>255.255.255.248</td><td>5</td><td>8</td><td>6</td></tr>
+        <tr><td>/30</td><td>255.255.255.252</td><td>6</td><td>4</td><td>2</td></tr>
+        <tr><td>/31</td><td>255.255.255.254</td><td>7</td><td>2</td><td>0 (point-to-point links only)</td></tr>
+        <tr><td>/32</td><td>255.255.255.255</td><td>8</td><td>1</td><td>0 (host route only)</td></tr>
+    </table>
+
+    <h3>11.3 Subnetting Steps — Worked Example</h3>
+    <pre><code>Problem: Subnet 192.168.1.0/24 into 4 equal subnets
+
+Step 1: How many bits to borrow?
+        2^n >= number of subnets needed
+        2^2 = 4 ✅  →  borrow 2 bits  →  new prefix = /26
+
+Step 2: New subnet mask?
+        /26 = 255.255.255.192
+
+Step 3: Block size (increment)?
+        256 - 192 = 64  →  subnets increment by 64
+
+Step 4: List the subnets:
+        Subnet 1: 192.168.1.0/26
+                  Network:   192.168.1.0
+                  First host: 192.168.1.1
+                  Last host:  192.168.1.62
+                  Broadcast:  192.168.1.63
+
+        Subnet 2: 192.168.1.64/26
+                  Network:   192.168.1.64
+                  First host: 192.168.1.65
+                  Last host:  192.168.1.126
+                  Broadcast:  192.168.1.127
+
+        Subnet 3: 192.168.1.128/26
+                  Network:   192.168.1.128
+                  First host: 192.168.1.129
+                  Last host:  192.168.1.190
+                  Broadcast:  192.168.1.191
+
+        Subnet 4: 192.168.1.192/26
+                  Network:   192.168.1.192
+                  First host: 192.168.1.193
+                  Last host:  192.168.1.254
+                  Broadcast:  192.168.1.255</code></pre>
+
+    <div class="note">
+        <strong>Subnetting shortcut — the "block size" trick:</strong> Subtract the last non-zero octet of the subnet mask from 256. That's your block size (increment between subnets). For 255.255.255.192: 256 - 192 = 64. Your subnets start at 0, 64, 128, 192. Network address = first, Broadcast = next subnet minus 1, Hosts = everything in between.
+    </div>
+
+    <h3>11.4 Special IPv4 Addresses</h3>
+    <table>
+        <tr><th>Address/Range</th><th>Purpose</th></tr>
+        <tr><td>0.0.0.0/0</td><td>Default route — represents all networks</td></tr>
+        <tr><td>127.0.0.0/8</td><td>Loopback — 127.0.0.1 tests local TCP/IP stack</td></tr>
+        <tr><td>169.254.0.0/16</td><td>APIPA — auto-assigned when DHCP fails</td></tr>
+        <tr><td>10.0.0.0/8</td><td>Private Class A</td></tr>
+        <tr><td>172.16.0.0/12</td><td>Private Class B (172.16.x.x – 172.31.x.x)</td></tr>
+        <tr><td>192.168.0.0/16</td><td>Private Class C — most common home/office range</td></tr>
+        <tr><td>255.255.255.255</td><td>Limited broadcast — all hosts on local segment</td></tr>
+    </table>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. IPv6 Addressing <span class="exam-tag">Module 13 & 14</span></h2>
+
+    <h3>12.1 Why IPv6?</h3>
+    <ul>
+        <li>IPv4 = 32-bit = ~4.3 billion addresses — exhausted</li>
+        <li>IPv6 = 128-bit = 340 undecillion addresses (3.4 × 10³⁸) — effectively unlimited</li>
+        <li>No need for NAT — every device gets a globally unique address</li>
+        <li>Built-in IPsec support, improved header (simpler, more efficient)</li>
+        <li>No broadcast — uses multicast and anycast instead</li>
+    </ul>
+
+    <h3>12.2 IPv6 Address Format & Compression Rules</h3>
+    <pre><code>Full address:  2001:0DB8:0000:0001:0000:0000:0000:0001
+
+Rule 1 — Omit leading zeros in each group:
+           2001:DB8:0:1:0:0:0:1
+
+Rule 2 — Replace ONE sequence of consecutive all-zero groups with ::
+           2001:DB8:0:1::1
+
+! You can only use :: ONCE per address
+! :: represents one or more groups of 0000
+
+More examples:
+  Full:      FE80:0000:0000:0000:0202:B3FF:FE1E:8329
+  Compressed: FE80::202:B3FF:FE1E:8329
+
+  Loopback full:      0000:0000:0000:0000:0000:0000:0000:0001
+  Loopback compressed: ::1</code></pre>
+
+    <h3>12.3 IPv6 Address Types</h3>
+    <table>
+        <tr><th>Type</th><th>Prefix</th><th>Description</th></tr>
+        <tr><td><strong>Global Unicast (GUA)</strong></td><td>2000::/3</td><td>Publicly routable — like public IPv4. Starts with 2 or 3.</td></tr>
+        <tr><td><strong>Link-Local (LLA)</strong></td><td>FE80::/10</td><td>Auto-configured on every IPv6 interface. Not routable. Required for IPv6 to work.</td></tr>
+        <tr><td><strong>Unique Local</strong></td><td>FC00::/7</td><td>Private — like RFC 1918. Not routable on internet.</td></tr>
+        <tr><td><strong>Loopback</strong></td><td>::1/128</td><td>Like 127.0.0.1 in IPv4 — test local stack</td></tr>
+        <tr><td><strong>Unspecified</strong></td><td>::/128</td><td>Like 0.0.0.0 in IPv4 — source address when no address assigned yet</td></tr>
+        <tr><td><strong>Multicast</strong></td><td>FF00::/8</td><td>One-to-many — replaces IPv4 broadcast</td></tr>
+        <tr><td><strong>Anycast</strong></td><td>Same as GUA</td><td>One address assigned to multiple devices — packet goes to nearest</td></tr>
+    </table>
+
+    <h3>12.4 IPv6 Configuration on Cisco Devices</h3>
+    <pre><code>! Enable IPv6 routing (required on routers)
+R1(config)# ipv6 unicast-routing
+
+! Configure GUA on interface
+R1(config)# interface gigabitethernet 0/0
+R1(config-if)# ipv6 address 2001:DB8:ACAD:1::1/64
+R1(config-if)# no shutdown
+
+! Configure Link-Local manually (optional — auto-generated by default)
+R1(config-if)# ipv6 address FE80::1 link-local
+
+! EUI-64 — auto-generate interface ID from MAC address
+R1(config-if)# ipv6 address 2001:DB8:ACAD:1::/64 eui-64
+
+! View IPv6 info
+R1# show ipv6 interface brief
+R1# show ipv6 route</code></pre>
+
+    <div class="note">
+        <strong>Link-Local is MANDATORY:</strong> Every IPv6-enabled interface automatically generates a link-local address (FE80::/10) using EUI-64 from its MAC address. This happens even if you never configure a GUA. IPv6 neighbor discovery, routing protocols, and default gateway communication all use link-local addresses. If you see FE80:: — that's normal and expected.
+    </div>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. ICMP & Network Testing <span class="exam-tag">Module 15</span></h2>
+
+    <h3>13.1 ICMP Functions</h3>
+    <table>
+        <tr><th>ICMP Message</th><th>Type</th><th>When Sent</th></tr>
+        <tr><td>Echo Request</td><td>Type 8</td><td>Sent by ping source</td></tr>
+        <tr><td>Echo Reply</td><td>Type 0</td><td>Sent by ping destination</td></tr>
+        <tr><td>Destination Unreachable</td><td>Type 3</td><td>Router can't find route to destination</td></tr>
+        <tr><td>Time Exceeded</td><td>Type 11</td><td>TTL reached 0 — used by traceroute</td></tr>
+        <tr><td>Redirect</td><td>Type 5</td><td>Router tells host to use a better route</td></tr>
+    </table>
+
+    <h3>13.2 How Traceroute Works</h3>
+    <pre><code>traceroute / tracert works by incrementing TTL:
+
+Packet 1: TTL=1 → First router decrements to 0, drops packet, sends ICMP "Time Exceeded" back
+           → We learn Hop 1's IP and round-trip time
+
+Packet 2: TTL=2 → First router passes (TTL=1), second router drops, sends ICMP back
+           → We learn Hop 2's IP and round-trip time
+
+...continues until destination reached (sends ICMP Echo Reply instead of Time Exceeded)
+
+Windows:  tracert 8.8.8.8
+Linux/Mac: traceroute 8.8.8.8
+Cisco IOS: traceroute 8.8.8.8</code></pre>
+
+    <h3>13.3 Network Testing Methodology</h3>
+    <pre><code>! Systematic bottom-up testing approach:
+
+! Layer 1 — Physical
+! Check: cable connected? link light on NIC and switch port?
+
+! Layer 3 — Do I have an IP address?
+ipconfig /all              ! Windows
+ip addr show               ! Linux
+
+! Layer 3 — Test local stack
+ping 127.0.0.1             ! Should always work
+
+! Layer 3 — Test own interface
+ping 192.168.1.10          ! Ping my own IP
+
+! Layer 3 — Test default gateway
+ping 192.168.1.1           ! Can I reach my router?
+
+! Layer 3 — Test remote network by IP (bypasses DNS)
+ping 8.8.8.8               ! Can I reach internet?
+
+! Layer 7 — Test DNS resolution
+ping google.com            ! Does DNS work?
+nslookup google.com        ! Detailed DNS query</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. IOS CLI Quick Reference <span class="exam-tag">All Modules</span></h2>
+
+    <h3>14.1 CLI Keyboard Shortcuts</h3>
+    <table>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+        <tr><td><code>Tab</code></td><td>Complete a partial command</td></tr>
+        <tr><td><code>?</code></td><td>Context-sensitive help — show available commands or options</td></tr>
+        <tr><td><code>Ctrl+C</code></td><td>Abort current command / exit to privileged EXEC</td></tr>
+        <tr><td><code>Ctrl+Z</code></td><td>Exit to privileged EXEC from any config mode</td></tr>
+        <tr><td><code>Up Arrow</code></td><td>Recall previous command</td></tr>
+        <tr><td><code>Ctrl+A</code></td><td>Move cursor to beginning of line</td></tr>
+        <tr><td><code>Ctrl+E</code></td><td>Move cursor to end of line</td></tr>
+        <tr><td><code>Ctrl+Shift+6</code></td><td>Interrupt a running command (ping, traceroute)</td></tr>
+    </table>
+
+    <h3>14.2 Complete Switch Configuration Checklist</h3>
+    <pre><code>! ===== COMPLETE BASIC SWITCH CONFIG =====
+Switch> enable
+Switch# configure terminal
+
+! Identity
+Switch(config)# hostname SW1
+
+! Passwords
+SW1(config)# enable secret Cisco123!
+SW1(config)# service password-encryption
+SW1(config)# no ip domain-lookup
+
+! Console security
+SW1(config)# line console 0
+SW1(config-line)# password Cisco123!
+SW1(config-line)# login
+SW1(config-line)# exec-timeout 5 0
+SW1(config-line)# logging synchronous    ! Prevents log messages from breaking your typing
+SW1(config-line)# exit
+
+! VTY security
+SW1(config)# line vty 0 15
+SW1(config-line)# password Cisco123!
+SW1(config-line)# login
+SW1(config-line)# exec-timeout 5 0
+SW1(config-line)# exit
+
+! Management IP (on VLAN 1 SVI)
+SW1(config)# interface vlan 1
+SW1(config-if)# ip address 192.168.1.2 255.255.255.0
+SW1(config-if)# no shutdown
+SW1(config-if)# exit
+
+! Default gateway for management
+SW1(config)# ip default-gateway 192.168.1.1
+
+! Banner
+SW1(config)# banner motd #
+WARNING: Authorized Access Only!
+#
+
+! Save
+SW1(config)# end
+SW1# copy running-config startup-config</code></pre>
+
+    <h3>14.3 Most-Used Show Commands</h3>
+    <pre><code>! === VERIFICATION COMMANDS — KNOW ALL OF THESE ===
+
+show version                     ! IOS version, hostname, uptime, hardware
+show running-config              ! Current config in RAM
+show startup-config              ! Saved config in NVRAM
+show interfaces                  ! All interface details
+show ip interface brief          ! Quick status of all interfaces (use this most)
+show ip route                    ! Routing table
+show ip arp                      ! ARP cache (IP to MAC mappings)
+show mac address-table           ! Switch MAC address table
+show vlan brief                  ! VLAN assignments (switch)
+show cdp neighbors               ! Directly connected Cisco devices
+show cdp neighbors detail        ! With IP addresses
+show ssh                         ! SSH session info
+show users                       ! Who is logged in
+show history                     ! Command history
+show clock                       ! Current time
+show processes cpu                ! CPU utilization</code></pre>
+
+    <div class="note">
+        <strong>The most important IOS habit:</strong> After making ANY change, always verify with a show command. <code>show ip interface brief</code> and <code>show running-config</code> are your two best friends. And <strong>always save</strong> with <code>copy running-config startup-config</code> before you leave a device — if it reboots and you didn't save, everything you did is gone.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF. <br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep learning, and go crush that CCNA!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
