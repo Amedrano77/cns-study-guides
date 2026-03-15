@@ -3,357 +3,542 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CNS Study Guides · TSTC</title>
+    <title>Linux+ Study Guide · TSTC</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
             background: #f5f7fa;
             color: #1e293b;
-            min-height: 100vh;
+            line-height: 1.6;
+            padding: 2rem 1rem;
         }
-
-        /* HEADER */
-        header {
-            background: #0f2b3d;
-            color: white;
-            padding: 2.5rem 2rem 2rem;
-            text-align: center;
-            border-bottom: 6px solid #b91c1c;
-            position: relative;
-            overflow: hidden;
-        }
-        header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 40px,
-                rgba(255,255,255,0.02) 40px,
-                rgba(255,255,255,0.02) 80px
-            );
-        }
-        header .logo {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-        header h1 {
-            font-size: 2.4rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            border: none;
-            padding: 0;
-            color: white;
-            position: relative;
-        }
-        header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            margin-top: 0.4rem;
-            position: relative;
-        }
-        header .instructor {
-            display: inline-block;
-            margin-top: 0.8rem;
-            background: #b91c1c;
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            position: relative;
-        }
-
-        /* MAIN */
-        main {
-            max-width: 1100px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem 1.5rem;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            position: relative;
         }
 
-        .section-title {
-            font-size: 1.5rem;
+        /* TYPOGRAPHY */
+        h1 {
+            font-size: 2.8rem;
             font-weight: 700;
             color: #0f2b3d;
-            margin-bottom: 1.5rem;
+            border-left: 10px solid #b91c1c;
+            padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            margin-top: 0.2rem;
+            padding-left: 2.2rem;
+            font-weight: 400;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 3px solid #b91c1c;
             display: inline-block;
         }
-
-        /* CARDS GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem;
         }
 
-        .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,30,0.08);
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
+        /* CODE & COMMANDS */
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #b91c1c;
+            border: 1px solid #e2e8f0;
         }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0,0,30,0.15);
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.2rem 0;
+            border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: inherit;
+        }
+        /* inline code inside pre is already styled by pre, but we keep it */
+        pre code {
+            background: transparent;
+            border: none;
+            color: #facc15;  /* yellowish for contrast */
         }
 
-        .card-header {
-            padding: 1.5rem 1.5rem 1rem;
-            border-bottom: 3px solid #f1f5f9;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .card-icon {
-            font-size: 2.2rem;
-            line-height: 1;
-        }
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0f2b3d;
-        }
-        .card-subtitle {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-top: 0.1rem;
-        }
-
-        .card-body {
-            padding: 1rem 1.5rem;
-            flex: 1;
-        }
-        .card-body p {
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
             font-size: 0.95rem;
-            color: #475569;
-            line-height: 1.6;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        tr:hover {
+            background: #fff7ed;
         }
 
-        .topics {
-            list-style: none;
-            margin-top: 0.75rem;
+        /* MARGIN NOTES (like handwritten) */
+        .note {
+            background: #fff9e6;
+            border-left: 8px solid #fbbf24;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05);
+            position: relative;
+            font-size: 1rem;
         }
-        .topics li {
-            font-size: 0.88rem;
-            color: #64748b;
-            padding: 0.2rem 0;
-            border-bottom: 1px dashed #e2e8f0;
+        .note::before {
+            content: "✍️ Mr. B says:";
+            font-weight: 700;
+            font-style: normal;
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
         }
-        .topics li::before {
-            content: "▸ ";
+        .note strong {
+            color: #b45309;
+        }
+
+        /* INLINE MARGIN ICON (for sidenote effect) */
+        .sidenote {
+            float: right;
+            width: 200px;
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            padding: 0.8rem;
+            margin: 0 0 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p {
+            margin: 0;
+        }
+        .sidenote::first-line {
+            font-weight: bold;
+            color: #b45309;
+        }
+
+        /* LISTS */
+        ul, ol {
+            margin: 1rem 0 1.5rem 2rem;
+        }
+        li {
+            margin-bottom: 0.3rem;
+        }
+        li::marker {
             color: #b91c1c;
             font-weight: bold;
         }
-        .topics li:last-child { border-bottom: none; }
 
-        .card-footer {
-            padding: 1rem 1.5rem 1.5rem;
+        /* TOC */
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            columns: 2 250px;
+            column-gap: 2rem;
         }
-
-        .btn {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
+        .toc h3 {
+            margin-top: 0;
+            column-span: all;
+            margin-bottom: 1rem;
+            color: #0f2b3d;
+        }
+        .toc ul {
+            margin: 0;
+            list-style-type: none;
+        }
+        .toc li {
+            margin-bottom: 0.4rem;
+        }
+        .toc a {
             text-decoration: none;
-            transition: background 0.2s, transform 0.1s;
+            color: #1e3a5f;
+            font-weight: 500;
+            border-bottom: 1px dotted #b91c1c;
         }
-        .btn-primary {
-            background: #b91c1c;
-            color: white;
+        .toc a:hover {
+            color: #b91c1c;
         }
-        .btn-primary:hover {
-            background: #991b1b;
-            transform: scale(1.02);
-        }
-        .btn-disabled {
-            background: #e2e8f0;
-            color: #94a3b8;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* BADGE */
-        .badge {
-            display: inline-block;
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-left: 0.5rem;
-            vertical-align: middle;
-        }
-        .badge-live { background: #dcfce7; color: #15803d; }
-        .badge-soon { background: #fef9c3; color: #a16207; }
-        .badge-planned { background: #f1f5f9; color: #64748b; }
-
-        /* INFO BOX */
-        .infobox {
-            background: #fff9e6;
-            border-left: 6px solid #fbbf24;
-            border-radius: 0 16px 16px 0;
-            padding: 1.2rem 1.5rem;
-            margin-bottom: 2.5rem;
-            font-size: 0.95rem;
-            color: #78350f;
-        }
-        .infobox strong { color: #92400e; }
 
         /* FOOTER */
-        footer {
-            background: #0f2b3d;
-            color: #94a3b8;
+        .footer {
+            margin-top: 3rem;
             text-align: center;
-            padding: 2rem;
             font-size: 0.9rem;
-            border-top: 4px solid #b91c1c;
+            color: #64748b;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.5rem;
         }
-        footer strong { color: white; }
 
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: 1fr; }
+        /* RESPONSIVE */
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+
+        /* PRINT */
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
         }
     </style>
 </head>
 <body>
+<div class="container">
 
-<header>
-    <div class="logo">🖥️</div>
-    <h1>CNS Study Guides</h1>
-    <p>Computer &amp; Networking Systems · TSTC</p>
-    <span class="instructor">Instructor: Mr. B</span>
-</header>
+    <!-- HEADER -->
+    <h1>🐧 Linux+ Study Guide</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Mr. B</div>
 
-<main>
-
-    <div class="infobox">
-        <strong>📚 How to use this site:</strong> Each guide below covers a full certification course.
-        Click "Open Study Guide" to open the full notes. Bookmark this page — new guides get added each semester.
+    <!-- TOC -->
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Installation & Configuration</a></li>
+            <li><a href="#part2">2. Filesystem Hierarchy</a></li>
+            <li><a href="#part3">3. Command Line Navigation</a></li>
+            <li><a href="#part4">4. Software Management</a></li>
+            <li><a href="#part5">5. Users, Groups, Permissions</a></li>
+            <li><a href="#part6">6. System Monitoring</a></li>
+            <li><a href="#part7">7. Backup & Recovery</a></li>
+            <li><a href="#part8">8. Troubleshooting Methodology</a></li>
+        </ul>
     </div>
 
-    <div class="section-title">📡 Available Guides</div>
+    <!-- PART 1 -->
+    <h2 id="part1">1. Installation and Configuration</h2>
 
-    <div class="grid">
+    <h3>1.1 Installation Methods</h3>
+    <table>
+        <tr><th>Method</th><th>Description</th><th>When to Use</th></tr>
+        <tr><td><strong>Local (DVD/USB)</strong></td><td>Boot from physical media with ISO image</td><td>Single machines, testing</td></tr>
+        <tr><td><strong>Network (PXE)</strong></td><td>Preboot Execution Environment — install over network</td><td>Data centers, mass deployments</td></tr>
+        <tr><td><strong>Unattended (Kickstart/Preseed)</strong></td><td>Automated install using config file</td><td>Enterprise — consistent, repeatable</td></tr>
+    </table>
 
-        <!-- Linux+ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">🐧</div>
-                <div>
-                    <div class="card-title">Linux+ <span class="badge badge-live">Live</span></div>
-                    <div class="card-subtitle">CompTIA XK0-005</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Core Linux administration concepts for the CompTIA Linux+ exam.</p>
-                <ul class="topics">
-                    <li>Installation &amp; Configuration</li>
-                    <li>Filesystem Hierarchy</li>
-                    <li>Users, Groups &amp; Permissions</li>
-                    <li>System Monitoring &amp; Logs</li>
-                    <li>Backup &amp; Recovery</li>
-                    <li>Troubleshooting Methodology</li>
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="linux-plus/index.html" class="btn btn-primary">📖 Open Study Guide</a>
-            </div>
-        </div>
+    <h3>1.2 Partitioning Decisions</h3>
+    <table>
+        <tr><th>Partition</th><th>Purpose</th><th>Recommendation</th></tr>
+        <tr><td><code>/</code> (root)</td><td>Base of filesystem</td><td>20-30 GB minimum</td></tr>
+        <tr><td><code>/boot</code></td><td>Kernel & bootloader</td><td>1 GB separate (critical for encryption)</td></tr>
+        <tr><td><code>/home</code></td><td>User data</td><td>Separate — survives OS reinstall</td></tr>
+        <tr><td><code>swap</code></td><td>Virtual memory (disk used as RAM)</td><td>4-8 GB for modern systems</td></tr>
+    </table>
 
-        <!-- Network+ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">🌐</div>
-                <div>
-                    <div class="card-title">Network+ <span class="badge badge-soon">Coming Soon</span></div>
-                    <div class="card-subtitle">CompTIA N10-009</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Networking fundamentals, protocols, and infrastructure for the CompTIA Network+ exam.</p>
-                <ul class="topics">
-                    <li>OSI &amp; TCP/IP Models</li>
-                    <li>Subnetting &amp; IP Addressing</li>
-                    <li>Routing &amp; Switching</li>
-                    <li>Network Security</li>
-                    <li>Wireless Networking</li>
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
-            </div>
-        </div>
-
-        <!-- Security+ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">🔐</div>
-                <div>
-                    <div class="card-title">Security+ <span class="badge badge-planned">Planned</span></div>
-                    <div class="card-subtitle">CompTIA SY0-701</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Cybersecurity fundamentals covering threats, vulnerabilities, and security controls.</p>
-                <ul class="topics">
-                    <li>Threats &amp; Vulnerabilities</li>
-                    <li>Cryptography &amp; PKI</li>
-                    <li>Identity &amp; Access Management</li>
-                    <li>Network &amp; Cloud Security</li>
-                    <li>Incident Response</li>
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
-            </div>
-        </div>
-
-        <!-- A+ -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">💻</div>
-                <div>
-                    <div class="card-title">A+ <span class="badge badge-planned">Planned</span></div>
-                    <div class="card-subtitle">CompTIA 220-1101 / 1102</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <p>Hardware, operating systems, and IT support fundamentals for the CompTIA A+ exam.</p>
-                <ul class="topics">
-                    <li>Hardware &amp; Components</li>
-                    <li>Operating Systems</li>
-                    <li>Networking Basics</li>
-                    <li>Troubleshooting</li>
-                    <li>Security Fundamentals</li>
-                </ul>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
-            </div>
-        </div>
-
+    <div class="note">
+        <strong>Filesystem types:</strong> ext4 (standard, reliable), XFS (large files, RHEL default), Btrfs/ZFS (advanced features — know what they are).
     </div>
-</main>
 
-<footer>
-    <strong>TSTC · Computer &amp; Networking Systems</strong><br>
-    Study guides created and maintained by Mr. B &nbsp;·&nbsp; Add your own notes and make them yours!
-</footer>
+    <h3>1.3 GRUB2 Bootloader</h3>
+    <p><code>/etc/default/grub</code> ← <strong>EDIT THIS</strong><br>
+    <code>/boot/grub2/grub.cfg</code> ← <strong>DON'T EDIT DIRECTLY</strong> (generated)</p>
+    <pre><code># After changes:
+# Debian/Ubuntu
+sudo update-grub
 
+# RHEL/CentOS/Rocky
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg</code></pre>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Linux Filesystem Hierarchy</h2>
+    <table>
+        <tr><th>Directory</th><th>Purpose</th><th>Critical Files</th></tr>
+        <tr><td><code>/</code></td><td>Root — everything starts here</td><td>—</td></tr>
+        <tr><td><code>/bin</code></td><td>Essential user commands (<code>ls, cp</code>)</td><td>now often symlink to <code>/usr/bin</code></td></tr>
+        <tr><td><code>/sbin</code></td><td>System admin commands (<code>fdisk, fsck</code>)</td><td>root-only</td></tr>
+        <tr><td><code>/etc</code></td><td><strong>System configuration</strong></td><td><code>passwd, fstab, ssh/sshd_config</code></td></tr>
+        <tr><td><code>/home</code></td><td>User home directories</td><td>each user folder</td></tr>
+        <tr><td><code>/root</code></td><td>Root user's home</td><td>not under <code>/home</code></td></tr>
+        <tr><td><code>/var</code></td><td><strong>Variable data — logs, spools</strong></td><td><code>/var/log/</code> — YOUR BEST FRIEND</td></tr>
+        <tr><td><code>/usr</code></td><td>Read‑only user programs/docs</td><td><code>/usr/bin, /usr/share/doc</code></td></tr>
+        <tr><td><code>/tmp</code></td><td>Temporary files (cleared on reboot)</td><td>world‑writable — careful</td></tr>
+        <tr><td><code>/boot</code></td><td>Boot files — kernel, initramfs</td><td>keep separate</td></tr>
+        <tr><td><code>/dev</code></td><td>Device files (everything is a file!)</td><td><code>/dev/sda</code> (first hard drive)</td></tr>
+        <tr><td><code>/proc</code></td><td>Virtual — process & kernel info</td><td><code>cat /proc/cpuinfo</code></td></tr>
+        <tr><td><code>/opt</code></td><td>Third‑party software</td><td>Oracle, Google Earth, etc.</td></tr>
+    </table>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Navigating and Managing the Command Line</h2>
+
+    <h3>Essential Navigation</h3>
+    <pre><code>pwd                    # Where am I?
+ls -la                 # List all files with details
+cd /etc                # Go to /etc
+cd ..                  # Go up one level
+cd ~                   # Go home
+cd -                   # Go to previous directory</code></pre>
+
+    <h3>File Operations</h3>
+    <pre><code>touch file.txt         # Create empty file
+mkdir newdir           # Create directory
+mkdir -p a/b/c         # Create parent directories too
+
+cp source dest         # Copy file
+cp -r sourcedir destdir # Copy directory
+
+mv oldname newname     # Rename or move
+rm file.txt            # Remove file
+rm -rf directory/      # 🔥 DANGER: recursive force remove
+
+ln -s target link      # Create symbolic link (shortcut)</code></pre>
+
+    <div class="sidenote">
+        <p>💡 <strong>Pro tip:</strong> Always double‑check before <code>rm -rf</code>. I've seen whole servers wiped by a stray space. Use <code>ls</code> first!</p>
+    </div>
+
+    <h3>Viewing Files</h3>
+    <pre><code>cat file.txt           # Show entire file (short)
+less file.txt          # Page through (q to quit)
+head -n 20 file.txt    # First 20 lines
+tail -f /var/log/syslog # FOLLOW logs in real‑time — ESSENTIAL</code></pre>
+
+    <h3>Getting Help</h3>
+    <pre><code>man command            # THE manual — learn this first
+command --help         # Quick summary
+info command           # Alternative docs</code></pre>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Managing Software and Packages</h2>
+
+    <h3>Package Managers by Family</h3>
+    <table>
+        <tr><th>Action</th><th>Debian/Ubuntu (apt)</th><th>RHEL/CentOS (dnf/yum)</th></tr>
+        <tr><td>Update package list</td><td><code>sudo apt update</code></td><td><code>sudo dnf check-update</code></td></tr>
+        <tr><td>Upgrade all</td><td><code>sudo apt upgrade</code></td><td><code>sudo dnf upgrade</code></td></tr>
+        <tr><td>Install package</td><td><code>sudo apt install pkg</code></td><td><code>sudo dnf install pkg</code></td></tr>
+        <tr><td>Remove package</td><td><code>sudo apt remove pkg</code></td><td><code>sudo dnf remove pkg</code></td></tr>
+        <tr><td>Search</td><td><code>apt search term</code></td><td><code>dnf search term</code></td></tr>
+        <tr><td>Show package info</td><td><code>apt show pkg</code></td><td><code>dnf info pkg</code></td></tr>
+        <tr><td>List installed</td><td><code>apt list --installed</code></td><td><code>dnf list installed</code></td></tr>
+    </table>
+
+    <h3>Installing Third‑Party Apps from Source</h3>
+    <pre><code># The classic 3‑step dance:
+./configure            # Checks dependencies, creates Makefile
+make                   # Compiles source into binaries
+sudo make install      # Copies files to system
+
+# Always read the README/INSTALL file first!</code></pre>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Users, Groups, and Permissions</h2>
+
+    <h3>Key Files</h3>
+    <table>
+        <tr><th>File</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><code>/etc/passwd</code></td><td>User accounts</td><td><code>joe:x:1001:1001:Joe:/home/joe:/bin/bash</code></td></tr>
+        <tr><td><code>/etc/shadow</code></td><td>Hashed passwords</td><td>root‑readable only</td></tr>
+        <tr><td><code>/etc/group</code></td><td>Group definitions</td><td><code>developers:x:1002:alice,bob</code></td></tr>
+    </table>
+
+    <h3>User/Group Commands</h3>
+    <pre><code>sudo useradd -m -G wheel alice     # Create user with home, add to wheel
+sudo passwd alice                   # Set password
+sudo usermod -aG docker alice       # Add to supplementary group
+sudo userdel -r alice               # Delete user AND home dir
+
+sudo groupadd developers             # Create group
+sudo groupdel developers             # Delete group
+
+id alice                             # Show UID, GID, groups</code></pre>
+
+    <h3>Understanding Permissions</h3>
+    <p><code>ls -l</code> shows: <code>-rwxr-xr--</code></p>
+    <ul>
+        <li><strong>Position 1:</strong> file type (<code>-</code> file, <code>d</code> directory, <code>l</code> link)</li>
+        <li><strong>Pos 2‑4:</strong> owner permissions (rwx)</li>
+        <li><strong>Pos 5‑7:</strong> group permissions (r-x)</li>
+        <li><strong>Pos 8‑10:</strong> others permissions (r--)</li>
+    </ul>
+
+    <h4>Numeric (Octal) Permissions</h4>
+    <p><code>r = 4, w = 2, x = 1</code><br>
+    Common: <code>7 (rwx), 6 (rw-), 5 (r-x), 4 (r--)</code></p>
+
+    <pre><code>chmod 754 script.sh     # Owner:rwx, Group:r-x, Others:r--
+chmod u+x script.sh     # Add execute for owner
+chmod go-w script.sh    # Remove write for group/others
+
+chown alice:developers file.txt   # Change owner:group
+chgrp developers file.txt          # Change group only</code></pre>
+
+    <div class="note">
+        <strong>Remember:</strong> Directories need execute (<code>x</code>) to be traversable. Without it, you can't <code>cd</code> in, even if you have read permission.
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. System Monitoring and Performance</h2>
+
+    <h3>Processes</h3>
+    <pre><code>ps aux                   # Snapshot of all processes
+top                      # Real‑time process view (q to quit)
+htop                     # Nicer top (install it!)
+
+kill 1234                # Gracefully terminate PID 1234 (SIGTERM)
+kill -9 1234             # FORCE kill (SIGKILL) — last resort
+pkill firefox            # Kill all firefox processes by name</code></pre>
+
+    <h3>Resource Usage</h3>
+    <pre><code>free -h                   # Memory usage (human‑readable)
+df -h                     # Disk free space
+du -sh /home/*            # Disk usage by user home</code></pre>
+
+    <h3>Logs</h3>
+    <pre><code># Traditional logs
+tail -f /var/log/syslog           # Ubuntu/Debian
+tail -f /var/log/messages         # RHEL/CentOS
+tail -f /var/log/secure           # Auth logs (RHEL)
+tail -f /var/log/auth.log         # Auth logs (Debian)
+
+# Modern systemd logs
+journalctl -u ssh.service         # Logs for SSH service
+journalctl -f                     # Follow logs (like tail -f)
+journalctl --since "1 hour ago"   # Recent logs</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Backup and Recovery</h2>
+
+    <h3>The 3‑2‑1 Rule</h3>
+    <ul>
+        <li><strong>3</strong> copies of data</li>
+        <li><strong>2</strong> different media types</li>
+        <li><strong>1</strong> copy off‑site</li>
+    </ul>
+
+    <h3>Tar Commands</h3>
+    <pre><code># Create backups
+tar -cvf backup.tar /home/user          # No compression
+tar -czvf backup.tar.gz /home/user      # gzip compression
+tar -cjvf backup.tar.bz2 /home/user     # bzip2 compression
+
+# Extract backups
+tar -xzvf backup.tar.gz                  # Extract gzip
+tar -xjvf backup.tar.bz2                 # Extract bzip2
+tar -xvf backup.tar -C /restore/location # Extract to specific dir</code></pre>
+
+    <h3>Rsync — The Backup King</h3>
+    <pre><code># Local sync
+rsync -av /source/dir/ /backup/dir/      # Archive mode, verbose
+
+# Remote over SSH
+rsync -avz -e ssh /local/dir user@remote:/backup/
+
+# Key options:
+# -a : archive (preserve perms, recursive)
+# -v : verbose
+# -z : compress during transfer
+# --delete : remove files in destination not in source</code></pre>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Basic Troubleshooting Methodology</h2>
+
+    <div class="sidenote">
+        <p>🧠 Google the exact error message. 90% of problems are already solved by someone else.</p>
+    </div>
+
+    <ol>
+        <li><strong>Identify the problem</strong> — Get specifics, not "it's broken"</li>
+        <li><strong>Establish theory of probable cause</strong> — Start simple (service stopped? disk full?)</li>
+        <li><strong>Test the theory</strong> — Try your fix</li>
+        <li><strong>Escalate/research</strong> — Google exact error messages, man pages</li>
+        <li><strong>Establish plan of action</strong> — Know what you'll do before doing it</li>
+        <li><strong>Implement and test</strong> — Fix it, verify it's fixed</li>
+        <li><strong>Document</strong> — Write it down for next time</li>
+    </ol>
+
+    <h3>Quick Checks</h3>
+    <pre><code>systemctl status service-name     # Is the service running?
+df -h                              # Disk full?
+journalctl -xe                     # Recent errors
+ping google.com                    # Network connectivity?
+ss -tulpn                          # What ports are listening?</code></pre>
+
+    <!-- FOOTER with download hint -->
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF. <br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep learning, and go pass that Linux+ exam!</strong> — Mr. B
+    </div>
+
+</div> <!-- container -->
 </body>
 </html>

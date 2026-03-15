@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNS Study Guides · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: #0f2b3d;
+            color: white;
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            border-bottom: 6px solid #b91c1c;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 40px,
+                rgba(255,255,255,0.02) 40px,
+                rgba(255,255,255,0.02) 80px
+            );
+        }
+        header .logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            border: none;
+            padding: 0;
+            color: white;
+            position: relative;
+        }
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-top: 0.4rem;
+            position: relative;
+        }
+        header .instructor {
+            display: inline-block;
+            margin-top: 0.8rem;
+            background: #b91c1c;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+
+        /* CARDS GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,30,0.08);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,30,0.15);
+        }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 3px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .card-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f2b3d;
+        }
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.1rem;
+        }
+
+        .card-body {
+            padding: 1rem 1.5rem;
+            flex: 1;
+        }
+        .card-body p {
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .topics {
+            list-style: none;
+            margin-top: 0.75rem;
+        }
+        .topics li {
+            font-size: 0.88rem;
+            color: #64748b;
+            padding: 0.2rem 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .topics li::before {
+            content: "▸ ";
+            color: #b91c1c;
+            font-weight: bold;
+        }
+        .topics li:last-child { border-bottom: none; }
+
+        .card-footer {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-primary {
+            background: #b91c1c;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #991b1b;
+            transform: scale(1.02);
+        }
+        .btn-disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        .badge-live { background: #dcfce7; color: #15803d; }
+        .badge-soon { background: #fef9c3; color: #a16207; }
+        .badge-planned { background: #f1f5f9; color: #64748b; }
+
+        /* INFO BOX */
+        .infobox {
+            background: #fff9e6;
+            border-left: 6px solid #fbbf24;
+            border-radius: 0 16px 16px 0;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2.5rem;
+            font-size: 0.95rem;
+            color: #78350f;
+        }
+        .infobox strong { color: #92400e; }
+
+        /* FOOTER */
+        footer {
+            background: #0f2b3d;
+            color: #94a3b8;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            border-top: 4px solid #b91c1c;
+        }
+        footer strong { color: white; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🖥️</div>
+    <h1>CNS Study Guides</h1>
+    <p>Computer &amp; Networking Systems · TSTC</p>
+    <span class="instructor">Instructor: Mr. B</span>
+</header>
+
+<main>
+
+    <div class="infobox">
+        <strong>📚 How to use this site:</strong> Each guide below covers a full certification course.
+        Click "Open Study Guide" to open the full notes. Bookmark this page — new guides get added each semester.
+    </div>
+
+    <div class="section-title">📡 Available Guides</div>
+
+    <div class="grid">
+
+        <!-- Linux+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🐧</div>
+                <div>
+                    <div class="card-title">Linux+ <span class="badge badge-live">Live</span></div>
+                    <div class="card-subtitle">CompTIA XK0-005</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Core Linux administration concepts for the CompTIA Linux+ exam.</p>
+                <ul class="topics">
+                    <li>Installation &amp; Configuration</li>
+                    <li>Filesystem Hierarchy</li>
+                    <li>Users, Groups &amp; Permissions</li>
+                    <li>System Monitoring &amp; Logs</li>
+                    <li>Backup &amp; Recovery</li>
+                    <li>Troubleshooting Methodology</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="linux-plus/index.html" class="btn btn-primary">📖 Open Study Guide</a>
+            </div>
+        </div>
+
+        <!-- Network+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+                <div>
+                    <div class="card-title">Network+ <span class="badge badge-soon">Coming Soon</span></div>
+                    <div class="card-subtitle">CompTIA N10-009</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Networking fundamentals, protocols, and infrastructure for the CompTIA Network+ exam.</p>
+                <ul class="topics">
+                    <li>OSI &amp; TCP/IP Models</li>
+                    <li>Subnetting &amp; IP Addressing</li>
+                    <li>Routing &amp; Switching</li>
+                    <li>Network Security</li>
+                    <li>Wireless Networking</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
+            </div>
+        </div>
+
+        <!-- Security+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔐</div>
+                <div>
+                    <div class="card-title">Security+ <span class="badge badge-planned">Planned</span></div>
+                    <div class="card-subtitle">CompTIA SY0-701</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Cybersecurity fundamentals covering threats, vulnerabilities, and security controls.</p>
+                <ul class="topics">
+                    <li>Threats &amp; Vulnerabilities</li>
+                    <li>Cryptography &amp; PKI</li>
+                    <li>Identity &amp; Access Management</li>
+                    <li>Network &amp; Cloud Security</li>
+                    <li>Incident Response</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
+            </div>
+        </div>
+
+        <!-- A+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">💻</div>
+                <div>
+                    <div class="card-title">A+ <span class="badge badge-planned">Planned</span></div>
+                    <div class="card-subtitle">CompTIA 220-1101 / 1102</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Hardware, operating systems, and IT support fundamentals for the CompTIA A+ exam.</p>
+                <ul class="topics">
+                    <li>Hardware &amp; Components</li>
+                    <li>Operating Systems</li>
+                    <li>Networking Basics</li>
+                    <li>Troubleshooting</li>
+                    <li>Security Fundamentals</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-disabled">🔒 Not Yet Available</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <strong>TSTC · Computer &amp; Networking Systems</strong><br>
+    Study guides created and maintained by Adrian Medrano &nbsp;·&nbsp;
+</footer>
+
+</body>
+</html>
