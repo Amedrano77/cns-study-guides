@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Troubleshooting & Support · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .mod-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .soft-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        /* CLEAR Box — matches course style */
+        .clear-box {
+            background: #f0f4ff; border: 2px solid #3b82f6; border-radius: 16px;
+            padding: 1.5rem; margin: 2rem 0;
+        }
+        .clear-title {
+            font-size: 1.1rem; font-weight: 700; color: #1d4ed8;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .clear-box table { box-shadow: none; margin: 0; }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🔧 Network Troubleshooting & Support</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · IT Support, Diagnostics & Customer Service</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Technical Communication Skills</a></li>
+            <li><a href="#part2">2. Customer Service Fundamentals</a></li>
+            <li><a href="#part3">3. The CLEAR Problem-Solving Framework</a></li>
+            <li><a href="#part4">4. Conflict Resolution & Difficult Customers</a></li>
+            <li><a href="#part5">5. Windows OS Troubleshooting</a></li>
+            <li><a href="#part6">6. Windows 10/11 Troubleshooting Basics</a></li>
+            <li><a href="#part7">7. Network Diagnostics</a></li>
+            <li><a href="#part8">8. Practical Network Diagnostic Tools</a></li>
+            <li><a href="#part9">9. Remote Support Tools</a></li>
+            <li><a href="#part10">10. Virtual Private Networks (VPN)</a></li>
+            <li><a href="#part11">11. Malware & Virus Identification</a></li>
+            <li><a href="#part12">12. Malware Prevention & Cyber Threats</a></li>
+            <li><a href="#part13">13. Remote Security & Vulnerability Assessment</a></li>
+            <li><a href="#part14">14. System Performance Tracking</a></li>
+            <li><a href="#part15">15. IT Support Documentation</a></li>
+            <li><a href="#part16">16. Ticketing & Knowledge Base</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Technical Communication Skills <span class="mod-tag">Module 1</span></h2>
+
+    <h3>1.1 Communicating Technical Information Effectively</h3>
+    <p>One of the most underrated skills in IT is the ability to explain complex technical concepts to people with no technical background. Your job isn't just to fix the problem — it's to make the user feel informed, respected, and confident that the issue is being handled.</p>
+
+    <h3>1.2 Adapting to Your Audience</h3>
+    <table>
+        <tr><th>Audience</th><th>Communication Style</th><th>Example</th></tr>
+        <tr><td><strong>Non-technical user</strong></td><td>Plain language, analogies, no jargon, reassuring tone</td><td>"Your computer is having trouble finding the internet — like trying to call someone with no signal. We'll fix it."</td></tr>
+        <tr><td><strong>Technical user</strong></td><td>Precise terminology, concise, collaborative</td><td>"Looks like a DNS resolution failure — your DHCP lease is valid but the resolver isn't responding."</td></tr>
+        <tr><td><strong>Manager/Executive</strong></td><td>Business impact focused, brief, solution-oriented</td><td>"The email server was down 45 minutes. Root cause was a misconfigured update. It's resolved and we've added monitoring to prevent recurrence."</td></tr>
+        <tr><td><strong>Vendor/Peer technician</strong></td><td>Technical, collaborative, specific error codes and logs</td><td>"Getting Event ID 7023, service fails to start with error 1053 — have you seen this with the latest patch?"</td></tr>
+    </table>
+
+    <h3>1.3 Active Listening Techniques</h3>
+    <ul>
+        <li><strong>Let them finish:</strong> Never interrupt — the user may be building to the key detail</li>
+        <li><strong>Take notes:</strong> Write down what they say — shows you're engaged and gives you a record</li>
+        <li><strong>Clarifying questions:</strong> "When you say it's slow, can you describe what you're seeing?"</li>
+        <li><strong>Paraphrase back:</strong> "So if I understand correctly, the issue started this morning after the Windows update, and only affects Outlook — is that right?"</li>
+        <li><strong>Non-verbal cues:</strong> Nod, make eye contact, don't look at your phone or screen while they talk</li>
+        <li><strong>Avoid assumptions:</strong> Don't decide the cause before you've heard everything</li>
+    </ul>
+
+    <h3>1.4 Communication Styles</h3>
+    <table>
+        <tr><th>Style</th><th>Characteristics</th><th>IT Context</th></tr>
+        <tr><td><strong>Assertive</strong></td><td>Direct, confident, respectful — states needs clearly</td><td>✅ Best — "I need you to restart the machine before I can proceed."</td></tr>
+        <tr><td><strong>Passive</strong></td><td>Avoids conflict, doesn't speak up, unclear</td><td>⚠️ Problem — user doesn't know what's happening</td></tr>
+        <tr><td><strong>Aggressive</strong></td><td>Demanding, dismissive, creates conflict</td><td>❌ Never — "That's not how computers work, just do what I said."</td></tr>
+        <tr><td><strong>Passive-Aggressive</strong></td><td>Indirect, sarcastic, undermining</td><td>❌ Never — "Sure, I guess I'll fix it AGAIN."</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The words you choose matter enormously.</strong> Say "I'll look into that for you" instead of "I don't know." Say "When would be a good time to follow up?" instead of going silent. Say "I understand this is frustrating" instead of "Calm down." The technical fix might take 5 minutes — rebuilding a user's trust after poor communication can take months.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Customer Service Fundamentals <span class="mod-tag">Module 1</span></h2>
+
+    <h3>2.1 Analyzing Customer Needs & Expectations</h3>
+    <ul>
+        <li><strong>Stated needs:</strong> What the customer tells you they want — "Fix my email"</li>
+        <li><strong>Underlying needs:</strong> What they actually need — "I need to be able to communicate with clients and not look incompetent"</li>
+        <li><strong>Implicit expectations:</strong> Things they expect but don't say — fast response, regular updates, no condescension</li>
+        <li><strong>Strategic questioning:</strong> Ask open-ended questions first ("Tell me what's happening"), then narrow down ("When did it start?")</li>
+    </ul>
+
+    <h3>2.2 The Customer Service Lifecycle in IT</h3>
+    <ol>
+        <li><strong>First contact:</strong> Greet professionally, introduce yourself, set the tone — first impression lasts</li>
+        <li><strong>Gather information:</strong> Listen, ask questions, take notes, repeat back to confirm understanding</li>
+        <li><strong>Set expectations:</strong> Provide a realistic timeframe — don't over-promise</li>
+        <li><strong>Resolve:</strong> Fix the issue — keep the user informed of progress, especially if it takes time</li>
+        <li><strong>Follow up:</strong> Confirm the fix worked from the user's perspective — not just yours</li>
+        <li><strong>Close the ticket:</strong> Document what happened and what was done</li>
+    </ol>
+
+    <h3>2.3 Delivering Bad News to a Customer</h3>
+    <table>
+        <tr><th>Step</th><th>What to Do</th><th>Example</th></tr>
+        <tr><td><strong>1. Acknowledge</strong></td><td>Recognize their frustration before diving into the technical explanation</td><td>"I completely understand this has disrupted your work today."</td></tr>
+        <tr><td><strong>2. Be direct</strong></td><td>State the bad news clearly — don't bury it or be vague</td><td>"Unfortunately, we won't be able to recover that file — it wasn't backed up."</td></tr>
+        <tr><td><strong>3. Explain why</strong></td><td>Give a clear, honest explanation — avoid technical jargon</td><td>"The drive failed completely before we could make a copy."</td></tr>
+        <tr><td><strong>4. Offer options</strong></td><td>Present what CAN be done — don't just deliver the bad news and stop</td><td>"We can try a data recovery service, though I can't guarantee results."</td></tr>
+        <tr><td><strong>5. Prevent recurrence</strong></td><td>Explain what will change going forward</td><td>"We'll set up automatic backups today so this can't happen again."</td></tr>
+    </table>
+
+    <h3>2.4 IT Help Desk Fundamentals</h3>
+    <ul>
+        <li><strong>Tier 1:</strong> First line support — password resets, basic troubleshooting, ticket creation, escalation</li>
+        <li><strong>Tier 2:</strong> Technical specialists — deeper OS, network, application troubleshooting</li>
+        <li><strong>Tier 3:</strong> Experts and vendors — engineering level, code changes, hardware replacement</li>
+        <li><strong>SLA (Service Level Agreement):</strong> Defines response and resolution time expectations — e.g., Priority 1 = 1-hour response</li>
+        <li><strong>Escalation path:</strong> Know when to escalate — don't spend 2 hours on something Tier 2 can solve in 10 minutes</li>
+    </ul>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. The CLEAR Problem-Solving Framework <span class="mod-tag">Module 1</span></h2>
+
+    <div class="clear-box">
+        <div class="clear-title">🔵 The CLEAR Framework</div>
+        <table>
+            <tr><th>Letter</th><th>Step</th><th>What It Means in IT Support</th></tr>
+            <tr><td><strong>C</strong></td><td>Clarify</td><td>Understand the problem completely before attempting any fix. Ask questions, reproduce the issue, review error messages. "What exactly are you seeing? When did it start? What changed recently?"</td></tr>
+            <tr><td><strong>L</strong></td><td>Listen</td><td>Give the customer your full attention. Don't assume you know the answer before they finish. Take notes. Reflect back what you heard to confirm accuracy.</td></tr>
+            <tr><td><strong>E</strong></td><td>Empathize</td><td>Acknowledge the impact of the problem. "I understand this is affecting your ability to work — let's get this resolved." People trust technicians who show they care.</td></tr>
+            <tr><td><strong>A</strong></td><td>Analyze</td><td>Apply structured troubleshooting. Bottom-up OSI model. Test your theory. Eliminate variables one at a time. Don't change multiple things simultaneously.</td></tr>
+            <tr><td><strong>R</strong></td><td>Resolve & Report</td><td>Fix the issue. Verify it works from the USER's perspective. Document everything — what the issue was, what you tried, what fixed it, and steps to prevent recurrence.</td></tr>
+        </table>
+    </div>
+
+    <h3>3.1 CompTIA Troubleshooting Methodology (Official Steps)</h3>
+    <ol>
+        <li><strong>Identify the problem</strong> — Question user, identify symptoms, review logs, duplicate if possible, back up data</li>
+        <li><strong>Establish theory of probable cause</strong> — Question the obvious, start simple (is it plugged in?), consider multiple approaches</li>
+        <li><strong>Test the theory to determine cause</strong> — Confirm or deny theory; if not confirmed, establish new theory or escalate</li>
+        <li><strong>Establish plan of action to resolve and identify potential effects</strong> — Know your fix and its side effects before touching anything</li>
+        <li><strong>Implement the solution or escalate as necessary</strong> — Apply fix; escalate if outside your expertise</li>
+        <li><strong>Verify full system functionality</strong> — Confirm fix worked AND that nothing else broke</li>
+        <li><strong>Document findings, actions, and outcomes</strong> — Write it down completely</li>
+    </ol>
+
+    <div class="note">
+        <strong>The CompTIA methodology steps are the same across ALL CompTIA exams</strong> — A+, Network+, Security+, Server+. Memorize them once and know them cold. They will appear on every certification exam you take in this program. The order matters — especially step 4 (plan before you act) and step 7 (always document).
+    </div>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Conflict Resolution & Difficult Customers <span class="mod-tag">Module 1</span></h2>
+
+    <h3>4.1 Types of Difficult Customers</h3>
+    <table>
+        <tr><th>Type</th><th>Behavior</th><th>Best Approach</th></tr>
+        <tr><td><strong>The Angry Customer</strong></td><td>Yelling, blaming, threatening</td><td>Stay calm, don't match their energy, acknowledge frustration, focus on solution — "I hear you. Let's fix this right now."</td></tr>
+        <tr><td><strong>The Know-It-All</strong></td><td>Thinks they understand the problem better than you</td><td>Respect their knowledge, ask them to walk you through what they've tried, involve them in the solution</td></tr>
+        <tr><td><strong>The Impatient Customer</strong></td><td>Wants it fixed instantly, interrupts frequently</td><td>Give frequent updates on progress — silence = frustration escalation. Set clear expectations on timing.</td></tr>
+        <tr><td><strong>The Vague Customer</strong></td><td>"It just doesn't work" — can't describe the problem</td><td>Ask specific yes/no questions: "Can you open a web browser?" "Does it show an error message?" Guide them step by step.</td></tr>
+        <tr><td><strong>The Repeat Caller</strong></td><td>Calls for the same issue repeatedly</td><td>Look for root cause, not just symptom. Train the user. Consider a permanent fix vs. a band-aid.</td></tr>
+    </table>
+
+    <h3>4.2 De-escalation Techniques</h3>
+    <ul>
+        <li><strong>Lower your own voice</strong> — When someone raises theirs, lowering yours signals calm and control</li>
+        <li><strong>Use their name</strong> — "I understand, John. Let's work through this together."</li>
+        <li><strong>Never say "calm down"</strong> — It never works and always makes things worse</li>
+        <li><strong>Don't take it personally</strong> — They're frustrated at the situation, not at you as a person</li>
+        <li><strong>Validate without agreeing</strong> — "I can see why that would be frustrating" — not "you're right, we messed up"</li>
+        <li><strong>Focus on what you CAN do</strong> — Not what you can't. "What I can do right now is..."</li>
+        <li><strong>Know when to escalate</strong> — If a customer becomes abusive, it's okay to say "I want to help you, but I need us to have a respectful conversation to do that."</li>
+    </ul>
+
+    <h3>4.3 Team Dynamics in IT Support</h3>
+    <ul>
+        <li><strong>Know your team's skills:</strong> Who is the go-to person for networking? For Active Directory? Leverage expertise.</li>
+        <li><strong>Communicate handoffs clearly:</strong> When transferring a ticket, give full context — don't make the customer repeat themselves</li>
+        <li><strong>Own the issue:</strong> Even if you escalate, follow up to ensure it was resolved — the customer contacted YOU</li>
+        <li><strong>Share knowledge:</strong> If you solve something novel, document it so the whole team benefits</li>
+    </ul>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Windows OS Troubleshooting <span class="mod-tag">Module 2</span></h2>
+
+    <h3>5.1 Windows Troubleshooting Tools</h3>
+    <table>
+        <tr><th>Tool</th><th>Access</th><th>Purpose</th></tr>
+        <tr><td><strong>Event Viewer</strong></td><td>eventvwr.msc</td><td>System, application, and security event logs — the first place to look</td></tr>
+        <tr><td><strong>Task Manager</strong></td><td>Ctrl+Shift+Esc</td><td>Running processes, CPU/RAM/disk/network usage, startup programs</td></tr>
+        <tr><td><strong>Resource Monitor</strong></td><td>resmon or Task Manager → Performance → Open Resource Monitor</td><td>Deep dive into CPU, memory, disk, and network per-process</td></tr>
+        <tr><td><strong>Reliability Monitor</strong></td><td>Control Panel → Security and Maintenance → Reliability History</td><td>Timeline of crashes, errors, and updates — great for finding when problems started</td></tr>
+        <tr><td><strong>Performance Monitor</strong></td><td>perfmon</td><td>Real-time and logged performance counters</td></tr>
+        <tr><td><strong>System Configuration</strong></td><td>msconfig</td><td>Startup items, boot options, services — clean boot troubleshooting</td></tr>
+        <tr><td><strong>Device Manager</strong></td><td>devmgmt.msc</td><td>Hardware drivers — yellow exclamation = problem device</td></tr>
+        <tr><td><strong>Disk Management</strong></td><td>diskmgmt.msc</td><td>Partitions, volumes, drive letters, format</td></tr>
+    </table>
+
+    <h3>5.2 Windows Command Line Diagnostics</h3>
+    <pre><code>:: ===== SYSTEM REPAIR =====
+sfc /scannow                    :: System File Checker — repairs corrupted Windows files
+DISM /Online /Cleanup-Image /RestoreHealth  :: Repair Windows image
+chkdsk C: /f /r                 :: Check and repair disk errors (requires reboot)
+
+:: ===== NETWORK =====
+ipconfig /all                   :: Full IP configuration
+ipconfig /release               :: Release DHCP lease
+ipconfig /renew                 :: Renew DHCP lease
+ipconfig /flushdns              :: Clear DNS cache
+ping 8.8.8.8                    :: Test internet connectivity
+ping localhost                  :: Test TCP/IP stack
+tracert google.com              :: Trace network path
+nslookup google.com             :: DNS query
+netstat -an                     :: All connections and listening ports
+netstat -b                      :: Which program owns each connection
+
+:: ===== PERFORMANCE =====
+tasklist                        :: All running processes
+tasklist /fi "status eq running"  :: Only running processes
+taskkill /PID 1234 /F           :: Force kill process
+wmic cpu get loadpercentage     :: CPU usage percentage
+wmic memorychip get capacity    :: RAM installed
+
+:: ===== SERVICES =====
+sc query                        :: List all services
+sc query wuauserv               :: Windows Update service status
+net start "service name"        :: Start a service
+net stop "service name"         :: Stop a service
+sc config "service" start=auto  :: Set service to auto-start
+
+:: ===== USER & SYSTEM INFO =====
+whoami                          :: Current user and domain
+systeminfo                      :: Complete system information
+winver                          :: Windows version popup
+gpresult /r                     :: Applied Group Policy
+gpupdate /force                 :: Force Group Policy update</code></pre>
+
+    <h3>5.3 Windows Boot Troubleshooting</h3>
+    <table>
+        <tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr>
+        <tr><td>Blue Screen of Death (BSOD)</td><td>Driver issue, RAM failure, corrupted OS, hardware problem</td><td>Note the stop code, check Event Viewer, run <code>sfc /scannow</code>, update/roll back drivers</td></tr>
+        <tr><td>Stuck on spinning dots</td><td>Corrupted system files, failed update</td><td>WinRE → Startup Repair or System Restore</td></tr>
+        <tr><td>Boot loop</td><td>Failed update, driver conflict, corrupted BCD</td><td>Safe Mode → uninstall recent updates; <code>bootrec /fixbcd</code></td></tr>
+        <tr><td>"BOOTMGR missing"</td><td>Corrupted boot sector</td><td>Boot from Windows media → <code>bootrec /fixmbr</code> and <code>/fixboot</code></td></tr>
+        <tr><td>Slow boot</td><td>Too many startup programs, HDD failing, malware</td><td>msconfig → disable startup items; check Event Viewer boot times</td></tr>
+    </table>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Windows 10/11 Troubleshooting Basics <span class="mod-tag">Module 2</span></h2>
+
+    <h3>6.1 Safe Mode Options</h3>
+    <table>
+        <tr><th>Mode</th><th>Loads</th><th>Use For</th></tr>
+        <tr><td><strong>Safe Mode</strong></td><td>Minimal drivers only</td><td>Driver conflicts, startup crashes, malware removal</td></tr>
+        <tr><td><strong>Safe Mode with Networking</strong></td><td>Minimal drivers + network</td><td>Download drivers, online malware removal tools</td></tr>
+        <tr><td><strong>Safe Mode with Command Prompt</strong></td><td>CMD only, no Explorer</td><td>Advanced repair when GUI won't load</td></tr>
+    </table>
+
+    <pre><code>:: Access Safe Mode (Windows 10/11):
+:: Method 1: Hold Shift while clicking Restart
+:: Method 2: Settings → Recovery → Advanced Startup → Restart Now
+:: Method 3: From CMD (admin):
+bcdedit /set {default} safeboot minimal
+:: Restart to enter Safe Mode — run this to exit:
+bcdedit /deletevalue {default} safeboot
+
+:: Windows Recovery Environment (WinRE):
+:: Startup Repair     — Fixes boot issues automatically
+:: System Restore     — Roll back to a restore point
+:: Reset this PC      — Reinstall Windows (keep or remove files)
+:: Command Prompt     — Manual repair commands</code></pre>
+
+    <h3>6.2 Application Troubleshooting</h3>
+    <ul>
+        <li><strong>Check Event Viewer first</strong> — Application log shows exact error code and faulting module</li>
+        <li><strong>Run as Administrator:</strong> Many apps fail silently due to permission issues</li>
+        <li><strong>Compatibility mode:</strong> Right-click → Properties → Compatibility — for older software</li>
+        <li><strong>Reinstall with clean uninstall:</strong> Use Revo Uninstaller or similar to remove registry remnants before reinstalling</li>
+        <li><strong>Check for conflicting software:</strong> Antivirus, VPNs, and security tools frequently interfere with other applications</li>
+        <li><strong>SFC and DISM:</strong> Corrupted Windows files cause seemingly random application failures</li>
+        <li><strong>.NET and Visual C++ Redistributables:</strong> Many apps silently require specific versions — install all of them</li>
+    </ul>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Network Diagnostics <span class="mod-tag">Module 2</span></h2>
+
+    <h3>7.1 Systematic Network Troubleshooting — OSI Bottom-Up</h3>
+    <table>
+        <tr><th>Layer</th><th>Check</th><th>Tool/Command</th></tr>
+        <tr><td><strong>Layer 1 — Physical</strong></td><td>Cable connected? Link light on? NIC enabled? Switch port active?</td><td>Physical inspection, <code>ipconfig</code> (shows if NIC is up)</td></tr>
+        <tr><td><strong>Layer 2 — Data Link</strong></td><td>MAC address assigned? Switch seeing device? VLAN correct?</td><td><code>arp -a</code>, switch MAC table</td></tr>
+        <tr><td><strong>Layer 3 — Network</strong></td><td>Valid IP address? Correct subnet? Default gateway configured?</td><td><code>ipconfig /all</code>, <code>ping [gateway]</code></td></tr>
+        <tr><td><strong>Layer 4 — Transport</strong></td><td>Port open? Firewall blocking? Service listening?</td><td><code>netstat -an</code>, <code>telnet host port</code></td></tr>
+        <tr><td><strong>Layer 7 — Application</strong></td><td>Service running? Config correct? DNS resolving?</td><td><code>nslookup</code>, browser, application logs</td></tr>
+    </table>
+
+    <h3>7.2 Step-by-Step Connectivity Test</h3>
+    <pre><code>:: STEP 1 — Test local TCP/IP stack
+ping 127.0.0.1
+:: If this fails: NIC driver issue, reinstall network adapter
+
+:: STEP 2 — Test own IP address
+ipconfig /all               :: Note your IP — is it 169.254.x.x? (APIPA = DHCP failed)
+ping [your own IP]
+:: If this fails: possible IP conflict or NIC hardware issue
+
+:: STEP 3 — Test default gateway
+ping 192.168.1.1            :: Replace with your actual gateway
+:: If this fails: cable/switch issue, wrong gateway configured
+
+:: STEP 4 — Test internet by IP (bypasses DNS)
+ping 8.8.8.8
+:: If this fails but Step 3 works: ISP issue, WAN problem, firewall rule
+
+:: STEP 5 — Test DNS resolution
+ping google.com
+nslookup google.com
+:: If Step 4 works but Step 5 fails: DNS server issue
+:: Fix: ipconfig /flushdns, change DNS to 8.8.8.8
+
+:: STEP 6 — Trace the path
+tracert google.com          :: Find exactly where packets stop</code></pre>
+
+    <h3>7.3 Common Network Issues</h3>
+    <table>
+        <tr><th>Symptom</th><th>Probable Cause</th><th>Fix</th></tr>
+        <tr><td>169.254.x.x IP address</td><td>DHCP server unreachable — APIPA auto-assigned</td><td>Check cable, DHCP server, <code>ipconfig /release /renew</code></td></tr>
+        <tr><td>Can ping IP but not hostname</td><td>DNS failure</td><td><code>ipconfig /flushdns</code>, change DNS server, check DNS service</td></tr>
+        <tr><td>Can ping gateway but not internet</td><td>ISP outage, WAN misconfiguration, firewall</td><td>Check ISP status, check router WAN config, check firewall rules</td></tr>
+        <tr><td>Slow network performance</td><td>Duplex mismatch, congestion, faulty cable, virus</td><td>Check NIC speed/duplex, run iperf test, replace cable, malware scan</td></tr>
+        <tr><td>Intermittent drops</td><td>Faulty cable, bad switch port, DHCP lease conflict</td><td>Replace cable, try different switch port, check DHCP conflict</td></tr>
+        <tr><td>Can't connect to specific site</td><td>DNS, firewall, hosts file, site down</td><td>Check hosts file (<code>C:\Windows\System32\drivers\etc\hosts</code>), flush DNS, try different browser</td></tr>
+    </table>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Practical Network Diagnostic Tools <span class="mod-tag">Module 2 & 4</span></h2>
+
+    <h3>8.1 Essential Network Diagnostic Commands</h3>
+    <pre><code>:: ===== PING — Test connectivity =====
+ping google.com                 :: Basic ping (4 packets)
+ping -t google.com              :: Continuous ping (Ctrl+C to stop)
+ping -n 100 google.com          :: Send 100 packets
+ping -l 1400 192.168.1.1        :: Large packet ping (test MTU)
+ping -4 google.com              :: Force IPv4
+ping -6 google.com              :: Force IPv6
+
+:: ===== TRACERT — Trace path =====
+tracert google.com              :: Show each hop to destination
+tracert -d google.com           :: Don't resolve hostnames (faster)
+
+:: ===== NSLOOKUP — DNS queries =====
+nslookup google.com                     :: Default DNS lookup
+nslookup google.com 8.8.8.8            :: Query specific DNS server
+nslookup -type=MX tstc.edu             :: Query MX records
+nslookup -type=NS tstc.edu             :: Query NS records
+
+:: ===== NETSTAT — Connection info =====
+netstat -an                     :: All connections (numeric)
+netstat -b                      :: Show process for each connection (admin)
+netstat -r                      :: Routing table
+netstat -s                      :: Protocol statistics
+
+:: ===== ARP — Layer 2 mapping =====
+arp -a                          :: View ARP cache (IP to MAC)
+arp -d *                        :: Clear ARP cache
+
+:: ===== ROUTE — Routing table =====
+route print                     :: Full routing table
+route add 192.168.2.0 mask 255.255.255.0 192.168.1.1  :: Add route
+route delete 192.168.2.0        :: Remove route
+
+:: ===== PATHPING — Advanced ping + tracert =====
+pathping google.com             :: Combines ping and tracert statistics</code></pre>
+
+    <h3>8.2 Advanced Network Tools</h3>
+    <table>
+        <tr><th>Tool</th><th>Platform</th><th>Purpose</th></tr>
+        <tr><td><strong>Wireshark</strong></td><td>Windows/Linux/Mac</td><td>Packet capture and analysis — see exactly what's on the wire. The ultimate network diagnostic tool.</td></tr>
+        <tr><td><strong>nmap</strong></td><td>Windows/Linux/Mac</td><td>Network scanner — discover hosts, open ports, services, OS detection</td></tr>
+        <tr><td><strong>iperf3</strong></td><td>Windows/Linux/Mac</td><td>Network bandwidth testing — measure actual throughput between two points</td></tr>
+        <tr><td><strong>PingPlotter</strong></td><td>Windows/Mac</td><td>Continuous traceroute with visual timeline — great for intermittent issues</td></tr>
+        <tr><td><strong>TCPView</strong></td><td>Windows (Sysinternals)</td><td>Real-time view of all TCP/UDP connections and owning process</td></tr>
+        <tr><td><strong>Angry IP Scanner</strong></td><td>Windows/Linux/Mac</td><td>Fast network scanner — find all active hosts on a subnet</td></tr>
+        <tr><td><strong>NetFlow Analyzer</strong></td><td>Various</td><td>Analyze network traffic patterns — identify bandwidth hogs</td></tr>
+    </table>
+
+    <pre><code"># ===== NMAP examples (use ethically and only on networks you own) =====
+nmap -sn 192.168.1.0/24         # Ping sweep — find live hosts
+nmap -p 80,443,22 192.168.1.10  # Scan specific ports
+nmap -sV 192.168.1.10           # Service version detection
+nmap -O 192.168.1.10            # OS detection (requires root/admin)
+nmap -A 192.168.1.10            # Aggressive scan (OS + version + scripts)
+
+# ===== IPERF3 — bandwidth test =====
+# On server:
+iperf3 -s                        # Start iperf server (listens on 5201)
+# On client:
+iperf3 -c 192.168.1.10          # Test download from server
+iperf3 -c 192.168.1.10 -R       # Test upload to server
+iperf3 -c 192.168.1.10 -t 30   # Run for 30 seconds</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Remote Support Tools <span class="mod-tag">Module 3</span></h2>
+
+    <h3>9.1 Remote Desktop Solutions</h3>
+    <table>
+        <tr><th>Tool</th><th>Protocol/Port</th><th>Best For</th><th>Notes</th></tr>
+        <tr><td><strong>Windows RDP</strong></td><td>RDP / TCP 3389</td><td>Windows-to-Windows remote control</td><td>Built-in, fast, full desktop. Requires Pro/Enterprise on host.</td></tr>
+        <tr><td><strong>TeamViewer</strong></td><td>Proprietary / 443/5938</td><td>Cross-platform remote support, external users</td><td>Works through NAT/firewall. Free for personal use.</td></tr>
+        <tr><td><strong>AnyDesk</strong></td><td>Proprietary / 443</td><td>Fast remote access, external users</td><td>Very low latency, lightweight</td></tr>
+        <tr><td><strong>VNC</strong></td><td>RFB / TCP 5900</td><td>Cross-platform desktop sharing</td><td>Unencrypted by default — tunnel through SSH</td></tr>
+        <tr><td><strong>SSH</strong></td><td>SSH / TCP 22</td><td>Linux/Unix remote CLI management</td><td>Secure, lightweight, powerful</td></tr>
+        <tr><td><strong>Windows Admin Center</strong></td><td>HTTPS / 443</td><td>Browser-based Windows Server management</td><td>Modern replacement for many MMC tools</td></tr>
+    </table>
+
+    <h3>9.2 RDP Configuration & Security</h3>
+    <pre><code">:: ===== ENABLE RDP =====
+:: GUI: Settings → System → Remote Desktop → Enable
+:: PowerShell:
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' `
+    -Name "fDenyTSConnections" -Value 0
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+:: ===== CONNECT TO REMOTE DESKTOP =====
+mstsc                           :: Open RDP client
+mstsc /v:192.168.1.10          :: Connect to specific IP
+mstsc /v:192.168.1.10 /f       :: Full screen
+mstsc /v:192.168.1.10 /admin   :: Connect to console session
+
+:: ===== RDP SECURITY HARDENING =====
+:: Change default port (3389):
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' `
+    -Name "PortNumber" -Value 3390
+
+:: Enable Network Level Authentication (NLA) — requires auth before desktop loads
+:: Limit RDP users to specific group
+:: Use VPN or RD Gateway instead of exposing 3389 directly to internet</code></pre>
+
+    <h3>9.3 Chat Tools for PC Support</h3>
+    <ul>
+        <li><strong>Microsoft Teams:</strong> Screen sharing, chat, remote control request, file transfer — standard in enterprise</li>
+        <li><strong>Slack:</strong> Channel-based communication — many IT teams use for incident response</li>
+        <li><strong>Zoom:</strong> Video + screen share — good for walking users through issues visually</li>
+        <li><strong>ServiceNow Live Chat / Zendesk Chat:</strong> Integrated into ticketing systems — context-aware support</li>
+        <li><strong>Best practices:</strong> Always get user consent before viewing their screen, explain what you're doing in real time, don't access anything beyond what's needed for the issue</li>
+    </ul>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Virtual Private Networks (VPN) <span class="mod-tag">Module 3</span></h2>
+
+    <h3>10.1 VPN Types</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>Use Case</th></tr>
+        <tr><td><strong>Remote Access VPN</strong></td><td>Individual user connects to corporate network over encrypted tunnel</td><td>Work from home, traveling employees</td></tr>
+        <tr><td><strong>Site-to-Site VPN</strong></td><td>Permanent encrypted tunnel between two office routers</td><td>Branch office to headquarters</td></tr>
+        <tr><td><strong>Split Tunnel</strong></td><td>Only corporate traffic goes through VPN — internet goes direct</td><td>Saves bandwidth, better performance for users</td></tr>
+        <tr><td><strong>Full Tunnel</strong></td><td>ALL traffic goes through corporate VPN</td><td>Maximum security and monitoring control</td></tr>
+        <tr><td><strong>SSL/TLS VPN</strong></td><td>Browser-based or lightweight client — uses HTTPS port 443</td><td>Easy deployment, works through strict firewalls</td></tr>
+        <tr><td><strong>IPsec VPN</strong></td><td>Network layer encryption — highly secure, complex setup</td><td>Site-to-site connections, high-security environments</td></tr>
+    </table>
+
+    <h3>10.2 VPN Troubleshooting</h3>
+    <pre><code">:: Common VPN Issues and Fixes:
+
+:: 1. Can't connect to VPN
+::    - Check internet connectivity first (ping 8.8.8.8)
+::    - Verify VPN server address is correct
+::    - Check credentials
+::    - Verify VPN client is up to date
+::    - Check if firewall is blocking VPN ports (UDP 1194 for OpenVPN, UDP 500/4500 for IPsec)
+
+:: 2. Connected to VPN but can't reach internal resources
+::    - Check split vs full tunnel config
+::    - Verify DNS — need internal DNS server when on VPN
+::    - Check routing: route print
+::    - Try pinging internal IP directly (not hostname)
+
+:: 3. VPN drops frequently
+::    - Check keep-alive settings
+::    - Check internet connection stability
+::    - Check for MTU mismatch: ping -l 1400 -f [vpn-server-ip]
+
+:: 4. Slow performance on VPN
+::    - Split tunnel to send only corporate traffic through VPN
+::    - Check VPN server load
+::    - Try different VPN protocol (IKEv2 is generally faster than L2TP)</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Malware & Virus Identification <span class="mod-tag">Module 4</span></h2>
+
+    <h3>11.1 Malware Types</h3>
+    <table>
+        <tr><th>Type</th><th>How It Works</th><th>Key Symptom</th></tr>
+        <tr><td><strong>Virus</strong></td><td>Attaches to legitimate files, spreads when files executed</td><td>Files corrupted, programs crash, slow performance</td></tr>
+        <tr><td><strong>Worm</strong></td><td>Self-replicates across network with no user action</td><td>Network congestion, high CPU on multiple machines</td></tr>
+        <tr><td><strong>Trojan</strong></td><td>Disguised as legitimate software — installs backdoor</td><td>Unexpected network connections, new processes</td></tr>
+        <tr><td><strong>Ransomware</strong></td><td>Encrypts user files, demands payment for decryption key</td><td>Files renamed with random extensions, ransom note appears</td></tr>
+        <tr><td><strong>Spyware/Keylogger</strong></td><td>Records keystrokes, screenshots, browser activity</td><td>Slow system, unusual network traffic, credential theft</td></tr>
+        <tr><td><strong>Rootkit</strong></td><td>Hides deep in OS, gives attacker persistent access</td><td>Very hard to detect — antivirus may not find it</td></tr>
+        <tr><td><strong>Adware</strong></td><td>Displays unwanted ads, often bundled with free software</td><td>Pop-up ads, browser redirects, changed homepage</td></tr>
+        <tr><td><strong>Cryptominer</strong></td><td>Uses system resources to mine cryptocurrency</td><td>Constant high CPU/GPU usage, high electricity bill</td></tr>
+        <tr><td><strong>Botnet</strong></td><td>Infects machine and adds it to remotely controlled network</td><td>Unusual outbound traffic, slow performance</td></tr>
+    </table>
+
+    <h3>11.2 Signs of Infection</h3>
+    <ul>
+        <li>Unusually slow computer or network</li>
+        <li>Programs opening or closing without user action</li>
+        <li>Browser homepage or search engine changed without permission</li>
+        <li>Antivirus disabled or won't start</li>
+        <li>New toolbars, extensions, or programs you didn't install</li>
+        <li>Files with random extensions or missing files</li>
+        <li>Ransom notes appearing on desktop</li>
+        <li>Friends/colleagues receiving spam from your email</li>
+        <li>Unexpected pop-up warnings asking for payment</li>
+        <li>Task Manager or Registry Editor won't open</li>
+    </ul>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Malware Prevention & Cyber Threats <span class="mod-tag">Module 4</span></h2>
+
+    <h3>12.1 Malware Removal Process</h3>
+    <ol>
+        <li><strong>Identify and verify</strong> — Confirm it's actually malware, not a false positive</li>
+        <li><strong>Quarantine</strong> — Disconnect from network immediately to prevent spread</li>
+        <li><strong>Disable System Restore</strong> — Prevents malware from hiding in restore points</li>
+        <li><strong>Boot into Safe Mode</strong> — Minimal environment makes removal easier</li>
+        <li><strong>Run multiple scanners</strong> — Malwarebytes + Windows Defender + secondary scanner</li>
+        <li><strong>Remove all detections</strong> — Follow scanner recommendations</li>
+        <li><strong>Re-enable System Restore, create restore point</strong></li>
+        <li><strong>Patch everything</strong> — Close the vulnerability that allowed infection</li>
+        <li><strong>Change all passwords</strong> — Assume credentials were stolen</li>
+        <li><strong>Educate the user</strong> — How did this happen? Prevent recurrence</li>
+    </ol>
+
+    <h3>12.2 Prevention Best Practices</h3>
+    <table>
+        <tr><th>Control</th><th>Implementation</th></tr>
+        <tr><td><strong>Keep everything patched</strong></td><td>Windows Update, app updates, browser updates — most malware exploits known vulnerabilities</td></tr>
+        <tr><td><strong>Antivirus/EDR</strong></td><td>Windows Defender is actually good now — keep it enabled and updated</td></tr>
+        <tr><td><strong>User training</strong></td><td>Phishing awareness — the user is the weakest link and most common attack vector</td></tr>
+        <tr><td><strong>Principle of Least Privilege</strong></td><td>Don't use admin accounts for daily work — malware runs with YOUR privileges</td></tr>
+        <tr><td><strong>Email filtering</strong></td><td>Block malicious attachments and links at the mail gateway</td></tr>
+        <tr><td><strong>DNS filtering</strong></td><td>Block known malicious domains (Cisco Umbrella, Cloudflare Gateway)</td></tr>
+        <tr><td><strong>Backups</strong></td><td>3-2-1 backup rule — the only true defense against ransomware</td></tr>
+        <tr><td><strong>Application whitelist</strong></td><td>Only allow approved applications to run — blocks unknown executables</td></tr>
+    </table>
+
+    <h3>12.3 Social Engineering Threats</h3>
+    <table>
+        <tr><th>Attack</th><th>Description</th><th>Red Flags</th></tr>
+        <tr><td><strong>Phishing</strong></td><td>Fake email with malicious link or attachment</td><td>Urgency, misspelled domains, unexpected attachments, requests for credentials</td></tr>
+        <tr><td><strong>Vishing</strong></td><td>Phone call pretending to be IT support or Microsoft</td><td>"Microsoft" calling about virus on your computer — Microsoft never does this</td></tr>
+        <tr><td><strong>Smishing</strong></td><td>SMS with malicious link</td><td>Fake delivery notifications, prize claims, urgent account alerts</td></tr>
+        <tr><td><strong>Pretexting</strong></td><td>Fabricated scenario to gain trust and extract information</td><td>Caller knows personal details but asks for verification info</td></tr>
+        <tr><td><strong>Baiting</strong></td><td>Leaving infected USB in parking lot</td><td>Found USB drives — never plug in an unknown drive</td></tr>
+    </table>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. Remote Security & Vulnerability Assessment <span class="mod-tag">Module 4</span></h2>
+
+    <h3>13.1 Vulnerability Scanning</h3>
+    <ul>
+        <li><strong>Vulnerability scanner:</strong> Automated tool that checks systems for known security weaknesses (missing patches, weak configs, open ports)</li>
+        <li><strong>Common tools:</strong> Nessus (industry standard), OpenVAS (free), Qualys, Rapid7 InsightVM</li>
+        <li><strong>Authenticated vs unauthenticated scans:</strong> Authenticated scans log into the system and find more issues — always run both</li>
+        <li><strong>CVE (Common Vulnerabilities and Exposures):</strong> Standardized IDs for known vulnerabilities — e.g., CVE-2021-44228 (Log4Shell)</li>
+        <li><strong>CVSS score:</strong> Common Vulnerability Scoring System — 0-10 severity score. 9+ = Critical, 7-8.9 = High</li>
+    </ul>
+
+    <h3>13.2 Remote Security Assessment Tools</h3>
+    <table>
+        <tr><th>Tool</th><th>Purpose</th><th>Notes</th></tr>
+        <tr><td><strong>Nmap</strong></td><td>Port scanning, service enumeration, OS detection</td><td>Always get permission before scanning — unauthorized scanning is illegal</td></tr>
+        <tr><td><strong>Nessus Essentials</strong></td><td>Comprehensive vulnerability scanning (free for 16 IPs)</td><td>Industry standard — widely used in professional environments</td></tr>
+        <tr><td><strong>Nikto</strong></td><td>Web server vulnerability scanner</td><td>Finds outdated software, dangerous files, misconfigurations</td></tr>
+        <tr><td><strong>Wireshark</strong></td><td>Packet analysis — find cleartext credentials, malicious traffic</td><td>Passive — captures what's on the wire</td></tr>
+        <tr><td><strong>Metasploit</strong></td><td>Penetration testing framework — exploit known vulnerabilities</td><td>Only use on systems you own or have explicit written permission</td></tr>
+    </table>
+
+    <h3>13.3 System Performance Tracking</h3>
+    <pre><code">:: ===== WINDOWS PERFORMANCE MONITORING =====
+:: Performance Monitor (perfmon) — track counters over time
+:: Key counters to watch:
+::   Processor: % Processor Time > 85% sustained = bottleneck
+::   Memory: Available MBytes < 10% of total = RAM bottleneck
+::   PhysicalDisk: Avg Disk Queue Length > 2 = I/O bottleneck
+::   Network Interface: Bytes Total/sec approaching NIC limit = network bottleneck
+
+:: Resource Monitor — real-time per-process breakdown
+resmon
+
+:: Performance baseline — capture normal state, compare later
+typeperf "\Processor(_Total)\% Processor Time" -sc 60 > cpu_baseline.csv
+
+# ===== LINUX PERFORMANCE MONITORING =====
+top / htop                      # CPU and memory per process
+iotop                           # Disk I/O per process
+iftop                           # Network bandwidth per connection
+vmstat 1                        # System-wide stats every 1 second
+sar -u 1 60                     # CPU history (60 samples, 1 sec)
+iostat -xz 1                    # Disk I/O statistics</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. System Performance Tracking <span class="mod-tag">Module 4</span></h2>
+
+    <h3>14.1 Performance Baseline</h3>
+    <p>A <strong>baseline</strong> is a snapshot of normal system performance taken when everything is working correctly. Without a baseline, you can't tell if current performance is abnormal. Capture baselines during normal business hours on a healthy system.</p>
+
+    <table>
+        <tr><th>Metric</th><th>Normal Range</th><th>Concern Threshold</th></tr>
+        <tr><td>CPU Utilization</td><td>10–50% average</td><td>Sustained >85% — investigate top consumers</td></tr>
+        <tr><td>Available RAM</td><td>>25% free</td><td><10% — add RAM or reduce workload</td></tr>
+        <tr><td>Disk Queue Length</td><td>&lt;1</td><td>>2 sustained — disk I/O bottleneck</td></tr>
+        <tr><td>Network Utilization</td><td>&lt;50% of link capacity</td><td>>80% — bandwidth saturation</td></tr>
+        <tr><td>Disk Free Space</td><td>>20% free</td><td>&lt;10% — clean up or expand storage</td></tr>
+        <tr><td>Page File Usage</td><td>Minimal</td><td>High page file use = insufficient RAM</td></tr>
+    </table>
+
+    <h3>14.2 Diagnosing Performance Issues</h3>
+    <pre><code">:: ===== CPU HIGH =====
+:: Open Task Manager → CPU column → sort descending
+:: Find culprit process, check if legitimate
+:: Right-click → Open File Location to verify it's not malware
+tasklist /fi "CPUtime gt 00:01:00"   :: Processes using >1 min CPU time
+
+:: ===== MEMORY HIGH =====
+:: Task Manager → Memory column → sort descending
+:: Look for memory leaks (process growing continuously)
+:: Check for VM balloon — virtual machine may be stealing RAM
+wmic process get name,workingSetSize /format:list
+
+:: ===== DISK 100% =====
+:: Very common on systems with HDD (not SSD) running Windows 10/11
+:: Check: Superfetch/SysMain service — consider disabling
+:: Check: Windows Search indexing
+:: Check: Windows Update running in background
+:: Check: Antivirus real-time scanning
+sc config SysMain start=disabled     :: Disable Superfetch if causing issues
+
+:: ===== NETWORK SLOW =====
+iperf3 -c [server-ip]               :: Test actual throughput
+netstat -e                          :: Check for errors and discards on NIC</code></pre>
+
+    <!-- PART 15 -->
+    <h2 id="part15">15. IT Support Documentation <span class="mod-tag">Module 5</span></h2>
+
+    <h3>15.1 Why Documentation Matters</h3>
+    <ul>
+        <li><strong>Institutional memory:</strong> When you leave, your knowledge stays — documented in the system</li>
+        <li><strong>Consistency:</strong> Every technician follows the same process — no tribal knowledge</li>
+        <li><strong>Faster resolution:</strong> A documented solution to a recurring problem saves hours</li>
+        <li><strong>Legal and compliance:</strong> Audit trails, change records, incident reports may be legally required</li>
+        <li><strong>Training:</strong> New technicians can learn from documented solutions</li>
+        <li><strong>Customer trust:</strong> Documented work shows professionalism — you can prove what you did and when</li>
+    </ul>
+
+    <h3>15.2 IT Support Documentation Types</h3>
+    <table>
+        <tr><th>Document Type</th><th>Purpose</th><th>Key Contents</th></tr>
+        <tr><td><strong>Trouble Ticket</strong></td><td>Track a specific issue from open to close</td><td>User, date/time, issue description, priority, actions taken, resolution, time spent</td></tr>
+        <tr><td><strong>Knowledge Base Article</strong></td><td>Step-by-step solution to a recurring problem</td><td>Problem description, symptoms, environment, solution steps, verification, related articles</td></tr>
+        <tr><td><strong>Network Diagram</strong></td><td>Visual map of network infrastructure</td><td>Physical topology, IP addresses, device names, VLANs, WAN connections</td></tr>
+        <tr><td><strong>Standard Operating Procedure (SOP)</strong></td><td>Step-by-step process for routine tasks</td><td>Purpose, scope, materials needed, steps, verification, responsible party</td></tr>
+        <tr><td><strong>Incident Report</strong></td><td>Formal record of a significant outage or breach</td><td>Timeline, impact, root cause, resolution, lessons learned, preventive actions</td></tr>
+        <tr><td><strong>Change Request</strong></td><td>Document planned changes before making them</td><td>What will change, why, impact, rollback plan, approval, test results</td></tr>
+        <tr><td><strong>Asset Inventory</strong></td><td>Track all hardware and software in the environment</td><td>Device, model, serial number, location, assigned user, purchase date, warranty</td></tr>
+    </table>
+
+    <h3>15.3 Writing a Good Trouble Ticket</h3>
+    <pre><code">TICKET TEMPLATE:
+
+Ticket #: 2024-1234
+Date/Time: 2024-01-15 09:30 AM
+Priority: P2 - High
+Assigned To: A. Medrano
+Category: Network Connectivity
+
+USER INFORMATION:
+Name: John Smith
+Department: Faculty - CNS
+Contact: ext. 5523 / jsmith@tstc.edu
+Location: Building A, Room 210
+
+ISSUE DESCRIPTION:
+User reports inability to access shared drive \\fileserver\faculty since 9:00 AM today.
+Can access internet and email normally. Issue is isolated to this user — other faculty
+in the same room are not affected.
+
+STEPS TAKEN:
+1. Verified user's IP is valid (192.168.10.45/24) — not APIPA
+2. Pinged fileserver successfully (192.168.1.20) — Layer 3 OK
+3. Attempted \\192.168.1.20\faculty — "Access Denied" error
+4. Checked AD — user account active, no lockout
+5. Checked group membership — user removed from Faculty-Share group (by whom unknown)
+6. Added user back to Faculty-Share security group
+7. User confirmed access restored at 09:52 AM
+
+ROOT CAUSE:
+User was accidentally removed from Faculty-Share AD security group. Cause under investigation.
+
+RESOLUTION: Re-added user to Faculty-Share group in Active Directory.
+
+TIME SPENT: 22 minutes
+STATUS: Resolved
+Follow-up: Audit log review scheduled to identify who removed user from group</code></pre>
+
+    <!-- PART 16 -->
+    <h2 id="part16">16. Ticketing Systems & Knowledge Base <span class="mod-tag">Module 5</span></h2>
+
+    <h3>16.1 Ticketing System Concepts</h3>
+    <table>
+        <tr><th>Feature</th><th>Purpose</th></tr>
+        <tr><td><strong>Ticket Queue</strong></td><td>Centralized list of all open issues — prevents work from falling through cracks</td></tr>
+        <tr><td><strong>Priority Levels</strong></td><td>P1 (Critical — system down), P2 (High — major impact), P3 (Medium — degraded), P4 (Low — minor)</td></tr>
+        <tr><td><strong>SLA Tracking</strong></td><td>Automatic countdown to response/resolution deadlines — alerts when approaching breach</td></tr>
+        <tr><td><strong>Assignment & Escalation</strong></td><td>Route tickets to right tech; auto-escalate if not resolved within SLA</td></tr>
+        <tr><td><strong>History & Audit Trail</strong></td><td>Every action timestamped — who did what and when</td></tr>
+        <tr><td><strong>Reporting</strong></td><td>Ticket volume, resolution times, recurring issues, tech performance</td></tr>
+    </table>
+
+    <h3>16.2 Writing a Knowledge Base Article</h3>
+    <div class="sidenote">
+        <p>📝 <strong>Good KB articles</strong> save 10x their writing time. Write one after every novel ticket you solve — future you will be grateful.</p>
+    </div>
+
+    <pre><code">KNOWLEDGE BASE ARTICLE TEMPLATE:
+
+TITLE: [Clear, searchable title that describes the problem]
+Example: "Outlook fails to launch after Windows Update KB5034441"
+
+ARTICLE ID: KB-2024-0042
+Category: Email / Microsoft Office
+Author: A. Medrano
+Date Created: 2024-01-15
+Last Updated: 2024-01-15
+Applies To: Windows 10/11, Outlook 2019/365
+
+SYMPTOMS:
+- Outlook fails to open, error "Cannot start Microsoft Outlook"
+- Error message references "outlook.exe - Application Error"
+- Issue started after Windows Update installed on [date]
+- Other Office apps (Word, Excel) work normally
+
+ENVIRONMENT:
+- Windows 10 22H2 / Windows 11 23H2
+- Microsoft 365 Apps (Outlook version 16.x)
+- Update KB5034441 installed
+
+CAUSE:
+Windows Update KB5034441 conflicts with a specific Outlook add-in
+(identified as "Cisco Webex Meetings" add-in version 41.x).
+The add-in causes Outlook to crash during initialization.
+
+SOLUTION:
+Step 1: Start Outlook in Safe Mode (disables add-ins)
+    - Hold Ctrl while launching Outlook
+    - Click Yes when prompted for Safe Mode
+
+Step 2: Disable the conflicting add-in
+    - File → Options → Add-ins
+    - Manage: COM Add-ins → Go
+    - Uncheck "Cisco Webex Meetings"
+    - Click OK
+
+Step 3: Restart Outlook normally — should launch successfully
+
+Step 4: Update the Webex add-in to version 42.x or later
+    - Download from cisco.com/go/webex
+    - Run installer with admin rights
+
+VERIFICATION:
+Outlook launches normally without Safe Mode.
+Webex meetings still accessible through updated add-in.
+
+RELATED ARTICLES: KB-2024-0038 (Office activation issues after update)
+TICKET REFERENCES: #2024-1187, #2024-1192, #2024-1205</code></pre>
+
+    <h3>16.3 Common Ticketing Platforms</h3>
+    <table>
+        <tr><th>Platform</th><th>Target</th><th>Key Features</th></tr>
+        <tr><td><strong>ServiceNow</strong></td><td>Enterprise</td><td>ITSM, CMDB, change management, AI-powered — industry standard for large orgs</td></tr>
+        <tr><td><strong>Jira Service Management</strong></td><td>Mid-market</td><td>Integrates with development teams, good for IT+Dev collaboration</td></tr>
+        <tr><td><strong>Zendesk</strong></td><td>Mid-market</td><td>Easy to use, customer-facing portal, good reporting</td></tr>
+        <tr><td><strong>Freshdesk</strong></td><td>SMB</td><td>Affordable, clean UI, good automation</td></tr>
+        <tr><td><strong>osTicket</strong></td><td>SMB / Free</td><td>Open source — free, good for learning and small IT teams</td></tr>
+        <tr><td><strong>Spiceworks</strong></td><td>SMB / Free</td><td>Free, popular with small IT shops, includes asset management</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The fastest ticket to close is one you never have to open again.</strong> Every time you close a ticket, ask: "Why did this happen? How do I prevent the next one?" Document the solution in the knowledge base, fix the root cause, and train the user. Good IT support isn't just about fixing things fast — it's about fixing them permanently. The goal is fewer tickets, not more.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Fix it right, document it well, make it not happen again!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
