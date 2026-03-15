@@ -134,28 +134,6 @@
         }
         .infobox strong { color: #92400e; }
 
-        /* SECTION DIVIDER */
-        .section-divider {
-            margin: 2rem 0 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .section-divider h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            white-space: nowrap;
-        }
-        .section-divider::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: #e2e8f0;
-        }
-
         /* FOOTER */
         footer {
             background: #0f2b3d; color: #94a3b8; text-align: center;
@@ -163,9 +141,12 @@
         }
         footer strong { color: white; }
 
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+        }
         @media (max-width: 600px) {
             header h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: repeat(3, 1fr); }
+            .grid { grid-template-columns: 1fr; }
             .stats-bar { gap: 1.5rem; }
         }
     </style>
@@ -201,7 +182,7 @@
         Click "Open Study Guide" to open the full notes. Bookmark this page — new guides are added each semester.
     </div>
 
-    <!-- LIVE GUIDES -->
+    <!-- ===== LIVE GUIDES ===== -->
     <div class="section-title">✅ Live Study Guides</div>
     <div class="grid">
 
@@ -351,14 +332,13 @@
                 <a href="ccna2/index.html" class="btn btn-primary">📖 Open Study Guide</a>
             </div>
         </div>
-    </div>
 
-    <!-- CCNA 3 -->
+        <!-- CCNA 3 -->
         <div class="card">
             <div class="card-header">
                 <div class="card-icon">🔵</div>
                 <div>
-                    <div class="card-title">CCNA 3 <span class="badge badge-live">live</span></div>
+                    <div class="card-title">CCNA 3 <span class="badge badge-live">Live</span></div>
                     <div class="card-subtitle">Cisco NetAcad — Enterprise Networking, Security &amp; Automation</div>
                 </div>
             </div>
@@ -378,12 +358,12 @@
             </div>
         </div>
 
-    <!-- Implementing Directory Services -->
+        <!-- Directory Services -->
         <div class="card">
             <div class="card-header">
                 <div class="card-icon">🗂️</div>
                 <div>
-                    <div class="card-title">Directory Services <span class="badge badge-live">live</span></div>
+                    <div class="card-title">Directory Services <span class="badge badge-live">Live</span></div>
                     <div class="card-subtitle">Implementing Directory Services — Active Directory</div>
                 </div>
             </div>
@@ -403,10 +383,11 @@
             </div>
         </div>
 
-    <!-- COMING SOON -->
+    </div><!-- END LIVE GRID -->
+
+    <!-- ===== COMING SOON ===== -->
     <div class="section-title">🚧 Coming Soon</div>
     <div class="grid">
-
 
         <!-- Computer Virtualization -->
         <div class="card">
@@ -533,7 +514,8 @@
             </div>
         </div>
 
-    </div>
+    </div><!-- END COMING SOON GRID -->
+
 </main>
 
 <footer>
