@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet/Intranet Server · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .domain-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .lab-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🖧 Internet/Intranet Server</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · CompTIA Server+ SK0-005</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Server Hardware Fundamentals</a></li>
+            <li><a href="#part2">2. Server Installation & Configuration</a></li>
+            <li><a href="#part3">3. Server Operating Systems</a></li>
+            <li><a href="#part4">4. Storage Technologies</a></li>
+            <li><a href="#part5">5. Server Networking</a></li>
+            <li><a href="#part6">6. Web Server Configuration</a></li>
+            <li><a href="#part7">7. DNS Server Configuration</a></li>
+            <li><a href="#part8">8. DHCP Server Configuration</a></li>
+            <li><a href="#part9">9. FTP & File Services</a></li>
+            <li><a href="#part10">10. Email Server Services</a></li>
+            <li><a href="#part11">11. Server Security & Hardening</a></li>
+            <li><a href="#part12">12. SSL/TLS & Certificate Management</a></li>
+            <li><a href="#part13">13. Server Virtualization</a></li>
+            <li><a href="#part14">14. Backup, Recovery & Business Continuity</a></li>
+            <li><a href="#part15">15. Server Monitoring & Performance</a></li>
+            <li><a href="#part16">16. Troubleshooting Servers</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Server Hardware Fundamentals <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>1.1 Server Form Factors</h3>
+    <table>
+        <tr><th>Form Factor</th><th>Description</th><th>U Height</th><th>Best For</th></tr>
+        <tr><td><strong>Tower Server</strong></td><td>Standalone upright case — like a desktop but beefier</td><td>N/A</td><td>Small offices, single-purpose servers, limited space</td></tr>
+        <tr><td><strong>1U Rack Server</strong></td><td>Thin rack-mounted unit — dense CPU and RAM</td><td>1.75"</td><td>Web servers, application servers, high density</td></tr>
+        <tr><td><strong>2U Rack Server</strong></td><td>More expansion — more drive bays, PCIe slots</td><td>3.5"</td><td>Database servers, storage-heavy workloads</td></tr>
+        <tr><td><strong>Blade Server</strong></td><td>Modular servers that slide into a blade chassis — shared power and networking</td><td>Varies</td><td>Maximum density, enterprise datacenters</td></tr>
+        <tr><td><strong>Modular/Micro</strong></td><td>Highly scalable chassis — swap individual components</td><td>Varies</td><td>Large cloud providers, hyperscale datacenters</td></tr>
+    </table>
+
+    <h3>1.2 Server CPU Concepts</h3>
+    <ul>
+        <li><strong>Multi-socket:</strong> Servers can have 2, 4, or more physical CPU sockets — scales processing power</li>
+        <li><strong>NUMA (Non-Uniform Memory Access):</strong> Each CPU has its own memory bank — accessing local memory faster than remote</li>
+        <li><strong>Hyperthreading (Intel) / SMT (AMD):</strong> Each physical core appears as 2 logical cores to the OS</li>
+        <li><strong>Server CPUs:</strong> Intel Xeon, AMD EPYC — higher core counts, ECC memory support, more PCIe lanes than desktop CPUs</li>
+        <li><strong>TDP (Thermal Design Power):</strong> Max heat output — determines cooling requirements</li>
+    </ul>
+
+    <h3>1.3 Server RAM</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>Server Use</th></tr>
+        <tr><td><strong>ECC RAM</strong></td><td>Error Correcting Code — detects and fixes single-bit errors in memory</td><td>Required for servers — data integrity critical</td></tr>
+        <tr><td><strong>Registered (RDIMM)</strong></td><td>Has a register between DIMMs and memory controller — more stable at high capacities</td><td>Standard server RAM — up to 3TB per server</td></tr>
+        <tr><td><strong>Load Reduced (LRDIMM)</strong></td><td>Reduces electrical load — allows even more DIMMs per channel</td><td>Maximum memory density workloads</td></tr>
+        <tr><td><strong>DDR5</strong></td><td>Current generation — higher speeds, improved ECC</td><td>Modern servers (2022+)</td></tr>
+        <tr><td><strong>DCPMM/Optane</strong></td><td>Intel persistent memory — between DRAM speed and storage persistence</td><td>In-memory databases, large memory footprints</td></tr>
+    </table>
+
+    <h3>1.4 Power & Cooling</h3>
+    <ul>
+        <li><strong>Redundant PSUs:</strong> Two or more power supplies — if one fails, others continue (1+1 or 2+1)</li>
+        <li><strong>Hot-swap PSU:</strong> Replace failed power supply without powering down server</li>
+        <li><strong>80 PLUS rating:</strong> PSU efficiency — Titanium (96%) is highest, Bronze (82%) is minimum acceptable</li>
+        <li><strong>Hot/Cold Aisle:</strong> Server racks face alternating directions — cold air intakes on one side, hot exhaust on other</li>
+        <li><strong>CRAC (Computer Room Air Conditioning):</strong> Dedicated precision cooling for server rooms</li>
+        <li><strong>PUE (Power Usage Effectiveness):</strong> Total facility power / IT equipment power. PUE of 1.0 = perfect, typical datacenter = 1.5–2.0</li>
+    </ul>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Server Installation & Configuration <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>2.1 Server BIOS/UEFI Settings</h3>
+    <table>
+        <tr><th>Setting</th><th>Description</th><th>Server Recommendation</th></tr>
+        <tr><td><strong>Virtualization (VT-x/AMD-V)</strong></td><td>Hardware virtualization support</td><td>Enable — required for hypervisors</td></tr>
+        <tr><td><strong>IOMMU/VT-d</strong></td><td>I/O virtualization for PCIe passthrough</td><td>Enable for virtualization hosts</td></tr>
+        <tr><td><strong>Hyper-Threading</strong></td><td>Logical core doubling</td><td>Enable for most workloads; disable for some latency-sensitive workloads</td></tr>
+        <tr><td><strong>Secure Boot</strong></td><td>Only signed bootloaders can run</td><td>Enable — prevents bootkits</td></tr>
+        <tr><td><strong>Power Profile</strong></td><td>Performance vs efficiency settings</td><td>Set to "Maximum Performance" for production servers</td></tr>
+        <tr><td><strong>IPMI/iDRAC/iLO</strong></td><td>Out-of-band management interface</td><td>Configure with dedicated management IP — always-on remote access</td></tr>
+    </table>
+
+    <h3>2.2 Out-of-Band Management</h3>
+    <ul>
+        <li>Allows remote management of servers even when OS is down or server is powered off</li>
+        <li><strong>IPMI:</strong> Intelligent Platform Management Interface — vendor-neutral standard</li>
+        <li><strong>iDRAC:</strong> Dell's integrated management controller</li>
+        <li><strong>iLO:</strong> HP's Integrated Lights-Out management</li>
+        <li><strong>IMM/XCC:</strong> IBM/Lenovo management module</li>
+        <li>Capabilities: Remote power on/off, remote console, hardware monitoring, event logs, virtual media</li>
+    </ul>
+
+    <pre><code># ===== IPMI commands (ipmitool) =====
+ipmitool -H 192.168.1.100 -U admin -P password power status
+ipmitool -H 192.168.1.100 -U admin -P password power on
+ipmitool -H 192.168.1.100 -U admin -P password power reset
+ipmitool -H 192.168.1.100 -U admin -P password sel list    # System event log
+ipmitool -H 192.168.1.100 -U admin -P password sdr list    # Sensor readings</code></pre>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Server Operating Systems <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>3.1 Windows Server</h3>
+    <table>
+        <tr><th>Version</th><th>Key Features</th><th>Licensing</th></tr>
+        <tr><td><strong>Windows Server 2022</strong></td><td>Current — Secured-core server, Azure Arc integration, SMB compression, TLS 1.3 default</td><td>Standard (2 VMs) / Datacenter (unlimited VMs)</td></tr>
+        <tr><td><strong>Windows Server 2019</strong></td><td>Hyper-V Shielded VMs, Storage Spaces Direct, Windows Admin Center</td><td>Standard / Datacenter</td></tr>
+        <tr><td><strong>Server Core</strong></td><td>No GUI — PowerShell and remote management only — smaller attack surface, less patching</td><td>Included with Standard/Datacenter</td></tr>
+        <tr><td><strong>Nano Server</strong></td><td>Minimal footprint — containers and cloud only</td><td>Included</td></tr>
+    </table>
+
+    <h3>3.2 Linux Server Distributions</h3>
+    <table>
+        <tr><th>Distribution</th><th>Family</th><th>Use Case</th><th>Package Manager</th></tr>
+        <tr><td><strong>Ubuntu Server</strong></td><td>Debian</td><td>Web servers, cloud, development — most popular Linux server</td><td>apt</td></tr>
+        <tr><td><strong>Debian</strong></td><td>Debian</td><td>Stable, conservative — ISPs, hosting providers</td><td>apt</td></tr>
+        <tr><td><strong>RHEL</strong></td><td>Red Hat</td><td>Enterprise — paid support, certifications, financial/gov</td><td>dnf/yum</td></tr>
+        <tr><td><strong>Rocky Linux</strong></td><td>Red Hat</td><td>Free RHEL rebuild — replaces CentOS</td><td>dnf</td></tr>
+        <tr><td><strong>AlmaLinux</strong></td><td>Red Hat</td><td>Free RHEL rebuild — enterprise, FIPS compliant</td><td>dnf</td></tr>
+        <tr><td><strong>SUSE Linux Enterprise</strong></td><td>SUSE</td><td>SAP workloads, German enterprise market</td><td>zypper</td></tr>
+    </table>
+
+    <h3>3.3 Essential Server Management Commands</h3>
+    <pre><code># ===== SYSTEM INFO =====
+hostnamectl                        # Hostname, OS, kernel info
+uname -a                           # Kernel version and architecture
+lscpu                              # CPU details
+lsmem                              # Memory info
+lsblk                              # Block devices (disks)
+lspci                              # PCI devices
+dmidecode -t system                # Hardware info from BIOS/DMI
+
+# ===== SERVICE MANAGEMENT =====
+systemctl status nginx             # Service status
+systemctl start nginx              # Start service
+systemctl stop nginx               # Stop service
+systemctl restart nginx            # Restart
+systemctl reload nginx             # Reload config without restart
+systemctl enable nginx             # Auto-start on boot
+systemctl disable nginx            # Remove auto-start
+systemctl list-units --type=service --state=running  # All running services
+
+# ===== LOGS =====
+journalctl -u nginx --since "1 hour ago"
+journalctl -f                      # Follow all logs
+tail -f /var/log/syslog</code></pre>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Storage Technologies <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>4.1 RAID Levels</h3>
+    <table>
+        <tr><th>RAID Level</th><th>Min Drives</th><th>Fault Tolerance</th><th>Read/Write</th><th>Use Case</th></tr>
+        <tr><td><strong>RAID 0</strong></td><td>2</td><td>None — one drive fails = all data lost</td><td>Fast read & write (striping)</td><td>Video editing, temp data — speed only</td></tr>
+        <tr><td><strong>RAID 1</strong></td><td>2</td><td>1 drive failure</td><td>Fast read, normal write (mirroring)</td><td>OS drives, critical small data</td></tr>
+        <tr><td><strong>RAID 5</strong></td><td>3</td><td>1 drive failure</td><td>Good read, slower write (parity)</td><td>General purpose — good balance</td></tr>
+        <tr><td><strong>RAID 6</strong></td><td>4</td><td>2 drive failures</td><td>Good read, slowest write (double parity)</td><td>Large arrays where rebuild time is long</td></tr>
+        <tr><td><strong>RAID 10 (1+0)</strong></td><td>4</td><td>1 drive per mirror pair</td><td>Best read & write</td><td>Databases — performance + redundancy</td></tr>
+        <tr><td><strong>JBOD</strong></td><td>Any</td><td>None</td><td>Normal</td><td>Just a Bunch of Disks — no RAID</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>RAID is NOT a backup.</strong> RAID protects against disk failure — it does NOT protect against accidental deletion, ransomware, file corruption, or theft. A RAID array can mirror corrupt data just as faithfully as good data. Always have a separate backup strategy in addition to RAID.
+    </div>
+
+    <h3>4.2 Storage Interfaces</h3>
+    <table>
+        <tr><th>Interface</th><th>Type</th><th>Speed</th><th>Use Case</th></tr>
+        <tr><td><strong>SATA III</strong></td><td>Serial ATA</td><td>6 Gbps</td><td>HDDs, SATA SSDs — consumer/light server</td></tr>
+        <tr><td><strong>SAS (12Gbps)</strong></td><td>Serial Attached SCSI</td><td>12 Gbps</td><td>Enterprise HDDs and SSDs — more reliable than SATA</td></tr>
+        <tr><td><strong>NVMe (PCIe 4.0)</strong></td><td>PCIe-based</td><td>7,000 MB/s</td><td>High-performance SSDs — OS drives, databases</td></tr>
+        <tr><td><strong>U.2 / U.3</strong></td><td>NVMe in 2.5" form factor</td><td>Up to 7,000 MB/s</td><td>Enterprise NVMe — hot-swappable</td></tr>
+        <tr><td><strong>M.2 NVMe</strong></td><td>PCIe — small card form factor</td><td>Up to 7,000 MB/s</td><td>Boot drives, smaller servers</td></tr>
+    </table>
+
+    <h3>4.3 Network Storage (NAS & SAN)</h3>
+    <table>
+        <tr><th>Type</th><th>Protocol</th><th>Access Method</th><th>Use Case</th></tr>
+        <tr><td><strong>NAS (Network Attached Storage)</strong></td><td>NFS, SMB/CIFS</td><td>File-level — mount as network share</td><td>File sharing, home directories, media</td></tr>
+        <tr><td><strong>SAN (Storage Area Network)</strong></td><td>iSCSI, Fibre Channel</td><td>Block-level — appears as local disk</td><td>Databases, VMware datastores, high IOPS</td></tr>
+        <tr><td><strong>iSCSI</strong></td><td>SCSI over TCP/IP</td><td>Block-level over Ethernet</td><td>SAN over existing network infrastructure</td></tr>
+        <tr><td><strong>Fibre Channel</strong></td><td>FC protocol</td><td>Block-level over dedicated FC network</td><td>Enterprise SAN — dedicated fabric, low latency</td></tr>
+    </table>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Server Networking <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>5.1 NIC Teaming / Bonding</h3>
+    <ul>
+        <li>Combine multiple physical NICs into one logical interface — redundancy and/or increased bandwidth</li>
+        <li><strong>Active-Passive (mode 1):</strong> One NIC active, other standby — failover only, no bandwidth increase</li>
+        <li><strong>Active-Active / LACP (mode 4):</strong> Both NICs active, load balanced — requires switch support (802.3ad)</li>
+        <li><strong>Round-Robin (mode 0):</strong> Transmit on each NIC in turn — simple load balancing, no switch config needed</li>
+    </ul>
+
+    <pre><code># ===== LINUX NIC BONDING =====
+# Install bonding tools
+apt install ifenslave -y
+
+# Create bond interface
+nmcli con add type bond con-name bond0 ifname bond0 bond.options "mode=active-backup"
+nmcli con add type ethernet con-name bond0-slave1 ifname ens3 master bond0
+nmcli con add type ethernet con-name bond0-slave2 ifname ens4 master bond0
+
+# Verify
+cat /proc/net/bonding/bond0          # Bond status and active interface</code></pre>
+
+    <h3>5.2 Server Network Best Practices</h3>
+    <ul>
+        <li><strong>Separate management NIC:</strong> Dedicated NIC for iDRAC/iLO management — never share with production traffic</li>
+        <li><strong>Separate storage NIC:</strong> Dedicated NICs for iSCSI or NFS — avoid contention with application traffic</li>
+        <li><strong>Jumbo frames:</strong> MTU 9000 for storage networks — reduces CPU overhead for large transfers</li>
+        <li><strong>Flow control:</strong> Enable on storage NICs — prevents packet loss during bursts</li>
+        <li><strong>Static IPs for servers:</strong> Never use DHCP on production servers — create DNS reservations instead</li>
+    </ul>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Web Server Configuration <span class="domain-tag">Domain 2</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>6.1 Apache vs Nginx</h3>
+    <table>
+        <tr><th>Feature</th><th>Apache (httpd)</th><th>Nginx</th></tr>
+        <tr><td>Architecture</td><td>Process/thread per connection</td><td>Event-driven, async — one process handles thousands</td></tr>
+        <tr><td>Performance</td><td>Good for dynamic content</td><td>Excellent for static content and high concurrency</td></tr>
+        <tr><td>Config files</td><td>/etc/apache2/ or /etc/httpd/</td><td>/etc/nginx/</td></tr>
+        <tr><td>Virtual hosts</td><td>.conf files in sites-available/</td><td>server blocks in conf.d/ or sites-available/</td></tr>
+        <tr><td>Modules</td><td>Dynamic — load with mod_*</td><td>Compiled in — more consistent</td></tr>
+        <tr><td>Reverse proxy</td><td>Yes (mod_proxy)</td><td>Excellent — primary use case</td></tr>
+        <tr><td>Market share</td><td>~31%</td><td>~34% (leading)</td></tr>
+    </table>
+
+    <h3>6.2 Apache Installation & Configuration</h3>
+    <pre><code># ===== INSTALL APACHE =====
+# Ubuntu/Debian
+sudo apt update && sudo apt install apache2 -y
+sudo systemctl enable --now apache2
+
+# RHEL/Rocky/AlmaLinux
+sudo dnf install httpd -y
+sudo systemctl enable --now httpd
+
+# ===== KEY CONFIGURATION FILES =====
+# Ubuntu:
+/etc/apache2/apache2.conf          # Main config
+/etc/apache2/sites-available/      # Virtual host configs
+/etc/apache2/sites-enabled/        # Symlinks to active vhosts
+/etc/apache2/mods-available/       # Available modules
+/var/www/html/                     # Default document root
+/var/log/apache2/access.log        # Access logs
+/var/log/apache2/error.log         # Error logs
+
+# RHEL:
+/etc/httpd/conf/httpd.conf         # Main config
+/etc/httpd/conf.d/                 # Additional configs
+/var/www/html/                     # Document root
+
+# ===== VIRTUAL HOST CONFIGURATION =====
+sudo nano /etc/apache2/sites-available/mysite.conf</code></pre>
+
+    <pre><code><VirtualHost *:80>
+    ServerName mysite.tstc.edu
+    ServerAlias www.mysite.tstc.edu
+    DocumentRoot /var/www/mysite
+    DirectoryIndex index.html index.php
+
+    <Directory /var/www/mysite>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/mysite_error.log
+    CustomLog ${APACHE_LOG_DIR}/mysite_access.log combined
+</VirtualHost></code></pre>
+
+    <pre><code># Enable site and reload
+sudo a2ensite mysite.conf          # Enable site (Ubuntu)
+sudo a2dissite 000-default.conf    # Disable default site
+sudo apache2ctl configtest         # Test config syntax
+sudo systemctl reload apache2      # Apply changes
+
+# Enable common modules
+sudo a2enmod rewrite               # URL rewriting (.htaccess)
+sudo a2enmod ssl                   # HTTPS support
+sudo a2enmod headers               # Custom HTTP headers</code></pre>
+
+    <h3>6.3 Nginx Installation & Configuration</h3>
+    <pre><code># ===== INSTALL NGINX =====
+sudo apt update && sudo apt install nginx -y
+sudo systemctl enable --now nginx
+
+# ===== KEY FILES =====
+/etc/nginx/nginx.conf              # Main config
+/etc/nginx/sites-available/        # Server block configs
+/etc/nginx/sites-enabled/          # Symlinks to active configs
+/etc/nginx/conf.d/                 # Additional configs (RHEL)
+/var/www/html/                     # Default document root
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+
+# ===== SERVER BLOCK (Virtual Host) =====
+sudo nano /etc/nginx/sites-available/mysite</code></pre>
+
+    <pre><code>server {
+    listen 80;
+    listen [::]:80;
+    server_name mysite.tstc.edu www.mysite.tstc.edu;
+    root /var/www/mysite;
+    index index.html index.htm index.php;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # PHP-FPM support
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+    }
+
+    # Deny .htaccess access
+    location ~ /\.ht {
+        deny all;
+    }
+
+    access_log /var/log/nginx/mysite_access.log;
+    error_log  /var/log/nginx/mysite_error.log;
+}</code></pre>
+
+    <pre><code># Enable site
+sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/
+sudo nginx -t                      # Test config syntax
+sudo systemctl reload nginx        # Apply changes
+
+# ===== NGINX AS REVERSE PROXY =====
+# In server block:
+location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+}</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. DNS Server Configuration <span class="domain-tag">Domain 2</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>7.1 DNS Record Types — Complete Reference</h3>
+    <table>
+        <tr><th>Record</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><strong>A</strong></td><td>IPv4 address record — hostname to IP</td><td>server1.tstc.edu → 192.168.1.10</td></tr>
+        <tr><td><strong>AAAA</strong></td><td>IPv6 address record</td><td>server1.tstc.edu → 2001:db8::1</td></tr>
+        <tr><td><strong>CNAME</strong></td><td>Canonical name — alias to another hostname</td><td>www.tstc.edu → server1.tstc.edu</td></tr>
+        <tr><td><strong>MX</strong></td><td>Mail exchanger — where to deliver email for a domain</td><td>tstc.edu → mail.tstc.edu (priority 10)</td></tr>
+        <tr><td><strong>NS</strong></td><td>Name server — authoritative DNS for a zone</td><td>tstc.edu → ns1.tstc.edu</td></tr>
+        <tr><td><strong>PTR</strong></td><td>Pointer — reverse lookup (IP to hostname)</td><td>10.1.168.192.in-addr.arpa → server1.tstc.edu</td></tr>
+        <tr><td><strong>SOA</strong></td><td>Start of Authority — zone metadata and primary NS</td><td>Serial, refresh, retry, expire, TTL</td></tr>
+        <tr><td><strong>TXT</strong></td><td>Text record — arbitrary text data</td><td>SPF, DKIM, DMARC, domain verification</td></tr>
+        <tr><td><strong>SRV</strong></td><td>Service location record</td><td>_ldap._tcp.tstc.edu → dc1.tstc.edu:389</td></tr>
+        <tr><td><strong>CAA</strong></td><td>Certificate Authority Authorization — which CAs can issue certs</td><td>tstc.edu CAA 0 issue "letsencrypt.org"</td></tr>
+    </table>
+
+    <h3>7.2 BIND DNS Server Configuration</h3>
+    <pre><code># ===== INSTALL BIND9 =====
+sudo apt install bind9 bind9utils bind9-doc -y
+
+# ===== KEY FILES =====
+/etc/bind/named.conf               # Main config
+/etc/bind/named.conf.options       # Global options
+/etc/bind/named.conf.local         # Zone declarations
+/var/cache/bind/                   # Zone data files
+/var/log/named/                    # DNS logs
+
+# ===== named.conf.options =====
+sudo nano /etc/bind/named.conf.options</code></pre>
+
+    <pre><code>options {
+    directory "/var/cache/bind";
+
+    // Allow queries from local network only
+    allow-query { localhost; 192.168.1.0/24; };
+
+    // Forward unknown queries to public DNS
+    forwarders {
+        8.8.8.8;
+        8.8.4.4;
+    };
+    forward only;
+
+    // DNSSEC validation
+    dnssec-validation auto;
+
+    listen-on { any; };
+    listen-on-v6 { any; };
+};</code></pre>
+
+    <pre><code># ===== named.conf.local — declare zones =====
+zone "tstc.edu" {
+    type master;
+    file "/var/cache/bind/db.tstc.edu";
+    allow-transfer { 192.168.1.11; };   # Secondary DNS server
+};
+
+zone "1.168.192.in-addr.arpa" {
+    type master;
+    file "/var/cache/bind/db.192.168.1";
+};</code></pre>
+
+    <pre><code># ===== FORWARD ZONE FILE: /var/cache/bind/db.tstc.edu =====
+$TTL 86400
+@   IN  SOA ns1.tstc.edu. admin.tstc.edu. (
+            2024011501  ; Serial (YYYYMMDDnn)
+            3600        ; Refresh
+            1800        ; Retry
+            604800      ; Expire
+            86400 )     ; Negative TTL
+
+; Name servers
+@       IN  NS  ns1.tstc.edu.
+@       IN  NS  ns2.tstc.edu.
+
+; A records
+ns1     IN  A   192.168.1.10
+ns2     IN  A   192.168.1.11
+www     IN  A   192.168.1.20
+mail    IN  A   192.168.1.30
+ftp     IN  A   192.168.1.40
+
+; CNAME
+webmail IN  CNAME  mail
+
+; MX record
+@       IN  MX  10  mail.tstc.edu.
+
+; TXT (SPF)
+@       IN  TXT "v=spf1 mx ~all"</code></pre>
+
+    <pre><code># Verify zone file syntax
+sudo named-checkzone tstc.edu /var/cache/bind/db.tstc.edu
+sudo named-checkconf                   # Check all config files
+
+# Restart and test
+sudo systemctl restart bind9
+dig @192.168.1.10 www.tstc.edu         # Test from specific DNS server
+nslookup www.tstc.edu 192.168.1.10    # Alternative test</code></pre>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. DHCP Server Configuration <span class="domain-tag">Domain 2</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>8.1 ISC DHCP Server (Linux)</h3>
+    <pre><code># ===== INSTALL =====
+sudo apt install isc-dhcp-server -y
+
+# ===== /etc/dhcp/dhcpd.conf =====
+# Global settings
+default-lease-time 86400;          # 24 hours
+max-lease-time 172800;             # 48 hours
+option domain-name "tstc.edu";
+option domain-name-servers 192.168.1.10, 192.168.1.11;
+authoritative;                     # This is the authoritative DHCP server
+
+# Subnet declaration
+subnet 192.168.1.0 netmask 255.255.255.0 {
+    range 192.168.1.100 192.168.1.200;
+    option routers 192.168.1.1;
+    option subnet-mask 255.255.255.0;
+    option broadcast-address 192.168.1.255;
+}
+
+# Static reservation (fixed address by MAC)
+host printer01 {
+    hardware ethernet AA:BB:CC:DD:EE:FF;
+    fixed-address 192.168.1.50;
+    option host-name "printer01";
+}
+
+# ===== SPECIFY INTERFACE =====
+sudo nano /etc/default/isc-dhcp-server
+# INTERFACESv4="ens3"
+
+# ===== START AND VERIFY =====
+sudo systemctl enable --now isc-dhcp-server
+sudo tail -f /var/log/syslog | grep dhcp    # Watch DHCP activity
+cat /var/lib/dhcp/dhcpd.leases             # View current leases</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. FTP & File Services <span class="domain-tag">Domain 2</span></h2>
+
+    <h3>9.1 FTP vs SFTP vs FTPS</h3>
+    <table>
+        <tr><th>Protocol</th><th>Port</th><th>Encryption</th><th>Recommendation</th></tr>
+        <tr><td><strong>FTP</strong></td><td>20/21</td><td>None — credentials and data in plaintext</td><td>❌ Never use over internet — internal only if absolutely needed</td></tr>
+        <tr><td><strong>FTPS</strong></td><td>990/989 (Implicit) or 21 (Explicit)</td><td>TLS/SSL</td><td>⚠️ FTP + TLS — better than FTP but complex firewalls</td></tr>
+        <tr><td><strong>SFTP</strong></td><td>22</td><td>SSH (full encryption)</td><td>✅ Preferred — runs over SSH, simple, secure</td></tr>
+        <tr><td><strong>SCP</strong></td><td>22</td><td>SSH</td><td>✅ Simple secure copy — no directory browsing</td></tr>
+    </table>
+
+    <h3>9.2 vsftpd Configuration</h3>
+    <pre><code># ===== INSTALL vsftpd =====
+sudo apt install vsftpd -y
+
+# ===== /etc/vsftpd.conf — key settings =====
+listen=YES
+anonymous_enable=NO                # Disable anonymous login
+local_enable=YES                   # Allow local user login
+write_enable=YES                   # Allow uploads
+chroot_local_user=YES              # Jail users in home dir
+allow_writeable_chroot=YES
+ssl_enable=YES                     # Enable FTPS
+rsa_cert_file=/etc/ssl/certs/vsftpd.pem
+rsa_private_key_file=/etc/ssl/private/vsftpd.key
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+pasv_enable=YES
+pasv_min_port=40000
+pasv_max_port=50000
+
+sudo systemctl restart vsftpd</code></pre>
+
+    <h3>9.3 Samba — Windows File Sharing on Linux</h3>
+    <pre><code># ===== INSTALL SAMBA =====
+sudo apt install samba -y
+
+# ===== /etc/samba/smb.conf =====
+[global]
+    workgroup = TSTC
+    server string = TSTC File Server
+    security = user
+    map to guest = bad user
+
+[shared]
+    comment = Shared Files
+    path = /srv/samba/shared
+    browseable = yes
+    read only = no
+    valid users = @sambausers       # Only sambausers group
+    create mask = 0664
+    directory mask = 0775
+
+[homes]
+    comment = Home Directories
+    browseable = no
+    read only = no
+    valid users = %S                # Only the user themselves
+
+# ===== SETUP =====
+sudo mkdir -p /srv/samba/shared
+sudo chgrp sambausers /srv/samba/shared
+sudo chmod 2775 /srv/samba/shared
+sudo groupadd sambausers
+sudo usermod -aG sambausers username
+sudo smbpasswd -a username          # Set Samba password
+sudo systemctl restart smbd nmbd
+sudo testparm                       # Verify config</code></pre>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Email Server Services <span class="domain-tag">Domain 2</span></h2>
+
+    <h3>10.1 Email Protocol Stack</h3>
+    <table>
+        <tr><th>Protocol</th><th>Port</th><th>Purpose</th><th>Encrypted Port</th></tr>
+        <tr><td><strong>SMTP</strong></td><td>25</td><td>Send email between servers</td><td>465 (SMTPS), 587 (STARTTLS)</td></tr>
+        <tr><td><strong>POP3</strong></td><td>110</td><td>Retrieve email — downloads to client, deletes from server</td><td>995 (POP3S)</td></tr>
+        <tr><td><strong>IMAP</strong></td><td>143</td><td>Retrieve email — stays on server, syncs across devices</td><td>993 (IMAPS)</td></tr>
+    </table>
+
+    <h3>10.2 Email Authentication Records</h3>
+    <table>
+        <tr><th>Record</th><th>Type</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><strong>SPF</strong></td><td>TXT</td><td>Specifies which mail servers are authorized to send for a domain</td><td><code>v=spf1 mx include:sendgrid.net ~all</code></td></tr>
+        <tr><td><strong>DKIM</strong></td><td>TXT</td><td>Digitally signs outgoing email — receiver verifies signature</td><td><code>selector._domainkey TXT "v=DKIM1; k=rsa; p=MIGf..."</code></td></tr>
+        <tr><td><strong>DMARC</strong></td><td>TXT</td><td>Policy for what to do when SPF/DKIM fail — reject, quarantine, or none</td><td><code>v=DMARC1; p=quarantine; rua=mailto:dmarc@tstc.edu</code></td></tr>
+    </table>
+
+    <div class="note">
+        <strong>SPF + DKIM + DMARC together = email authentication trifecta.</strong> Without them, anyone can forge your domain in the From: field. SPF says who's allowed to send. DKIM proves the message wasn't tampered with. DMARC tells receiving servers what to DO when SPF or DKIM fails. All three are required for professional email delivery — without them your mail goes to spam.
+    </div>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Server Security & Hardening <span class="domain-tag">Domain 3</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>11.1 Linux Server Hardening Checklist</h3>
+    <pre><code># ===== SYSTEM UPDATES =====
+sudo apt update && sudo apt upgrade -y
+sudo apt install unattended-upgrades -y   # Auto security updates
+
+# ===== SSH HARDENING =====
+sudo nano /etc/ssh/sshd_config
+
+# Key settings to change:
+Port 2222                          # Change from default 22 (security by obscurity)
+PermitRootLogin no                 # Never allow root SSH login
+PasswordAuthentication no          # Key-based auth only
+PubkeyAuthentication yes
+MaxAuthTries 3                     # Lock after 3 failed attempts
+LoginGraceTime 30                  # 30 second window to authenticate
+AllowUsers adminuser sysadmin      # Whitelist allowed users
+X11Forwarding no                   # Disable X11 if not needed
+Banner /etc/ssh/banner             # Display legal warning on connect
+
+sudo systemctl restart sshd
+
+# ===== FIREWALL (UFW — Ubuntu) =====
+sudo ufw default deny incoming     # Deny all inbound by default
+sudo ufw default allow outgoing    # Allow all outbound
+sudo ufw allow 2222/tcp            # SSH (new port)
+sudo ufw allow 80/tcp              # HTTP
+sudo ufw allow 443/tcp             # HTTPS
+sudo ufw enable
+sudo ufw status verbose
+
+# ===== FIREWALL (firewalld — RHEL) =====
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --permanent --add-port=2222/tcp
+sudo firewall-cmd --reload
+
+# ===== FAIL2BAN — block brute force =====
+sudo apt install fail2ban -y
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo nano /etc/fail2ban/jail.local
+
+# Key settings:
+[sshd]
+enabled = true
+port = 2222
+maxretry = 3
+bantime = 3600           # Ban for 1 hour
+findtime = 600           # Within 10 minutes
+
+sudo systemctl enable --now fail2ban
+sudo fail2ban-client status sshd   # View banned IPs</code></pre>
+
+    <h3>11.2 User & Permission Hardening</h3>
+    <pre><code># ===== DISABLE UNNECESSARY ACCOUNTS =====
+sudo passwd -l nobody              # Lock account
+sudo usermod -s /sbin/nologin daemon  # Prevent login shell
+
+# ===== SUDO CONFIGURATION =====
+sudo visudo                        # Always edit sudoers with visudo
+
+# Good practice entries:
+adminuser ALL=(ALL:ALL) ALL        # Full sudo
+deployer ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart nginx  # Limited sudo
+
+# ===== FIND SUID/SGID FILES (potential privilege escalation) =====
+find / -perm -4000 -type f 2>/dev/null   # SUID files
+find / -perm -2000 -type f 2>/dev/null   # SGID files
+
+# ===== FILE INTEGRITY MONITORING =====
+sudo apt install aide -y
+sudo aideinit                      # Build initial database
+sudo aide --check                  # Check for changes</code></pre>
+
+    <h3>11.3 SELinux / AppArmor</h3>
+    <table>
+        <tr><th>Tool</th><th>Distro</th><th>Description</th></tr>
+        <tr><td><strong>SELinux</strong></td><td>RHEL/Rocky/AlmaLinux</td><td>Mandatory Access Control — labels every process and file, enforces policy. Modes: enforcing, permissive, disabled.</td></tr>
+        <tr><td><strong>AppArmor</strong></td><td>Ubuntu/Debian</td><td>MAC using file path profiles — easier than SELinux, less granular</td></tr>
+    </table>
+
+    <pre><code># ===== SELinux =====
+getenforce                         # Check mode (Enforcing/Permissive/Disabled)
+setenforce 1                       # Set enforcing (temporary)
+sestatus                           # Full status
+
+# Fix SELinux context for web files
+sudo restorecon -Rv /var/www/html
+sudo chcon -t httpd_sys_content_t /path/to/file
+
+# Allow httpd to connect to network (e.g., reverse proxy)
+sudo setsebool -P httpd_can_network_connect 1
+
+# ===== AppArmor =====
+sudo aa-status                     # Show profile status
+sudo aa-enforce /etc/apparmor.d/usr.sbin.nginx  # Enforce profile
+sudo aa-complain /path/to/profile  # Complain mode (log but don't enforce)</code></pre>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. SSL/TLS & Certificate Management <span class="domain-tag">Domain 3</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>12.1 TLS/SSL Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>SSL/TLS</strong></td><td>Protocol for encrypted communication — SSL is deprecated, TLS 1.2/1.3 are current</td></tr>
+        <tr><td><strong>Certificate</strong></td><td>Digital document binding a public key to an identity — signed by a CA</td></tr>
+        <tr><td><strong>CA (Certificate Authority)</strong></td><td>Trusted entity that signs certificates — Let's Encrypt, DigiCert, Comodo</td></tr>
+        <tr><td><strong>CSR</strong></td><td>Certificate Signing Request — sent to CA to get a signed cert</td></tr>
+        <tr><td><strong>Private Key</strong></td><td>Secret key that must NEVER leave the server — signs data, decrypts messages</td></tr>
+        <tr><td><strong>Public Key</strong></td><td>Embedded in certificate — shared publicly — verifies signatures</td></tr>
+        <tr><td><strong>SAN</strong></td><td>Subject Alternative Name — allows one cert to cover multiple hostnames</td></tr>
+        <tr><td><strong>Wildcard cert</strong></td><td>*.tstc.edu — covers all subdomains with one cert</td></tr>
+    </table>
+
+    <h3>12.2 Let's Encrypt with Certbot</h3>
+    <pre><code># ===== INSTALL CERTBOT =====
+sudo apt install certbot python3-certbot-nginx -y   # For Nginx
+sudo apt install certbot python3-certbot-apache -y  # For Apache
+
+# ===== OBTAIN CERTIFICATE =====
+# Nginx — auto-configures HTTPS
+sudo certbot --nginx -d mysite.tstc.edu -d www.mysite.tstc.edu
+
+# Apache
+sudo certbot --apache -d mysite.tstc.edu
+
+# Standalone (no web server running)
+sudo certbot certonly --standalone -d mysite.tstc.edu
+
+# DNS challenge (wildcard certs, no web server needed)
+sudo certbot certonly --manual --preferred-challenges dns -d *.tstc.edu
+
+# ===== CERTIFICATE FILES (Let's Encrypt) =====
+/etc/letsencrypt/live/mysite.tstc.edu/fullchain.pem    # Certificate + chain
+/etc/letsencrypt/live/mysite.tstc.edu/privkey.pem       # Private key
+/etc/letsencrypt/live/mysite.tstc.edu/cert.pem          # Certificate only
+/etc/letsencrypt/live/mysite.tstc.edu/chain.pem         # Intermediate chain
+
+# ===== AUTO-RENEWAL =====
+sudo certbot renew --dry-run       # Test renewal
+# Certbot installs a cron/systemd timer automatically
+sudo systemctl status certbot.timer</code></pre>
+
+    <h3>12.3 Manual Self-Signed Certificate</h3>
+    <pre><code># Generate private key
+openssl genrsa -out server.key 4096
+
+# Generate CSR
+openssl req -new -key server.key -out server.csr
+
+# Self-sign (for internal/lab use only)
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+# View certificate details
+openssl x509 -in server.crt -text -noout
+
+# Test SSL/TLS connection
+openssl s_client -connect mysite.tstc.edu:443 -showcerts</code></pre>
+
+    <h3>12.4 HTTPS in Nginx</h3>
+    <pre><code">server {
+    listen 80;
+    server_name mysite.tstc.edu;
+    return 301 https://$host$request_uri;   # Redirect all HTTP to HTTPS
+}
+
+server {
+    listen 443 ssl http2;
+    server_name mysite.tstc.edu;
+    root /var/www/mysite;
+
+    ssl_certificate     /etc/letsencrypt/live/mysite.tstc.edu/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mysite.tstc.edu/privkey.pem;
+
+    # Modern SSL settings
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    # HSTS — force HTTPS for 1 year
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+}</code></pre>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. Server Virtualization <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>13.1 Virtualization on Servers</h3>
+    <ul>
+        <li>A single physical server can run multiple virtual machines — each with its own OS and applications</li>
+        <li>Server virtualization is the core technology of modern datacenters and cloud computing</li>
+        <li><strong>Hypervisors on servers:</strong> Proxmox VE, VMware ESXi, Microsoft Hyper-V, KVM</li>
+        <li><strong>Key metrics:</strong> VM density (VMs per host), CPU overcommit ratio, RAM balloon/swap</li>
+    </ul>
+
+    <h3>13.2 KVM on Linux</h3>
+    <pre><code># ===== CHECK VIRTUALIZATION SUPPORT =====
+egrep -c '(vmx|svm)' /proc/cpuinfo    # >0 means virtualization supported
+kvm-ok                                  # Ubuntu — check KVM support
+
+# ===== INSTALL KVM (Ubuntu) =====
+sudo apt install qemu-kvm libvirt-daemon-system virtinst virt-manager -y
+sudo usermod -aG libvirt,kvm $USER
+
+# ===== VM MANAGEMENT (virsh CLI) =====
+virsh list --all                    # List all VMs
+virsh start vmname                  # Start VM
+virsh shutdown vmname               # Graceful shutdown
+virsh destroy vmname                # Force stop
+virsh suspend vmname                # Pause VM
+virsh resume vmname                 # Resume VM
+virsh snapshot-create-as vmname snap1 "Before update"
+virsh snapshot-revert vmname snap1
+
+# ===== CREATE VM FROM CLI =====
+virt-install \
+    --name ubuntu-server \
+    --ram 2048 \
+    --vcpus 2 \
+    --disk path=/var/lib/libvirt/images/ubuntu.qcow2,size=20 \
+    --os-variant ubuntu22.04 \
+    --cdrom /var/lib/libvirt/boot/ubuntu-22.04-server.iso \
+    --network bridge=virbr0 \
+    --graphics vnc</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. Backup, Recovery & Business Continuity <span class="domain-tag">Domain 4</span></h2>
+
+    <h3>14.1 Backup Strategies</h3>
+    <table>
+        <tr><th>Type</th><th>Backs Up</th><th>Speed</th><th>Storage</th><th>Restore</th></tr>
+        <tr><td><strong>Full</strong></td><td>Everything</td><td>Slowest to create</td><td>Most</td><td>Fastest — one backup set</td></tr>
+        <tr><td><strong>Incremental</strong></td><td>Changes since last backup of any type</td><td>Fastest to create</td><td>Least</td><td>Slowest — need full + all incrementals</td></tr>
+        <tr><td><strong>Differential</strong></td><td>Changes since last FULL backup</td><td>Medium</td><td>Medium</td><td>Medium — full + latest differential</td></tr>
+        <tr><td><strong>Snapshot</strong></td><td>Point-in-time VM or volume state</td><td>Near instant</td><td>Delta only</td><td>Instant rollback</td></tr>
+        <tr><td><strong>Image Backup</strong></td><td>Entire disk sector by sector</td><td>Slow</td><td>Most</td><td>Full bare-metal restore</td></tr>
+    </table>
+
+    <h3>14.2 Linux Backup Tools</h3>
+    <pre><code># ===== TAR BACKUP =====
+tar -czvf backup-$(date +%Y%m%d).tar.gz /var/www /etc /home
+tar -xzvf backup-20240115.tar.gz -C /restore/
+
+# ===== RSYNC — incremental sync =====
+# Local backup
+rsync -avz --delete /var/www/ /backup/www/
+
+# Remote backup over SSH
+rsync -avz -e ssh /var/www/ user@backup-server:/backups/www/
+
+# ===== AUTOMATED BACKUP SCRIPT =====
+#!/bin/bash
+BACKUP_DIR="/backup"
+DATE=$(date +%Y%m%d_%H%M%S)
+LOG="/var/log/backup.log"
+
+echo "$(date) - Starting backup" >> $LOG
+
+# Backup web files
+tar -czf $BACKUP_DIR/www_$DATE.tar.gz /var/www 2>> $LOG
+
+# Backup databases
+mysqldump --all-databases -u root -p"$MYSQL_PASS" | \
+    gzip > $BACKUP_DIR/mysql_$DATE.sql.gz 2>> $LOG
+
+# Keep only last 7 days
+find $BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
+find $BACKUP_DIR -name "*.sql.gz" -mtime +7 -delete
+
+echo "$(date) - Backup complete" >> $LOG
+
+# Add to crontab: 0 2 * * * /usr/local/bin/backup.sh</code></pre>
+
+    <!-- PART 15 -->
+    <h2 id="part15">15. Server Monitoring & Performance <span class="domain-tag">Domain 4</span></h2>
+
+    <h3>15.1 Performance Monitoring Commands</h3>
+    <pre><code># ===== CPU =====
+top                                # Real-time process/CPU/RAM
+htop                               # Better top (install separately)
+mpstat -P ALL 1                    # Per-CPU statistics every 1 second
+uptime                             # Load averages (1, 5, 15 min)
+# Load average > number of CPU cores = overloaded
+
+# ===== MEMORY =====
+free -h                            # RAM usage human-readable
+vmstat 1 10                        # Virtual memory stats (10 samples, 1 sec)
+# si/so columns in vmstat: swap in/out — if non-zero, need more RAM
+
+# ===== DISK =====
+df -h                              # Disk space usage
+du -sh /var/log/*                  # Directory sizes
+iostat -xz 1                       # Disk I/O statistics
+iotop                              # Per-process disk I/O (like top for disk)
+lsblk                              # Block device layout
+
+# ===== NETWORK =====
+ss -tulpn                          # Listening ports
+netstat -an                        # All connections
+iftop -i ens3                      # Network bandwidth per connection
+nethogs                            # Bandwidth per process
+ip -s link                         # Interface statistics
+
+# ===== ALL-IN-ONE =====
+sar -u 1 10                        # CPU history
+sar -r 1 10                        # Memory history
+sar -d 1 10                        # Disk history
+sar -n DEV 1 10                    # Network history</code></pre>
+
+    <h3>15.2 Log Management</h3>
+    <pre><code># ===== KEY LOG FILES =====
+/var/log/syslog          # General system (Ubuntu)
+/var/log/messages        # General system (RHEL)
+/var/log/auth.log        # Authentication (Ubuntu)
+/var/log/secure          # Authentication (RHEL)
+/var/log/kern.log        # Kernel messages
+/var/log/dmesg           # Boot and hardware messages
+/var/log/nginx/          # Web server logs
+/var/log/mysql/          # Database logs
+/var/log/fail2ban.log    # Fail2ban activity
+
+# ===== LOG ROTATION =====
+cat /etc/logrotate.conf            # Global logrotate config
+ls /etc/logrotate.d/               # Per-app rotation configs
+logrotate -f /etc/logrotate.conf   # Force rotation now
+
+# ===== CENTRALIZED LOGGING (rsyslog) =====
+# Send logs to central syslog server
+echo "*.* @192.168.1.50:514" >> /etc/rsyslog.conf   # UDP
+echo "*.* @@192.168.1.50:514" >> /etc/rsyslog.conf  # TCP
+systemctl restart rsyslog</code></pre>
+
+    <!-- PART 16 -->
+    <h2 id="part16">16. Troubleshooting Servers <span class="domain-tag">Domain 5</span></h2>
+
+    <h3>16.1 Server Troubleshooting Methodology</h3>
+    <ol>
+        <li><strong>Identify the problem</strong> — What exactly is failing? Error message? Which service? Since when?</li>
+        <li><strong>Check service status</strong> — Is the service running? Any errors in status output?</li>
+        <li><strong>Check logs</strong> — Always check logs first — they tell you exactly what went wrong</li>
+        <li><strong>Check resources</strong> — Is the disk full? Out of RAM? CPU pegged?</li>
+        <li><strong>Check network</strong> — Is the port listening? Firewall blocking? DNS resolving?</li>
+        <li><strong>Test connectivity</strong> — Can you reach the service locally? Remotely?</li>
+        <li><strong>Fix and verify</strong> — Apply fix, confirm service works, watch logs</li>
+        <li><strong>Document</strong> — Write it down for next time</li>
+    </ol>
+
+    <h3>16.2 Quick Troubleshooting Reference</h3>
+    <table>
+        <tr><th>Problem</th><th>First Checks</th><th>Commands</th></tr>
+        <tr><td>Web site not loading</td><td>Service running? Port listening? Firewall? Error in logs?</td><td><code>systemctl status nginx</code>, <code>ss -tlpn</code>, <code>tail /var/log/nginx/error.log</code></td></tr>
+        <tr><td>Can't SSH in</td><td>Service running? Port/firewall? fail2ban banned you? Wrong key?</td><td><code>systemctl status sshd</code>, <code>fail2ban-client status sshd</code>, check firewall</td></tr>
+        <tr><td>Disk full</td><td>What's using space? Old logs? Docker images? Temp files?</td><td><code>df -h</code>, <code>du -sh /* 2>/dev/null | sort -rh | head</code></td></tr>
+        <tr><td>Out of memory / OOM</td><td>What process using RAM? Swap usage? Memory leak?</td><td><code>free -h</code>, <code>dmesg | grep -i oom</code>, <code>ps aux --sort=-%mem | head</code></td></tr>
+        <tr><td>High CPU</td><td>Which process? Normal load? Crypto mining? Runaway process?</td><td><code>top -c</code>, <code>ps aux --sort=-%cpu | head</code></td></tr>
+        <tr><td>DNS not resolving</td><td>Service running? Zone files correct? Forwarder reachable?</td><td><code>systemctl status bind9</code>, <code>named-checkzone</code>, <code>dig @localhost domain</code></td></tr>
+        <tr><td>SSL certificate error</td><td>Cert expired? Wrong hostname? Chain missing? Port 443 open?</td><td><code>openssl s_client -connect host:443</code>, <code>certbot certificates</code></td></tr>
+    </table>
+
+    <h3>16.3 The Most Useful Troubleshooting One-Liners</h3>
+    <pre><code># What is listening on port 80?
+ss -tlpn | grep :80
+lsof -i :80
+
+# What changed in the last hour?
+find /etc -newer /tmp/ref_time -type f 2>/dev/null
+journalctl --since "1 hour ago" --priority=err
+
+# Test if web server is responding
+curl -I http://localhost                        # HTTP headers only
+curl -vk https://localhost                      # Verbose HTTPS test
+wget -qO- http://localhost | head -20           # First 20 lines of response
+
+# Check certificate expiry
+echo | openssl s_client -connect mysite.tstc.edu:443 2>/dev/null | \
+    openssl x509 -noout -dates
+
+# Test DNS from a specific server
+dig @8.8.8.8 mysite.tstc.edu
+nslookup mysite.tstc.edu 192.168.1.10
+
+# Find which process opened a file
+lsof /var/log/nginx/error.log
+lsof -p 1234                                   # All files opened by PID 1234
+
+# Test SMTP server
+telnet mail.tstc.edu 25
+# Type: EHLO test.com → MAIL FROM:<test@test.com> → RCPT TO:<user@tstc.edu>
+
+# Check if remote port is open
+nc -zv 192.168.1.10 443
+timeout 5 bash -c 'cat < /dev/null > /dev/tcp/192.168.1.10/443' && echo "OPEN"</code></pre>
+
+    <div class="note">
+        <strong>Check the logs before you do anything else.</strong> 90% of server problems announce themselves in the logs with the exact error and line number. <code>journalctl -xe</code> for systemd services, <code>tail -f /var/log/nginx/error.log</code> for web, <code>/var/log/auth.log</code> for SSH. The answer is almost always already written down — you just have to go read it.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Serve it up, lock it down, keep it running!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
