@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network+ Study Guide · TSTC</title>
+    <style>
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            position: relative;
+        }
+
+        /* TYPOGRAPHY */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            border-left: 10px solid #b91c1c;
+            padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            margin-top: 0.2rem;
+            padding-left: 2.2rem;
+            font-weight: 400;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        /* CODE & COMMANDS */
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #b91c1c;
+            border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.2rem 0;
+            border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code {
+            background: transparent;
+            border: none;
+            color: #facc15;
+        }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+
+        /* MARGIN NOTES */
+        .note {
+            background: #fff9e6;
+            border-left: 8px solid #fbbf24;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05);
+            position: relative;
+            font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Mr. B says:";
+            font-weight: 700;
+            font-style: normal;
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+
+        /* SIDENOTE */
+        .sidenote {
+            float: right;
+            width: 200px;
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            padding: 0.8rem;
+            margin: 0 0 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+
+        /* LISTS */
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+
+        /* TOC */
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            columns: 2 250px;
+            column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+
+        /* BACK LINK */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.5rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+
+        /* PRINT */
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <!-- HEADER -->
+    <h1>🌐 Network+ Study Guide</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Mr. B · CompTIA N10-009</div>
+
+    <!-- TOC -->
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. OSI & TCP/IP Models</a></li>
+            <li><a href="#part2">2. IP Addressing & Subnetting</a></li>
+            <li><a href="#part3">3. Network Protocols & Ports</a></li>
+            <li><a href="#part4">4. Network Hardware</a></li>
+            <li><a href="#part5">5. Routing & Switching</a></li>
+            <li><a href="#part6">6. Wireless Networking</a></li>
+            <li><a href="#part7">7. Network Security</a></li>
+            <li><a href="#part8">8. Troubleshooting Methodology</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. OSI & TCP/IP Models</h2>
+
+    <h3>1.1 The OSI Model — All 7 Layers</h3>
+    <div class="sidenote">
+        <p>💡 <strong>Memory trick:</strong> "Please Do Not Throw Sausage Pizza Away" — Physical, Data Link, Network, Transport, Session, Presentation, Application</p>
+    </div>
+    <table>
+        <tr><th>#</th><th>Layer</th><th>Function</th><th>Protocols / Devices</th></tr>
+        <tr><td>7</td><td><strong>Application</strong></td><td>User-facing services</td><td>HTTP, FTP, DNS, SMTP</td></tr>
+        <tr><td>6</td><td><strong>Presentation</strong></td><td>Encryption, compression, formatting</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+        <tr><td>5</td><td><strong>Session</strong></td><td>Establish, manage, terminate sessions</td><td>NetBIOS, RPC, PPTP</td></tr>
+        <tr><td>4</td><td><strong>Transport</strong></td><td>End-to-end delivery, segmentation</td><td>TCP, UDP</td></tr>
+        <tr><td>3</td><td><strong>Network</strong></td><td>Logical addressing, routing</td><td>IP, ICMP, Router</td></tr>
+        <tr><td>2</td><td><strong>Data Link</strong></td><td>MAC addressing, framing</td><td>Ethernet, Switch, ARP</td></tr>
+        <tr><td>1</td><td><strong>Physical</strong></td><td>Bits over cable/radio</td><td>Hub, Cable, NIC, Wi-Fi</td></tr>
+    </table>
+
+    <h3>1.2 TCP/IP Model (DoD Model)</h3>
+    <table>
+        <tr><th>TCP/IP Layer</th><th>OSI Equivalent</th><th>Key Protocols</th></tr>
+        <tr><td><strong>Application</strong></td><td>Layers 5, 6, 7</td><td>HTTP, HTTPS, DNS, DHCP, FTP, SSH, SMTP</td></tr>
+        <tr><td><strong>Transport</strong></td><td>Layer 4</td><td>TCP (reliable), UDP (fast)</td></tr>
+        <tr><td><strong>Internet</strong></td><td>Layer 3</td><td>IP, ICMP, ARP</td></tr>
+        <tr><td><strong>Network Access</strong></td><td>Layers 1, 2</td><td>Ethernet, Wi-Fi, MAC</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>TCP vs UDP:</strong> TCP is like certified mail — guaranteed delivery, ordered, slower. UDP is like shouting across a room — fast, no guarantee. Use TCP for accuracy (web, email), UDP for speed (video, VoIP, DNS).
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. IP Addressing & Subnetting</h2>
+
+    <h3>2.1 IPv4 Address Classes</h3>
+    <table>
+        <tr><th>Class</th><th>Range</th><th>Default Subnet Mask</th><th>Use</th></tr>
+        <tr><td><strong>A</strong></td><td>1.0.0.0 – 126.255.255.255</td><td>255.0.0.0 (/8)</td><td>Large networks</td></tr>
+        <tr><td><strong>B</strong></td><td>128.0.0.0 – 191.255.255.255</td><td>255.255.0.0 (/16)</td><td>Medium networks</td></tr>
+        <tr><td><strong>C</strong></td><td>192.0.0.0 – 223.255.255.255</td><td>255.255.255.0 (/24)</td><td>Small networks</td></tr>
+        <tr><td><strong>D</strong></td><td>224.0.0.0 – 239.255.255.255</td><td>N/A</td><td>Multicast</td></tr>
+    </table>
+
+    <h3>2.2 Private IP Ranges (RFC 1918)</h3>
+    <table>
+        <tr><th>Range</th><th>CIDR</th><th>Class</th></tr>
+        <tr><td>10.0.0.0 – 10.255.255.255</td><td>10.0.0.0/8</td><td>A</td></tr>
+        <tr><td>172.16.0.0 – 172.31.255.255</td><td>172.16.0.0/12</td><td>B</td></tr>
+        <tr><td>192.168.0.0 – 192.168.255.255</td><td>192.168.0.0/16</td><td>C</td></tr>
+    </table>
+
+    <h3>2.3 Subnetting Cheat Sheet</h3>
+    <table>
+        <tr><th>CIDR</th><th>Subnet Mask</th><th>Hosts per Subnet</th><th>Subnets from /24</th></tr>
+        <tr><td>/24</td><td>255.255.255.0</td><td>254</td><td>1</td></tr>
+        <tr><td>/25</td><td>255.255.255.128</td><td>126</td><td>2</td></tr>
+        <tr><td>/26</td><td>255.255.255.192</td><td>62</td><td>4</td></tr>
+        <tr><td>/27</td><td>255.255.255.224</td><td>30</td><td>8</td></tr>
+        <tr><td>/28</td><td>255.255.255.240</td><td>14</td><td>16</td></tr>
+        <tr><td>/29</td><td>255.255.255.248</td><td>6</td><td>32</td></tr>
+        <tr><td>/30</td><td>255.255.255.252</td><td>2</td><td>64</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Subnetting formula:</strong> Hosts = 2<sup>n</sup> - 2 (n = host bits). Always subtract 2 — one for network address, one for broadcast. The exam WILL test this. Practice until it's automatic.
+    </div>
+
+    <h3>2.4 IPv6 Basics</h3>
+    <ul>
+        <li>128-bit address — written as 8 groups of 4 hex digits: <code>2001:0db8:85a3::8a2e:0370:7334</code></li>
+        <li><strong>Loopback:</strong> <code>::1</code> (like 127.0.0.1 in IPv4)</li>
+        <li><strong>Link-local:</strong> <code>fe80::/10</code> — auto-assigned, not routable</li>
+        <li><strong>Global unicast:</strong> <code>2000::/3</code> — publicly routable</li>
+        <li>No broadcast in IPv6 — uses multicast instead</li>
+        <li>No NAT needed — every device gets a public address</li>
+    </ul>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Network Protocols & Ports</h2>
+
+    <h3>3.1 Must-Know Ports</h3>
+    <div class="sidenote">
+        <p>🧠 <strong>Exam tip:</strong> Know ALL of these cold. Port questions show up constantly on N10-009.</p>
+    </div>
+    <table>
+        <tr><th>Port</th><th>Protocol</th><th>Transport</th><th>Description</th></tr>
+        <tr><td>20/21</td><td>FTP</td><td>TCP</td><td>File Transfer (20=data, 21=control)</td></tr>
+        <tr><td>22</td><td>SSH</td><td>TCP</td><td>Secure Shell — encrypted remote access</td></tr>
+        <tr><td>23</td><td>Telnet</td><td>TCP</td><td>Unencrypted remote access — AVOID</td></tr>
+        <tr><td>25</td><td>SMTP</td><td>TCP</td><td>Send email</td></tr>
+        <tr><td>53</td><td>DNS</td><td>TCP/UDP</td><td>Domain Name Resolution</td></tr>
+        <tr><td>67/68</td><td>DHCP</td><td>UDP</td><td>Dynamic IP assignment (67=server, 68=client)</td></tr>
+        <tr><td>80</td><td>HTTP</td><td>TCP</td><td>Web traffic (unencrypted)</td></tr>
+        <tr><td>110</td><td>POP3</td><td>TCP</td><td>Receive email (downloads, deletes)</td></tr>
+        <tr><td>143</td><td>IMAP</td><td>TCP</td><td>Receive email (syncs, keeps on server)</td></tr>
+        <tr><td>161/162</td><td>SNMP</td><td>UDP</td><td>Network device monitoring</td></tr>
+        <tr><td>389</td><td>LDAP</td><td>TCP</td><td>Directory services</td></tr>
+        <tr><td>443</td><td>HTTPS</td><td>TCP</td><td>Encrypted web traffic</td></tr>
+        <tr><td>445</td><td>SMB</td><td>TCP</td><td>Windows file sharing</td></tr>
+        <tr><td>3389</td><td>RDP</td><td>TCP</td><td>Windows Remote Desktop</td></tr>
+    </table>
+
+    <h3>3.2 Key Network Services</h3>
+    <table>
+        <tr><th>Service</th><th>Purpose</th><th>Key Detail</th></tr>
+        <tr><td><strong>DNS</strong></td><td>Resolves hostnames to IPs</td><td>Hierarchy: Root → TLD → Authoritative</td></tr>
+        <tr><td><strong>DHCP</strong></td><td>Auto-assigns IP config</td><td>DORA: Discover, Offer, Request, Acknowledge</td></tr>
+        <tr><td><strong>NAT</strong></td><td>Translates private→public IPs</td><td>PAT (overload) = many private, one public</td></tr>
+        <tr><td><strong>NTP</strong></td><td>Syncs time across network</td><td>Port 123 UDP — critical for auth/logs</td></tr>
+        <tr><td><strong>SNMP</strong></td><td>Monitors network devices</td><td>v3 = encrypted, use it; v1/v2 = plain text</td></tr>
+    </table>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Network Hardware</h2>
+
+    <h3>4.1 Devices by OSI Layer</h3>
+    <table>
+        <tr><th>Device</th><th>OSI Layer</th><th>Function</th></tr>
+        <tr><td><strong>Hub</strong></td><td>Layer 1</td><td>Repeats signal to ALL ports — dumb, creates collisions</td></tr>
+        <tr><td><strong>Switch</strong></td><td>Layer 2</td><td>Forwards frames by MAC address — smart, reduces collisions</td></tr>
+        <tr><td><strong>Router</strong></td><td>Layer 3</td><td>Routes packets between networks using IP</td></tr>
+        <tr><td><strong>Multilayer Switch</strong></td><td>Layer 3</td><td>Switches AND routes — does both</td></tr>
+        <tr><td><strong>WAP</strong></td><td>Layer 2</td><td>Wireless Access Point — connects wireless to wired</td></tr>
+        <tr><td><strong>Firewall</strong></td><td>Layer 3–7</td><td>Filters traffic by rules — your security gatekeeper</td></tr>
+        <tr><td><strong>Load Balancer</strong></td><td>Layer 4–7</td><td>Distributes traffic across multiple servers</td></tr>
+        <tr><td><strong>Proxy Server</strong></td><td>Layer 7</td><td>Intermediary — caching, filtering, anonymity</td></tr>
+    </table>
+
+    <h3>4.2 Cable Types</h3>
+    <table>
+        <tr><th>Cable</th><th>Max Speed</th><th>Max Distance</th><th>Use Case</th></tr>
+        <tr><td>Cat 5e</td><td>1 Gbps</td><td>100m</td><td>Older installs</td></tr>
+        <tr><td>Cat 6</td><td>1 Gbps (10G short)</td><td>100m (55m at 10G)</td><td>Modern standard</td></tr>
+        <tr><td>Cat 6a</td><td>10 Gbps</td><td>100m</td><td>Data centers</td></tr>
+        <tr><td>Single-mode Fiber</td><td>100+ Gbps</td><td>40+ km</td><td>Long distance, WAN</td></tr>
+        <tr><td>Multi-mode Fiber</td><td>10 Gbps</td><td>550m</td><td>Campus/building backbone</td></tr>
+        <tr><td>Coaxial</td><td>Varies</td><td>500m</td><td>Cable internet, legacy</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>568A vs 568B wiring:</strong> Both are valid standards — just be consistent. Mixing them on both ends makes a crossover cable (used to connect two PCs directly). Same standard both ends = straight-through (PC to switch).
+    </div>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Routing & Switching</h2>
+
+    <h3>5.1 VLANs</h3>
+    <p>VLANs (Virtual LANs) logically segment a network on a single physical switch.</p>
+    <ul>
+        <li><strong>Access port:</strong> connects end devices — carries one VLAN</li>
+        <li><strong>Trunk port:</strong> connects switches/routers — carries multiple VLANs tagged with <strong>802.1Q</strong></li>
+        <li><strong>Native VLAN:</strong> untagged traffic on a trunk — default VLAN 1 (change it for security!)</li>
+    </ul>
+
+    <h3>5.2 Routing Protocols</h3>
+    <table>
+        <tr><th>Protocol</th><th>Type</th><th>Algorithm</th><th>Key Detail</th></tr>
+        <tr><td><strong>RIP</strong></td><td>Distance Vector</td><td>Hop count (max 15)</td><td>Old, slow convergence — rarely used</td></tr>
+        <tr><td><strong>OSPF</strong></td><td>Link State</td><td>Dijkstra (cost)</td><td>Fast, scalable — most common interior</td></tr>
+        <tr><td><strong>EIGRP</strong></td><td>Hybrid</td><td>Bandwidth + delay</td><td>Cisco proprietary — fast convergence</td></tr>
+        <tr><td><strong>BGP</strong></td><td>Path Vector</td><td>Policy-based</td><td>The Internet's routing protocol — between ISPs</td></tr>
+    </table>
+
+    <h3>5.3 Spanning Tree Protocol (STP)</h3>
+    <ul>
+        <li>Prevents <strong>switching loops</strong> in redundant topologies</li>
+        <li>Elects a <strong>Root Bridge</strong> — lowest Bridge ID wins</li>
+        <li>Blocks redundant paths — only one active path at a time</li>
+        <li><strong>RSTP (802.1w)</strong> = faster convergence version — know this one for the exam</li>
+    </ul>
+
+    <pre><code># Useful show commands on Cisco switches:
+show vlan brief              # See all VLANs
+show interfaces trunk        # See trunk ports
+show spanning-tree           # STP topology
+show ip route                # Routing table
+show arp                     # ARP cache (IP to MAC mappings)</code></pre>
+
+    <div class="note">
+        <strong>Default Gateway:</strong> The router's IP address on your local subnet. Without it, your PC can reach local hosts but can't get to the internet. First thing to check when "internet is down."
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Wireless Networking</h2>
+
+    <h3>6.1 Wi-Fi Standards</h3>
+    <table>
+        <tr><th>Standard</th><th>Wi-Fi Name</th><th>Max Speed</th><th>Frequency</th></tr>
+        <tr><td>802.11a</td><td>—</td><td>54 Mbps</td><td>5 GHz</td></tr>
+        <tr><td>802.11b</td><td>—</td><td>11 Mbps</td><td>2.4 GHz</td></tr>
+        <tr><td>802.11g</td><td>—</td><td>54 Mbps</td><td>2.4 GHz</td></tr>
+        <tr><td>802.11n</td><td>Wi-Fi 4</td><td>600 Mbps</td><td>2.4 / 5 GHz</td></tr>
+        <tr><td>802.11ac</td><td>Wi-Fi 5</td><td>3.5 Gbps</td><td>5 GHz</td></tr>
+        <tr><td>802.11ax</td><td>Wi-Fi 6/6E</td><td>9.6 Gbps</td><td>2.4 / 5 / 6 GHz</td></tr>
+    </table>
+
+    <h3>6.2 Wireless Security Standards</h3>
+    <table>
+        <tr><th>Standard</th><th>Encryption</th><th>Status</th></tr>
+        <tr><td>WEP</td><td>RC4 (40-bit)</td><td>❌ Broken — never use</td></tr>
+        <tr><td>WPA</td><td>TKIP</td><td>⚠️ Weak — legacy only</td></tr>
+        <tr><td>WPA2</td><td>AES/CCMP</td><td>✅ Current minimum standard</td></tr>
+        <tr><td>WPA3</td><td>AES/GCMP-256</td><td>✅ Best — use when available</td></tr>
+    </table>
+
+    <div class="sidenote">
+        <p>📡 <strong>2.4 vs 5 GHz:</strong> 2.4 = farther range, more interference, slower. 5 = shorter range, less congestion, faster. 6 GHz (Wi-Fi 6E) = fastest, shortest range.</p>
+    </div>
+
+    <h3>6.3 Wireless Threats</h3>
+    <ul>
+        <li><strong>Evil Twin:</strong> Rogue AP mimicking a legitimate one — users connect unknowingly</li>
+        <li><strong>Deauth Attack:</strong> Forged packets kick users off, forcing reconnect (used to capture handshakes)</li>
+        <li><strong>War Driving:</strong> Driving around scanning for open Wi-Fi networks</li>
+        <li><strong>WPS Attack:</strong> Brute force the 8-digit WPS PIN — disable WPS!</li>
+    </ul>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Network Security</h2>
+
+    <h3>7.1 Firewall Types</h3>
+    <table>
+        <tr><th>Type</th><th>OSI Layer</th><th>How It Works</th></tr>
+        <tr><td><strong>Packet Filter</strong></td><td>Layer 3–4</td><td>Checks IP/port — fast, simple, stateless</td></tr>
+        <tr><td><strong>Stateful</strong></td><td>Layer 3–4</td><td>Tracks connection state — knows if packet belongs to active session</td></tr>
+        <tr><td><strong>Application (WAF)</strong></td><td>Layer 7</td><td>Inspects actual content — blocks SQL injection, XSS</td></tr>
+        <tr><td><strong>NGFW</strong></td><td>Layer 3–7</td><td>All of above + IPS, deep packet inspection, app awareness</td></tr>
+    </table>
+
+    <h3>7.2 Network Attack Types</h3>
+    <table>
+        <tr><th>Attack</th><th>Description</th><th>Defense</th></tr>
+        <tr><td><strong>DoS / DDoS</strong></td><td>Flood target with traffic to overwhelm it</td><td>Rate limiting, scrubbing centers</td></tr>
+        <tr><td><strong>Man-in-the-Middle</strong></td><td>Attacker intercepts traffic between two hosts</td><td>Encryption (TLS), certificate pinning</td></tr>
+        <tr><td><strong>ARP Spoofing</strong></td><td>Fake ARP replies to poison ARP cache</td><td>Dynamic ARP Inspection (DAI)</td></tr>
+        <tr><td><strong>DNS Poisoning</strong></td><td>Corrupt DNS cache to redirect traffic</td><td>DNSSEC</td></tr>
+        <tr><td><strong>VLAN Hopping</strong></td><td>Switch spoofing or double tagging to reach other VLANs</td><td>Disable DTP, change native VLAN</td></tr>
+    </table>
+
+    <h3>7.3 Security Concepts</h3>
+    <pre><code># Key terms to know cold:
+IDS   - Intrusion Detection System  (detects, alerts — passive)
+IPS   - Intrusion Prevention System (detects AND blocks — inline)
+DMZ   - Demilitarized Zone (public-facing servers between two firewalls)
+VPN   - Encrypted tunnel over public network
+ACL   - Access Control List (permit/deny rules on routers/firewalls)
+AAA   - Authentication, Authorization, Accounting (RADIUS / TACACS+)</code></pre>
+
+    <div class="note">
+        <strong>IDS vs IPS:</strong> Think of IDS as a security camera (watches and records) and IPS as a security guard (watches AND stops the threat). IPS must be inline in the traffic path. IDS can be passive (tap or span port).
+    </div>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Troubleshooting Methodology</h2>
+
+    <div class="sidenote">
+        <p>🧠 The troubleshooting steps are the SAME across all CompTIA exams. Memorize them once, use them everywhere.</p>
+    </div>
+
+    <ol>
+        <li><strong>Identify the problem</strong> — Gather information, duplicate if possible, check error messages</li>
+        <li><strong>Establish theory of probable cause</strong> — Start at Layer 1 and work up (OSI bottom-up)</li>
+        <li><strong>Test the theory</strong> — Confirm or deny, escalate if needed</li>
+        <li><strong>Establish plan of action</strong> — Know your fix before touching anything</li>
+        <li><strong>Implement the solution</strong> — Make your change</li>
+        <li><strong>Verify full system functionality</strong> — Test everything, not just the reported issue</li>
+        <li><strong>Document findings</strong> — Write it down. Future you will thank you.</li>
+    </ol>
+
+    <h3>Network Troubleshooting Commands</h3>
+    <pre><code># Connectivity
+ping 8.8.8.8               # Test basic IP connectivity
+ping -t 8.8.8.8            # Continuous ping (Windows)
+tracert 8.8.8.8            # Trace path to destination (Windows)
+traceroute 8.8.8.8         # Same thing (Linux/Mac)
+
+# DNS
+nslookup google.com        # Query DNS for a hostname
+dig google.com             # Detailed DNS query (Linux)
+
+# Interface & Config
+ipconfig /all              # Full IP config (Windows)
+ipconfig /release          # Release DHCP lease
+ipconfig /renew            # Get new DHCP lease
+ipconfig /flushdns         # Clear DNS cache
+ip addr show               # IP config (Linux)
+
+# Connections & Ports
+netstat -an                # All active connections and ports
+ss -tulpn                  # Listening ports (Linux)
+arp -a                     # View ARP cache
+
+# Advanced
+pathping 8.8.8.8           # Combo ping + tracert (Windows)
+nmap -sV 192.168.1.1       # Port scan target (use ethically!)</code></pre>
+
+    <h3>OSI-Based Troubleshooting Order</h3>
+    <table>
+        <tr><th>Layer</th><th>What to Check</th><th>Tool</th></tr>
+        <tr><td>1 — Physical</td><td>Cable plugged in? Link light on? NIC seated?</td><td>Eyes, cable tester</td></tr>
+        <tr><td>2 — Data Link</td><td>Correct VLAN? MAC conflicts? Duplex mismatch?</td><td><code>show interfaces</code></td></tr>
+        <tr><td>3 — Network</td><td>Correct IP/mask/gateway? Route exist?</td><td><code>ipconfig</code>, <code>ping</code></td></tr>
+        <tr><td>4 — Transport</td><td>Correct port? Firewall blocking?</td><td><code>netstat</code>, <code>telnet</code></td></tr>
+        <tr><td>7 — Application</td><td>Service running? Config correct?</td><td><code>nslookup</code>, browser</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The #1 Network+ troubleshooting tip:</strong> Always check the <strong>physical layer first</strong>. Half of all "network is down" tickets are a unplugged cable or a dead switch port. Don't overthink it — check Layer 1 before you touch anything else.
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF. <br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep learning, and go pass that Network+ exam!</strong> — Mr. B
+    </div>
+
+</div> <!-- container -->
+</body>
+</html>
