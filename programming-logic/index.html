@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Logic & Design · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .mod-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .py-tag {
+            display: inline-block; background: #1d4ed8; color: #bfdbfe; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .ps-tag {
+            display: inline-block; background: #5b21b6; color: #ede9fe; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🐍 Programming Logic & Design</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · PowerShell & Python</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Structured Programming Concepts</a></li>
+            <li><a href="#part2">2. Scripting vs. Programming</a></li>
+            <li><a href="#part3">3. PowerShell Fundamentals</a></li>
+            <li><a href="#part4">4. PowerShell Execution & Providers</a></li>
+            <li><a href="#part5">5. PowerShell Pipeline & Formatting</a></li>
+            <li><a href="#part6">6. Introduction to Python</a></li>
+            <li><a href="#part7">7. Python Data Structures</a></li>
+            <li><a href="#part8">8. Python Control Flow</a></li>
+            <li><a href="#part9">9. Functions, Arguments & Return Values</a></li>
+            <li><a href="#part10">10. Object-Oriented Programming</a></li>
+            <li><a href="#part11">11. File I/O & Exception Handling</a></li>
+            <li><a href="#part12">12. Data, Visualization & Mapping</a></li>
+            <li><a href="#part13">13. PowerShell for System Administration</a></li>
+            <li><a href="#part14">14. Software Development Best Practices</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Structured Programming Concepts <span class="mod-tag">Module 1</span></h2>
+
+    <h3>1.1 What is Structured Programming?</h3>
+    <p>Structured programming is a programming paradigm that improves code clarity, quality, and development time by using <strong>three fundamental control structures</strong> — sequence, selection, and iteration. Every program, no matter how complex, can be built from these three building blocks. No spaghetti code, no uncontrolled jumps — just clean, logical flow.</p>
+
+    <h3>1.2 The Three Control Structures</h3>
+    <table>
+        <tr><th>Structure</th><th>Description</th><th>Examples</th></tr>
+        <tr><td><strong>Sequence</strong></td><td>Execute statements one after another in order — top to bottom</td><td>Variable assignment, print statements, calculations</td></tr>
+        <tr><td><strong>Selection</strong></td><td>Choose between paths based on a condition</td><td>if/elif/else (Python), if/elseif/else (PowerShell), switch/case</td></tr>
+        <tr><td><strong>Iteration (Loops)</strong></td><td>Repeat a block of code while a condition is true or for each item in a collection</td><td>for, while, foreach, do-while</td></tr>
+    </table>
+
+    <h3>1.3 Algorithm Design Tools</h3>
+    <table>
+        <tr><th>Tool</th><th>Description</th><th>Use Case</th></tr>
+        <tr><td><strong>Pseudocode</strong></td><td>Plain English description of an algorithm — no specific syntax</td><td>Planning logic before coding — language agnostic</td></tr>
+        <tr><td><strong>Flowchart</strong></td><td>Visual diagram using standard shapes to represent program flow</td><td>Visualizing decision points, loops, and process flow</td></tr>
+        <tr><td><strong>IPO Chart</strong></td><td>Input → Process → Output table</td><td>Simple program planning — what goes in, what happens, what comes out</td></tr>
+    </table>
+
+    <h3>1.4 Flowchart Symbols</h3>
+    <table>
+        <tr><th>Shape</th><th>Name</th><th>Represents</th></tr>
+        <tr><td>Oval</td><td>Terminal</td><td>Start or End of program</td></tr>
+        <tr><td>Rectangle</td><td>Process</td><td>A computation or action step</td></tr>
+        <tr><td>Diamond</td><td>Decision</td><td>A yes/no or true/false condition</td></tr>
+        <tr><td>Parallelogram</td><td>Input/Output</td><td>Reading input or displaying output</td></tr>
+        <tr><td>Arrow</td><td>Flow Line</td><td>Direction of program flow</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Always plan before you code.</strong> Professional developers spend more time designing than typing. A 10-minute pseudocode session saves hours of debugging. Draw it out, think through every condition, every edge case — then write the code. The students who skip this step are the ones still debugging at midnight.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Scripting vs. Programming <span class="mod-tag">Module 1</span></h2>
+
+    <h3>2.1 Key Differences</h3>
+    <table>
+        <tr><th>Feature</th><th>Scripting</th><th>Programming</th></tr>
+        <tr><td><strong>Execution</strong></td><td>Interpreted at runtime — no compilation step</td><td>Often compiled to machine code or bytecode first</td></tr>
+        <tr><td><strong>Speed</strong></td><td>Slower — interpreted line by line</td><td>Faster — pre-compiled execution</td></tr>
+        <tr><td><strong>Purpose</strong></td><td>Automate tasks, glue programs together, system administration</td><td>Build applications, operating systems, databases</td></tr>
+        <tr><td><strong>Complexity</strong></td><td>Usually shorter, task-focused</td><td>Can be very large and complex</td></tr>
+        <tr><td><strong>Examples</strong></td><td>PowerShell, Bash, Python scripts, JavaScript</td><td>C, C++, Java, C# (compiled)</td></tr>
+        <tr><td><strong>Environment</strong></td><td>Needs an interpreter (PowerShell engine, Python interpreter)</td><td>Needs a compiler (gcc, javac)</td></tr>
+    </table>
+
+    <h3>2.2 Where Python Sits</h3>
+    <ul>
+        <li>Python is both a <strong>scripting language</strong> (great for automation and quick tasks) AND a full <strong>programming language</strong> (used to build web apps, AI, data science, games)</li>
+        <li>Python is <strong>interpreted</strong> — the Python interpreter executes code line by line</li>
+        <li>Python compiles to <strong>bytecode (.pyc)</strong> internally — faster on subsequent runs but still interpreted</li>
+        <li>This makes Python incredibly <strong>flexible</strong> — run a 3-line script or build a million-line application</li>
+    </ul>
+
+    <h3>2.3 Why Learn Both PowerShell AND Python?</h3>
+    <ul>
+        <li><strong>PowerShell</strong> — native to Windows, deep OS integration, essential for sysadmin tasks, Active Directory, Azure</li>
+        <li><strong>Python</strong> — cross-platform, massive library ecosystem, data science, web, network automation (Netmiko, NAPALM)</li>
+        <li>Together they cover <strong>virtually every automation need</strong> in IT — Windows infrastructure with PowerShell, cross-platform and network automation with Python</li>
+    </ul>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. PowerShell Fundamentals <span class="mod-tag">Module 2</span> <span class="ps-tag">PowerShell</span></h2>
+
+    <h3>3.1 What is PowerShell?</h3>
+    <p>PowerShell is a task automation framework from Microsoft consisting of a <strong>command-line shell</strong> and a <strong>scripting language</strong> built on .NET. Unlike traditional command prompts that work with text, PowerShell works with <strong>objects</strong> — structured data with properties and methods. This makes it incredibly powerful for system administration.</p>
+
+    <h3>3.2 PowerShell Basics</h3>
+    <pre><code># ===== GETTING HELP =====
+Get-Help Get-Process               # Full help for a command
+Get-Help Get-Process -Examples     # Just examples
+Get-Help Get-Process -Online       # Open in browser
+Update-Help                        # Download latest help files
+
+# ===== GETTING COMMANDS =====
+Get-Command                        # List ALL commands
+Get-Command -Verb Get              # All commands that start with Get
+Get-Command -Noun Process          # All commands dealing with processes
+Get-Command *network*              # Commands with "network" in the name
+
+# ===== VERB-NOUN NAMING =====
+# PowerShell commands (called cmdlets) always follow Verb-Noun format:
+Get-Process        # Gets process info
+Stop-Process       # Stops a process
+Start-Service      # Starts a service
+Set-Location       # Changes directory (like cd)
+New-Item           # Creates a file/folder
+Remove-Item        # Deletes a file/folder</code></pre>
+
+    <h3>3.3 Variables & Data Types</h3>
+    <pre><code># Variables start with $ in PowerShell
+$name = "Adrian"                   # String
+$age = 42                          # Integer
+$pi = 3.14159                      # Float (Double)
+$isAdmin = $true                   # Boolean ($true / $false)
+$nothing = $null                   # Null value
+
+# Check data type
+$name.GetType()                    # Returns System.String
+$age.GetType()                     # Returns System.Int32
+
+# Type casting
+[int]"42"                          # Convert string to int
+[string]42                         # Convert int to string
+[double]"3.14"                     # Convert to double
+
+# String operations
+$greeting = "Hello, $name!"        # String interpolation (double quotes)
+$literal = 'Hello, $name!'         # Literal string (single quotes — no interpolation)
+$upper = $name.ToUpper()           # ADRIAN
+$len = $name.Length                # 6
+$sub = $name.Substring(0, 3)       # Adr</code></pre>
+
+    <h3>3.4 Operators</h3>
+    <table>
+        <tr><th>Category</th><th>PowerShell</th><th>Meaning</th></tr>
+        <tr><td>Comparison</td><td><code>-eq, -ne, -gt, -lt, -ge, -le</code></td><td>Equal, Not equal, Greater, Less, Greater/equal, Less/equal</td></tr>
+        <tr><td>Logical</td><td><code>-and, -or, -not, !</code></td><td>AND, OR, NOT</td></tr>
+        <tr><td>String match</td><td><code>-like, -match, -contains</code></td><td>Wildcard, Regex, Contains value</td></tr>
+        <tr><td>Arithmetic</td><td><code>+ - * / %</code></td><td>Add, Subtract, Multiply, Divide, Modulo</td></tr>
+        <tr><td>Assignment</td><td><code>= += -= *= /=</code></td><td>Assign and compound assign</td></tr>
+    </table>
+
+    <pre><code># Comparison examples
+5 -eq 5                            # True
+"Hello" -like "Hell*"              # True (wildcard)
+"PowerShell" -match "^Power"       # True (regex)
+@(1,2,3) -contains 2               # True
+
+# Logical
+($age -gt 18) -and ($isAdmin -eq $true)
+-not $isAdmin</code></pre>
+
+    <h3>3.5 Control Flow in PowerShell</h3>
+    <pre><code># ===== IF / ELSEIF / ELSE =====
+$score = 85
+
+if ($score -ge 90) {
+    Write-Host "A"
+} elseif ($score -ge 80) {
+    Write-Host "B"
+} elseif ($score -ge 70) {
+    Write-Host "C"
+} else {
+    Write-Host "Below C"
+}
+
+# ===== SWITCH =====
+$day = "Monday"
+switch ($day) {
+    "Monday"    { Write-Host "Start of the week" }
+    "Friday"    { Write-Host "Almost weekend!" }
+    "Saturday"  { Write-Host "Weekend!" }
+    "Sunday"    { Write-Host "Weekend!" }
+    default     { Write-Host "Midweek" }
+}
+
+# ===== FOR LOOP =====
+for ($i = 1; $i -le 5; $i++) {
+    Write-Host "Count: $i"
+}
+
+# ===== FOREACH LOOP =====
+$services = @("wuauserv", "bits", "spooler")
+foreach ($svc in $services) {
+    $status = (Get-Service -Name $svc).Status
+    Write-Host "$svc : $status"
+}
+
+# ===== WHILE LOOP =====
+$count = 0
+while ($count -lt 5) {
+    Write-Host "Count: $count"
+    $count++
+}
+
+# ===== DO-WHILE =====
+do {
+    $input = Read-Host "Enter 'quit' to exit"
+} while ($input -ne "quit")</code></pre>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. PowerShell Execution Policy & Providers <span class="mod-tag">Module 2</span> <span class="ps-tag">PowerShell</span></h2>
+
+    <h3>4.1 Execution Policy</h3>
+    <p>Execution Policy controls which PowerShell scripts are allowed to run. It's a security feature — not an unbreakable barrier, but it prevents accidental execution of untrusted scripts.</p>
+
+    <table>
+        <tr><th>Policy</th><th>Behavior</th></tr>
+        <tr><td><strong>Restricted</strong></td><td>Default on Windows — no scripts allowed, only interactive commands</td></tr>
+        <tr><td><strong>AllSigned</strong></td><td>Only scripts signed by a trusted publisher can run</td></tr>
+        <tr><td><strong>RemoteSigned</strong></td><td>Local scripts run freely; downloaded scripts must be signed</td></tr>
+        <tr><td><strong>Unrestricted</strong></td><td>All scripts run — warns before running downloaded scripts</td></tr>
+        <tr><td><strong>Bypass</strong></td><td>Nothing blocked, no warnings — used in automation pipelines</td></tr>
+        <tr><td><strong>Undefined</strong></td><td>No policy set at this scope — inherits from higher scope</td></tr>
+    </table>
+
+    <pre><code># Check current policy
+Get-ExecutionPolicy
+Get-ExecutionPolicy -List           # Show policy at all scopes
+
+# Set policy (requires admin)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+Set-ExecutionPolicy RemoteSigned -Scope LocalMachine
+
+# Run a single script bypassing policy (doesn't change system policy)
+PowerShell.exe -ExecutionPolicy Bypass -File .\myscript.ps1</code></pre>
+
+    <h3>4.2 PowerShell Providers</h3>
+    <p>Providers are adapters that let you navigate different data stores using the same filesystem-like commands. Everything in PowerShell looks like a drive you can <code>cd</code> into.</p>
+
+    <table>
+        <tr><th>Provider</th><th>Drive</th><th>What It Exposes</th></tr>
+        <tr><td><strong>FileSystem</strong></td><td>C:, D:, etc.</td><td>Files and directories on disk</td></tr>
+        <tr><td><strong>Registry</strong></td><td>HKLM:, HKCU:</td><td>Windows Registry hives</td></tr>
+        <tr><td><strong>Environment</strong></td><td>Env:</td><td>Environment variables</td></tr>
+        <tr><td><strong>Certificate</strong></td><td>Cert:</td><td>Certificate store</td></tr>
+        <tr><td><strong>Variable</strong></td><td>Variable:</td><td>PowerShell variables</td></tr>
+        <tr><td><strong>Function</strong></td><td>Function:</td><td>Loaded PowerShell functions</td></tr>
+        <tr><td><strong>Alias</strong></td><td>Alias:</td><td>Command aliases</td></tr>
+    </table>
+
+    <pre><code># Navigate providers like a filesystem
+Get-PSDrive                         # List all drives/providers
+
+# Registry navigation
+Set-Location HKLM:
+Get-ChildItem HKLM:\SOFTWARE\Microsoft
+
+# Environment variables
+Get-ChildItem Env:                  # List all env variables
+$Env:PATH                           # Read PATH variable
+$Env:USERNAME                       # Current username
+$Env:COMPUTERNAME                   # Computer name
+
+# Create/modify env variable
+$Env:MY_VAR = "Hello"</code></pre>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. PowerShell Pipeline & Formatting <span class="mod-tag">Module 4</span> <span class="ps-tag">PowerShell</span></h2>
+
+    <h3>5.1 The Pipeline</h3>
+    <p>The PowerShell pipeline (<code>|</code>) passes <strong>objects</strong> from one command to the next — not just text. This is what makes PowerShell so powerful. You can chain commands together to filter, sort, format, and export data in one line.</p>
+
+    <pre><code># Basic pipeline — get processes, sort by CPU usage, show top 10
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 10
+
+# Filter with Where-Object
+Get-Process | Where-Object { $_.CPU -gt 100 }       # $_ = current object in pipeline
+Get-Service | Where-Object { $_.Status -eq "Running" }
+
+# Select specific properties
+Get-Process | Select-Object Name, CPU, WorkingSet
+
+# Pipe to format commands
+Get-Process | Format-Table Name, CPU, Id -AutoSize   # Table format
+Get-Process | Format-List Name, CPU, Id              # List format
+Get-Service | Format-Wide Name -Column 4             # Wide format
+
+# Pipe to export
+Get-Process | Export-Csv "C:\processes.csv" -NoTypeInformation
+Get-Service | Export-Csv "C:\services.csv" -NoTypeInformation
+Get-Process | ConvertTo-Json                         # JSON output
+Get-Process | Out-File "C:\processes.txt"            # Plain text file
+Get-Process | Out-GridView                           # Pop-up sortable table</code></pre>
+
+    <h3>5.2 Common Pipeline Cmdlets</h3>
+    <table>
+        <tr><th>Cmdlet</th><th>Purpose</th><th>Example</th></tr>
+        <tr><td><code>Where-Object</code></td><td>Filter objects by condition</td><td><code>Where-Object { $_.Status -eq "Running" }</code></td></tr>
+        <tr><td><code>Select-Object</code></td><td>Choose properties or limit results</td><td><code>Select-Object Name, CPU -First 5</code></td></tr>
+        <tr><td><code>Sort-Object</code></td><td>Sort by property</td><td><code>Sort-Object CPU -Descending</code></td></tr>
+        <tr><td><code>Group-Object</code></td><td>Group by property</td><td><code>Group-Object Status</code></td></tr>
+        <tr><td><code>Measure-Object</code></td><td>Count, sum, average</td><td><code>Measure-Object CPU -Sum -Average</code></td></tr>
+        <tr><td><code>ForEach-Object</code></td><td>Run action for each object</td><td><code>ForEach-Object { $_.Name.ToUpper() }</code></td></tr>
+        <tr><td><code>Tee-Object</code></td><td>Send pipeline to file AND to next cmdlet</td><td><code>Tee-Object -FilePath "log.txt"</code></td></tr>
+    </table>
+
+    <h3>5.3 PowerShell Functions</h3>
+    <pre><code># ===== BASIC FUNCTION =====
+function Say-Hello {
+    Write-Host "Hello, World!"
+}
+Say-Hello                           # Call the function
+
+# ===== FUNCTION WITH PARAMETERS =====
+function Get-Greeting {
+    param(
+        [string]$Name,
+        [int]$Age = 0               # Default value
+    )
+    Write-Host "Hello, $Name! You are $Age years old."
+}
+Get-Greeting -Name "Adrian" -Age 42
+
+# ===== FUNCTION WITH RETURN VALUE =====
+function Get-Square {
+    param([double]$Number)
+    return $Number * $Number
+}
+$result = Get-Square -Number 5
+Write-Host "5 squared = $result"    # 25
+
+# ===== ADVANCED FUNCTION (CmdletBinding) =====
+function Test-Connection-Custom {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ComputerName,
+        [int]$Count = 4
+    )
+    $result = Test-Connection -ComputerName $ComputerName -Count $Count -Quiet
+    if ($result) {
+        Write-Host "$ComputerName is reachable" -ForegroundColor Green
+    } else {
+        Write-Host "$ComputerName is NOT reachable" -ForegroundColor Red
+    }
+}
+Test-Connection-Custom -ComputerName "google.com"</code></pre>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Introduction to Python <span class="mod-tag">Module 3</span> <span class="py-tag">Python</span></h2>
+
+    <h3>6.1 Python Basics</h3>
+    <pre><code># Python uses indentation (4 spaces) instead of braces
+# No semicolons needed — newline ends a statement
+# Comments start with #
+
+# ===== VARIABLES & DATA TYPES =====
+name = "Adrian"                    # str
+age = 42                           # int
+gpa = 3.85                         # float
+is_admin = True                    # bool (capital T/F)
+nothing = None                     # None (like null)
+
+# Check type
+type(name)                         # <class 'str'>
+type(age)                          # <class 'int'>
+
+# Type conversion
+int("42")                          # 42
+str(42)                            # "42"
+float("3.14")                      # 3.14
+bool(0)                            # False
+bool(1)                            # True
+
+# ===== PRINT & INPUT =====
+print("Hello, World!")
+print(f"Hello, {name}! You are {age} years old.")   # f-string (Python 3.6+)
+print("Name:", name, "Age:", age)  # Multiple args
+
+user_input = input("Enter your name: ")              # Always returns string
+age_input = int(input("Enter your age: "))           # Convert to int</code></pre>
+
+    <h3>6.2 Python Operators</h3>
+    <pre><code># ===== ARITHMETIC =====
+10 + 3      # 13
+10 - 3      # 7
+10 * 3      # 30
+10 / 3      # 3.333...  (always float)
+10 // 3     # 3         (floor division — integer result)
+10 % 3      # 1         (modulo — remainder)
+10 ** 3     # 1000      (exponentiation)
+
+# ===== COMPARISON =====
+5 == 5      # True
+5 != 4      # True
+5 > 3       # True
+5 >= 5      # True
+
+# ===== LOGICAL =====
+True and False    # False
+True or False     # True
+not True          # False
+
+# ===== STRING OPERATIONS =====
+"Hello" + " " + "World"       # Concatenation: "Hello World"
+"Ha" * 3                      # Repetition: "HaHaHa"
+"hello".upper()               # "HELLO"
+"HELLO".lower()               # "hello"
+"  hello  ".strip()           # "hello" (remove whitespace)
+"hello world".split(" ")      # ["hello", "world"]
+" ".join(["hello", "world"])  # "hello world"
+len("hello")                  # 5
+"hello"[0]                    # "h" (indexing)
+"hello"[1:3]                  # "el" (slicing)</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Python Data Structures <span class="mod-tag">Module 3</span> <span class="py-tag">Python</span></h2>
+
+    <h3>7.1 Lists</h3>
+    <pre><code># Lists are ordered, mutable, allow duplicates — use []
+fruits = ["apple", "banana", "cherry"]
+numbers = [1, 2, 3, 4, 5]
+mixed = [1, "hello", True, 3.14]      # Can mix types
+
+# Accessing
+fruits[0]                  # "apple" (0-indexed)
+fruits[-1]                 # "cherry" (last item)
+fruits[1:3]                # ["banana", "cherry"] (slicing)
+
+# Modifying
+fruits.append("mango")     # Add to end
+fruits.insert(1, "grape")  # Insert at index
+fruits.remove("banana")    # Remove by value
+fruits.pop()               # Remove and return last item
+fruits.pop(0)              # Remove and return item at index 0
+
+# List operations
+len(fruits)                # Number of items
+"apple" in fruits          # True if apple is in list
+fruits.sort()              # Sort in place
+sorted(fruits)             # Return new sorted list
+fruits.reverse()           # Reverse in place
+fruits.count("apple")      # How many times apple appears
+fruits.index("cherry")     # Index of cherry</code></pre>
+
+    <h3>7.2 Tuples</h3>
+    <pre><code># Tuples are ordered, IMMUTABLE (can't change), allow duplicates — use ()
+coordinates = (10.5, 20.3)
+rgb = (255, 128, 0)
+single = (42,)             # Single-item tuple needs trailing comma
+
+# Accessing — same as list
+coordinates[0]             # 10.5
+coordinates[-1]            # 20.3
+
+# Unpacking
+x, y = coordinates         # x=10.5, y=20.3
+r, g, b = rgb              # r=255, g=128, b=0
+
+# Why use tuples?
+# - Immutable = safe from accidental changes
+# - Faster than lists
+# - Can be used as dictionary keys (lists cannot)
+# - Return multiple values from functions</code></pre>
+
+    <h3>7.3 Dictionaries</h3>
+    <pre><code># Dictionaries are key-value pairs, unordered (insertion order in Python 3.7+), mutable — use {}
+student = {
+    "name": "John Smith",
+    "age": 20,
+    "gpa": 3.5,
+    "enrolled": True
+}
+
+# Accessing
+student["name"]                    # "John Smith"
+student.get("age")                 # 20
+student.get("phone", "N/A")        # "N/A" (default if key missing)
+
+# Modifying
+student["email"] = "jsmith@tstc.edu"    # Add new key
+student["age"] = 21                      # Update value
+del student["enrolled"]                  # Delete key
+student.pop("gpa")                       # Remove and return value
+
+# Iterating
+for key in student:
+    print(key, ":", student[key])
+
+for key, value in student.items():      # items() returns (key, value) pairs
+    print(f"{key}: {value}")
+
+student.keys()                           # All keys
+student.values()                         # All values
+student.items()                          # All key-value pairs
+
+# Nested dictionary
+roster = {
+    "jsmith": {"name": "John", "grade": "A"},
+    "ajones": {"name": "Alice", "grade": "B"}
+}
+roster["jsmith"]["grade"]               # "A"</code></pre>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Python Control Flow <span class="mod-tag">Module 3</span> <span class="py-tag">Python</span></h2>
+
+    <h3>8.1 If / Elif / Else</h3>
+    <pre><code>score = 87
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+elif score >= 60:
+    grade = "D"
+else:
+    grade = "F"
+
+print(f"Score: {score}, Grade: {grade}")
+
+# ===== TERNARY (one-line if) =====
+status = "Pass" if score >= 60 else "Fail"
+
+# ===== NESTED IF =====
+age = 20
+has_id = True
+
+if age >= 18:
+    if has_id:
+        print("Entry allowed")
+    else:
+        print("Need ID")
+else:
+    print("Too young")</code></pre>
+
+    <h3>8.2 Loops</h3>
+    <pre><code># ===== FOR LOOP =====
+# Iterate over a sequence
+for fruit in ["apple", "banana", "cherry"]:
+    print(fruit)
+
+# range() — generate numbers
+for i in range(5):             # 0, 1, 2, 3, 4
+    print(i)
+
+for i in range(1, 11):         # 1 through 10
+    print(i)
+
+for i in range(0, 20, 2):      # 0, 2, 4, ... 18 (step=2)
+    print(i)
+
+# Enumerate — get index AND value
+fruits = ["apple", "banana", "cherry"]
+for index, fruit in enumerate(fruits):
+    print(f"{index}: {fruit}")
+
+# ===== WHILE LOOP =====
+count = 0
+while count < 5:
+    print(f"Count: {count}")
+    count += 1
+
+# ===== LOOP CONTROL =====
+for i in range(10):
+    if i == 3:
+        continue               # Skip this iteration
+    if i == 7:
+        break                  # Exit loop entirely
+    print(i)
+
+# ===== LIST COMPREHENSION (Pythonic shortcut) =====
+squares = [x**2 for x in range(1, 6)]         # [1, 4, 9, 16, 25]
+evens = [x for x in range(20) if x % 2 == 0]  # [0, 2, 4, ... 18]
+upper = [s.upper() for s in ["hello", "world"]]  # ["HELLO", "WORLD"]</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Functions, Arguments & Return Values <span class="mod-tag">Module 3</span> <span class="py-tag">Python</span></h2>
+
+    <h3>9.1 Defining and Calling Functions</h3>
+    <pre><code># ===== BASIC FUNCTION =====
+def greet():
+    print("Hello, World!")
+
+greet()                        # Call the function
+
+# ===== PARAMETERS & ARGUMENTS =====
+def greet_user(name):          # name = parameter
+    print(f"Hello, {name}!")
+
+greet_user("Adrian")           # "Adrian" = argument
+
+# ===== DEFAULT PARAMETERS =====
+def greet_user(name, greeting="Hello"):
+    print(f"{greeting}, {name}!")
+
+greet_user("Adrian")           # Hello, Adrian!
+greet_user("Adrian", "Hey")    # Hey, Adrian!
+
+# ===== RETURN VALUES =====
+def add(a, b):
+    return a + b
+
+result = add(5, 3)             # result = 8
+
+# Return multiple values (returns a tuple)
+def min_max(numbers):
+    return min(numbers), max(numbers)
+
+low, high = min_max([3, 1, 4, 1, 5, 9, 2, 6])
+print(f"Min: {low}, Max: {high}")
+
+# ===== *args — variable number of arguments =====
+def add_all(*args):
+    return sum(args)
+
+add_all(1, 2, 3)               # 6
+add_all(1, 2, 3, 4, 5)         # 15
+
+# ===== **kwargs — keyword arguments =====
+def display_info(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+display_info(name="Adrian", role="Instructor", dept="CNS")</code></pre>
+
+    <h3>9.2 Scope</h3>
+    <pre><code># ===== LOCAL vs GLOBAL SCOPE =====
+x = 10                         # Global variable
+
+def my_function():
+    y = 20                     # Local variable — only exists inside function
+    print(x)                   # Can READ global x
+    print(y)                   # Local y
+
+my_function()
+# print(y)                     # ERROR — y doesn't exist outside function
+
+# ===== GLOBAL KEYWORD =====
+counter = 0
+
+def increment():
+    global counter             # Declare we want to MODIFY the global
+    counter += 1
+
+increment()
+increment()
+print(counter)                 # 2
+
+# ===== LEGB Rule — Python scope lookup order =====
+# L — Local (inside current function)
+# E — Enclosing (outer function, for nested functions)
+# G — Global (module level)
+# B — Built-in (Python built-ins like print, len, range)</code></pre>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Object-Oriented Programming (OOP) <span class="mod-tag">Module 3</span> <span class="py-tag">Python</span></h2>
+
+    <h3>10.1 OOP Concepts</h3>
+    <table>
+        <tr><th>Concept</th><th>Definition</th><th>Analogy</th></tr>
+        <tr><td><strong>Class</strong></td><td>A blueprint for creating objects — defines attributes and methods</td><td>Blueprint for a house</td></tr>
+        <tr><td><strong>Object / Instance</strong></td><td>A specific instance created from a class</td><td>An actual house built from the blueprint</td></tr>
+        <tr><td><strong>Attribute</strong></td><td>A variable that belongs to an object — describes its state</td><td>House color, number of rooms</td></tr>
+        <tr><td><strong>Method</strong></td><td>A function that belongs to a class — defines behavior</td><td>open_door(), lock(), turn_on_lights()</td></tr>
+        <tr><td><strong>Encapsulation</strong></td><td>Bundling data and methods together; hiding internal details</td><td>You drive a car without knowing engine internals</td></tr>
+        <tr><td><strong>Inheritance</strong></td><td>A child class inherits attributes and methods from a parent class</td><td>A sports car IS-A car — has all car features plus more</td></tr>
+        <tr><td><strong>Polymorphism</strong></td><td>Different classes can have methods with the same name that behave differently</td><td>Both Dog and Cat have speak() — but different sounds</td></tr>
+        <tr><td><strong>Abstraction</strong></td><td>Hiding complex implementation — expose only what's necessary</td><td>ATM machine — you press "withdraw", don't see the banking system</td></tr>
+    </table>
+
+    <h3>10.2 Creating Classes in Python</h3>
+    <pre><code># ===== BASIC CLASS =====
+class Student:
+    # Class variable — shared by ALL instances
+    school = "TSTC"
+
+    # __init__ is the constructor — runs when object is created
+    def __init__(self, name, age, major):
+        # Instance variables — unique to each object
+        self.name = name
+        self.age = age
+        self.major = major
+        self.grades = []           # Empty list for this student's grades
+
+    # Instance method
+    def add_grade(self, grade):
+        self.grades.append(grade)
+
+    def get_gpa(self):
+        if not self.grades:
+            return 0.0
+        return sum(self.grades) / len(self.grades)
+
+    def introduce(self):
+        print(f"Hi, I'm {self.name}, {self.age} years old, studying {self.major} at {self.school}.")
+
+    # __str__ — defines what print(object) shows
+    def __str__(self):
+        return f"Student({self.name}, {self.major}, GPA: {self.get_gpa():.2f})"
+
+
+# ===== CREATE OBJECTS (instances) =====
+student1 = Student("John Smith", 20, "CNS")
+student2 = Student("Alice Jones", 22, "IT")
+
+# Call methods
+student1.introduce()
+student1.add_grade(95)
+student1.add_grade(87)
+student1.add_grade(92)
+print(f"{student1.name}'s GPA: {student1.get_gpa():.2f}")
+
+# Access attributes
+print(student1.name)           # John Smith
+print(Student.school)          # TSTC (class variable)
+print(student1)                # Uses __str__: Student(John Smith, CNS, GPA: 91.33)</code></pre>
+
+    <h3>10.3 Inheritance</h3>
+    <pre><code># ===== BASE CLASS =====
+class Animal:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+
+    def speak(self):
+        return "..."               # Generic — will be overridden
+
+    def describe(self):
+        return f"{self.name} is a {self.species}"
+
+# ===== CHILD CLASS =====
+class Dog(Animal):                 # Dog inherits from Animal
+    def __init__(self, name, breed):
+        super().__init__(name, "Canis familiaris")  # Call parent __init__
+        self.breed = breed
+
+    def speak(self):               # Override parent method
+        return f"{self.name} says: Woof!"
+
+    def fetch(self, item):
+        return f"{self.name} fetches the {item}!"
+
+class Cat(Animal):
+    def __init__(self, name):
+        super().__init__(name, "Felis catus")
+
+    def speak(self):               # Different implementation, same method name
+        return f"{self.name} says: Meow!"
+
+# ===== POLYMORPHISM =====
+animals = [Dog("Rex", "German Shepherd"), Cat("Whiskers"), Dog("Buddy", "Labrador")]
+
+for animal in animals:
+    print(animal.speak())          # Each calls ITS version of speak()
+    print(animal.describe())       # Inherited from Animal
+
+# isinstance() — check if object is instance of a class
+isinstance(animals[0], Dog)        # True
+isinstance(animals[0], Animal)     # True — Dog IS-A Animal
+isinstance(animals[0], Cat)        # False</code></pre>
+
+    <h3>10.4 Encapsulation — Private Attributes</h3>
+    <pre><code">class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.__balance = balance   # __ prefix = private attribute
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+            print(f"Deposited ${amount}. Balance: ${self.__balance}")
+
+    def withdraw(self, amount):
+        if amount > self.__balance:
+            print("Insufficient funds")
+        elif amount > 0:
+            self.__balance -= amount
+            print(f"Withdrew ${amount}. Balance: ${self.__balance}")
+
+    def get_balance(self):         # Getter method — controlled access
+        return self.__balance
+
+account = BankAccount("Adrian", 1000)
+account.deposit(500)
+account.withdraw(200)
+print(account.get_balance())       # 1300
+# print(account.__balance)         # AttributeError — private!</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. File I/O & Exception Handling <span class="mod-tag">Module 5</span> <span class="py-tag">Python</span></h2>
+
+    <h3>11.1 Working with Files</h3>
+    <pre><code"># ===== READING FILES =====
+# Method 1 — with statement (automatically closes file)
+with open("data.txt", "r") as f:
+    content = f.read()             # Read entire file as string
+    print(content)
+
+with open("data.txt", "r") as f:
+    lines = f.readlines()          # Read all lines into a list
+
+with open("data.txt", "r") as f:
+    for line in f:                 # Read line by line (memory efficient)
+        print(line.strip())
+
+# ===== WRITING FILES =====
+with open("output.txt", "w") as f:     # "w" overwrites file
+    f.write("Hello, World!\n")
+    f.write("Second line\n")
+
+with open("output.txt", "a") as f:     # "a" appends to file
+    f.write("This line is added\n")
+
+# ===== FILE MODES =====
+# "r"  — Read (default)
+# "w"  — Write (overwrites)
+# "a"  — Append
+# "r+" — Read and write
+# "b"  — Binary mode (e.g. "rb", "wb")
+
+# ===== CSV FILES =====
+import csv
+
+# Write CSV
+with open("students.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerow(["Name", "Age", "GPA"])    # Header
+    writer.writerow(["John", 20, 3.5])
+    writer.writerow(["Alice", 22, 3.8])
+
+# Read CSV
+with open("students.csv", "r") as f:
+    reader = csv.DictReader(f)                 # Each row = dictionary
+    for row in reader:
+        print(row["Name"], row["GPA"])</code></pre>
+
+    <h3>11.2 Exception Handling</h3>
+    <pre><code"># ===== TRY / EXCEPT =====
+try:
+    number = int(input("Enter a number: "))
+    result = 100 / number
+    print(f"Result: {result}")
+except ValueError:
+    print("That's not a valid number!")
+except ZeroDivisionError:
+    print("Can't divide by zero!")
+except Exception as e:             # Catch any other exception
+    print(f"Unexpected error: {e}")
+else:
+    print("No exceptions occurred!")   # Runs if NO exception
+finally:
+    print("This always runs — clean up here")  # Always runs
+
+# ===== COMMON EXCEPTION TYPES =====
+# ValueError       — Wrong type conversion (int("abc"))
+# TypeError        — Wrong type operation ("a" + 1)
+# ZeroDivisionError — Divide by zero
+# FileNotFoundError — File doesn't exist
+# IndexError       — List index out of range
+# KeyError         — Dictionary key not found
+# AttributeError   — Object doesn't have that attribute
+# ImportError      — Module not found
+
+# ===== RAISE YOUR OWN EXCEPTION =====
+def set_age(age):
+    if age < 0 or age > 150:
+        raise ValueError(f"Invalid age: {age}. Must be between 0 and 150.")
+    return age
+
+try:
+    set_age(-5)
+except ValueError as e:
+    print(e)</code></pre>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Data, Visualization & Mapping <span class="mod-tag">Module 5</span> <span class="py-tag">Python</span></h2>
+
+    <h3>12.1 Working with Data Libraries</h3>
+    <pre><code"># ===== INSTALL LIBRARIES =====
+pip install requests matplotlib pandas plotly
+
+# ===== DOWNLOADING DATA WITH REQUESTS =====
+import requests
+import json
+
+url = "https://api.example.com/data"
+response = requests.get(url)
+
+if response.status_code == 200:
+    data = response.json()         # Parse JSON response
+    print(data)
+else:
+    print(f"Error: {response.status_code}")
+
+# ===== BASIC DATA VISUALIZATION WITH MATPLOTLIB =====
+import matplotlib.pyplot as plt
+
+# Bar chart
+languages = ["Python", "PowerShell", "Bash", "JavaScript"]
+popularity = [85, 70, 65, 80]
+
+plt.bar(languages, popularity, color=["blue","purple","green","orange"])
+plt.title("Programming Language Popularity in IT")
+plt.xlabel("Language")
+plt.ylabel("Popularity Score")
+plt.tight_layout()
+plt.savefig("chart.png")           # Save to file
+plt.show()                         # Display
+
+# Line chart
+months = ["Jan", "Feb", "Mar", "Apr", "May"]
+temps = [32, 35, 50, 65, 75]
+
+plt.plot(months, temps, marker="o", color="red", linewidth=2)
+plt.title("Average Monthly Temperature")
+plt.grid(True)
+plt.show()</code></pre>
+
+    <h3>12.2 Mapping with Python</h3>
+    <pre><code"># ===== FOLIUM — Interactive Maps =====
+pip install folium
+
+import folium
+
+# Create map centered on Waco, TX
+m = folium.Map(location=[31.5493, -97.1467], zoom_start=12)
+
+# Add a marker
+folium.Marker(
+    location=[31.5493, -97.1467],
+    popup="TSTC Waco Campus",
+    tooltip="Click me!",
+    icon=folium.Icon(color="red", icon="info-sign")
+).add_to(m)
+
+# Add a circle
+folium.Circle(
+    location=[31.5493, -97.1467],
+    radius=1000,                   # Meters
+    color="blue",
+    fill=True,
+    fill_opacity=0.2
+).add_to(m)
+
+# Save map
+m.save("campus_map.html")          # Opens in browser</code></pre>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. PowerShell for System Administration <span class="mod-tag">Module 4 & 5</span> <span class="ps-tag">PowerShell</span></h2>
+
+    <h3>13.1 PowerShell Objects</h3>
+    <pre><code># Everything in PowerShell is an object with properties and methods
+
+# Get properties and methods of any object
+Get-Process | Get-Member               # Show all properties and methods
+Get-Service | Get-Member -MemberType Property   # Only properties
+Get-Process | Get-Member -MemberType Method     # Only methods
+
+# Access properties with dot notation
+$proc = Get-Process -Name "notepad"
+$proc.Name                             # "notepad"
+$proc.CPU                              # CPU time used
+$proc.WorkingSet                       # Memory in bytes
+$proc.Id                               # Process ID
+$proc.Kill()                           # Call method — kills the process</code></pre>
+
+    <h3>13.2 Process Management</h3>
+    <pre><code># ===== VIEW PROCESSES =====
+Get-Process                            # All processes
+Get-Process -Name "chrome"             # Specific process by name
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 10
+
+# ===== MANAGE PROCESSES =====
+Start-Process notepad                  # Start a process
+Stop-Process -Name "notepad"           # Stop by name
+Stop-Process -Id 1234                  # Stop by PID
+Stop-Process -Name "notepad" -Force    # Force kill</code></pre>
+
+    <h3>13.3 Service Management</h3>
+    <pre><code"># ===== VIEW SERVICES =====
+Get-Service                            # All services
+Get-Service -Name "wuauserv"           # Windows Update service
+Get-Service | Where-Object { $_.Status -eq "Running" }
+Get-Service | Where-Object { $_.StartType -eq "Automatic" -and $_.Status -eq "Stopped" }
+
+# ===== MANAGE SERVICES =====
+Start-Service -Name "bits"
+Stop-Service -Name "bits"
+Restart-Service -Name "spooler"
+Set-Service -Name "bits" -StartupType Automatic</code></pre>
+
+    <h3>13.4 PowerShell Scripts</h3>
+    <pre><code"># ===== SCRIPT TEMPLATE — script.ps1 =====
+# Always start scripts with a comment block describing purpose
+<#
+.SYNOPSIS
+    System health check script
+.DESCRIPTION
+    Checks CPU, memory, disk, and running services
+.AUTHOR
+    Adrian M. — TSTC CNS
+.DATE
+    2025
+#>
+
+param(
+    [string]$ComputerName = $env:COMPUTERNAME,
+    [string]$OutputPath = "C:\Reports"
+)
+
+# Function definitions
+function Get-DiskHealth {
+    Get-PSDrive -PSProvider FileSystem | Select-Object Name,
+        @{N="Used(GB)"; E={[math]::Round($_.Used/1GB, 2)}},
+        @{N="Free(GB)"; E={[math]::Round($_.Free/1GB, 2)}},
+        @{N="Total(GB)"; E={[math]::Round(($_.Used+$_.Free)/1GB, 2)}}
+}
+
+function Get-MemoryUsage {
+    $os = Get-CimInstance Win32_OperatingSystem
+    $total = [math]::Round($os.TotalVisibleMemorySize/1MB, 2)
+    $free  = [math]::Round($os.FreePhysicalMemory/1MB, 2)
+    $used  = $total - $free
+    [PSCustomObject]@{
+        TotalGB = $total
+        UsedGB  = $used
+        FreeGB  = $free
+        PctUsed = [math]::Round(($used/$total)*100, 1)
+    }
+}
+
+# Main execution
+Write-Host "=== System Health Report: $ComputerName ===" -ForegroundColor Cyan
+Write-Host "`nDisk Usage:"
+Get-DiskHealth | Format-Table -AutoSize
+
+Write-Host "`nMemory Usage:"
+Get-MemoryUsage | Format-List
+
+Write-Host "`nTop 5 CPU Processes:"
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 Name, CPU, Id | Format-Table</code></pre>
+
+    <h3>13.5 Hardening Workstations with PowerShell</h3>
+    <pre><code"># ===== DISABLE UNNECESSARY SERVICES =====
+$services_to_disable = @("XblGameSave","XboxGipSvc","XblAuthManager","MapsBroker")
+foreach ($svc in $services_to_disable) {
+    Set-Service -Name $svc -StartupType Disabled -ErrorAction SilentlyContinue
+    Write-Host "Disabled: $svc"
+}
+
+# ===== ENABLE WINDOWS FIREWALL =====
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
+
+# ===== CHECK FOR LOCAL ADMIN ACCOUNTS =====
+Get-LocalGroupMember -Group "Administrators"
+
+# ===== SET PASSWORD POLICY =====
+net accounts /minpwlen:12 /maxpwage:90 /minpwage:1 /uniquepw:24
+
+# ===== AUDIT POLICY =====
+auditpol /set /category:"Logon/Logoff" /success:enable /failure:enable
+auditpol /set /category:"Account Management" /success:enable /failure:enable
+
+# ===== DISABLE AUTORUN =====
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" `
+    -Name "NoDriveTypeAutoRun" -Value 255 -Type DWord</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. Software Development Best Practices</h2>
+
+    <h3>14.1 Clean Code Principles</h3>
+    <table>
+        <tr><th>Principle</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Meaningful Names</strong></td><td>Variables and functions should explain themselves</td><td><code>get_user_age()</code> not <code>func1()</code></td></tr>
+        <tr><td><strong>Single Responsibility</strong></td><td>Each function does ONE thing and does it well</td><td>Don't mix data fetching with display in one function</td></tr>
+        <tr><td><strong>DRY (Don't Repeat Yourself)</strong></td><td>Avoid duplicate code — use functions and loops</td><td>If you copy-paste code, make it a function instead</td></tr>
+        <tr><td><strong>Comments & Docstrings</strong></td><td>Explain WHY, not WHAT — the code shows what, comments show why</td><td>Explain business logic, not <code>x = x + 1  # add 1</code></td></tr>
+        <tr><td><strong>Consistent Formatting</strong></td><td>Follow language style guides — PEP 8 for Python, PSScriptAnalyzer for PowerShell</td><td>4-space indentation, consistent naming</td></tr>
+        <tr><td><strong>Error Handling</strong></td><td>Always handle edge cases and exceptions gracefully</td><td>Never let user see a raw stack trace</td></tr>
+    </table>
+
+    <h3>14.2 Python Docstrings & Comments</h3>
+    <pre><code"># ===== GOOD COMMENTS =====
+# BAD comment — states the obvious
+x = x + 1   # increment x by 1
+
+# GOOD comment — explains WHY
+x = x + 1   # Adjust for 0-based index when displaying to user
+
+# ===== DOCSTRINGS =====
+def calculate_gpa(grades):
+    """
+    Calculate the Grade Point Average from a list of grades.
+
+    Args:
+        grades (list): A list of numeric grade values (0-100)
+
+    Returns:
+        float: The average grade, or 0.0 if the list is empty
+
+    Raises:
+        TypeError: If grades is not a list
+
+    Example:
+        >>> calculate_gpa([95, 87, 92, 78])
+        88.0
+    """
+    if not isinstance(grades, list):
+        raise TypeError("grades must be a list")
+    if not grades:
+        return 0.0
+    return sum(grades) / len(grades)</code></pre>
+
+    <h3>14.3 Version Control with Git</h3>
+    <pre><code"># ===== BASIC GIT WORKFLOW =====
+git init                               # Initialize new repo
+git clone https://github.com/user/repo # Clone existing repo
+
+git status                             # See what's changed
+git add filename.py                    # Stage a file
+git add .                              # Stage all changes
+git commit -m "Add user login feature" # Commit with message
+git push origin main                   # Push to remote
+
+git pull origin main                   # Get latest from remote
+git log --oneline                      # Compact commit history
+git diff                               # See unstaged changes
+
+# ===== BRANCHING =====
+git branch feature-login               # Create branch
+git checkout feature-login             # Switch to branch
+git checkout -b feature-signup         # Create AND switch
+git merge feature-login                # Merge branch into current
+git branch -d feature-login            # Delete branch after merge</code></pre>
+
+    <h3>14.4 Testing Your Code</h3>
+    <pre><code"># ===== PYTHON UNIT TESTING =====
+import unittest
+from my_module import calculate_gpa    # Import function to test
+
+class TestGPACalculator(unittest.TestCase):
+
+    def test_normal_grades(self):
+        result = calculate_gpa([90, 85, 92])
+        self.assertAlmostEqual(result, 89.0, places=1)
+
+    def test_empty_list(self):
+        result = calculate_gpa([])
+        self.assertEqual(result, 0.0)
+
+    def test_single_grade(self):
+        result = calculate_gpa([100])
+        self.assertEqual(result, 100.0)
+
+    def test_invalid_input(self):
+        with self.assertRaises(TypeError):
+            calculate_gpa("not a list")
+
+if __name__ == "__main__":
+    unittest.main()
+
+# Run tests:  python -m pytest test_gpa.py -v</code></pre>
+
+    <div class="note">
+        <strong>The best programmers write tests FIRST</strong> (Test-Driven Development / TDD). Write the test that describes what you WANT the code to do, watch it fail, then write the code to make it pass. It sounds backwards but it forces you to think clearly about requirements before you write a single line of production code.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Code it, break it, fix it, ship it!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
