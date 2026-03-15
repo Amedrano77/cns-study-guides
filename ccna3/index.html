@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA 3: Enterprise Networking, Security & Automation · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .exam-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .lab-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>🔵 CCNA 3: Enterprise Networking, Security & Automation</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · Cisco NetAcad ENSA v7.02</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Single-Area OSPFv2 Concepts</a></li>
+            <li><a href="#part2">2. Single-Area OSPFv2 Configuration</a></li>
+            <li><a href="#part3">3. Network Security Concepts</a></li>
+            <li><a href="#part4">4. ACL Concepts</a></li>
+            <li><a href="#part5">5. ACLs for IPv4 Configuration</a></li>
+            <li><a href="#part6">6. NAT for IPv4</a></li>
+            <li><a href="#part7">7. WAN Concepts</a></li>
+            <li><a href="#part8">8. VPN & IPsec Concepts</a></li>
+            <li><a href="#part9">9. QoS Concepts</a></li>
+            <li><a href="#part10">10. Network Management</a></li>
+            <li><a href="#part11">11. Network Design</a></li>
+            <li><a href="#part12">12. Network Troubleshooting</a></li>
+            <li><a href="#part13">13. Network Virtualization</a></li>
+            <li><a href="#part14">14. Network Automation</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Single-Area OSPFv2 Concepts <span class="exam-tag">Module 1</span></h2>
+
+    <h3>1.1 Why OSPF?</h3>
+    <p>Static routes don't scale. RIP is limited to 15 hops and converges slowly. OSPF is a <strong>Link-State</strong> routing protocol — each router builds a complete map of the network, runs Dijkstra's shortest path algorithm, and makes intelligent routing decisions. OSPF converges fast, scales to large networks, and is the most common interior gateway protocol in enterprise networks.</p>
+
+    <h3>1.2 OSPF Key Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Link-State</strong></td><td>Each router knows the entire topology — builds a map, not just a next-hop list</td></tr>
+        <tr><td><strong>LSA (Link State Advertisement)</strong></td><td>Packet containing a router's link info — flooded to all OSPF routers</td></tr>
+        <tr><td><strong>LSDB (Link State Database)</strong></td><td>The complete topology map built from all LSAs — must be identical on all routers in an area</td></tr>
+        <tr><td><strong>SPF Algorithm</strong></td><td>Dijkstra's algorithm — calculates shortest path tree from LSDB</td></tr>
+        <tr><td><strong>Area</strong></td><td>Group of routers sharing the same LSDB — Area 0 = backbone area</td></tr>
+        <tr><td><strong>DR/BDR</strong></td><td>Designated Router / Backup DR — elected on multi-access networks to reduce LSA flooding</td></tr>
+        <tr><td><strong>Hello Packets</strong></td><td>Sent every 10 seconds on Ethernet — discovers neighbors, maintains adjacency</td></tr>
+        <tr><td><strong>Dead Interval</strong></td><td>4x Hello (40 sec default on Ethernet) — if no Hello received, neighbor declared dead</td></tr>
+        <tr><td><strong>Router ID (RID)</strong></td><td>32-bit number that uniquely identifies each OSPF router — looks like an IP address</td></tr>
+    </table>
+
+    <h3>1.3 Router ID Selection Order</h3>
+    <ol>
+        <li>Manually configured with <code>router-id</code> command (highest priority)</li>
+        <li>Highest IP address on any active <strong>loopback</strong> interface</li>
+        <li>Highest IP address on any active <strong>physical</strong> interface</li>
+    </ol>
+
+    <div class="note">
+        <strong>Always manually set the Router ID.</strong> Relying on highest IP is unpredictable — if an interface goes up or down, the RID can change and cause OSPF to reset. Use a loopback interface with a /32 mask for the RID. Loopbacks never go down unless you shut them manually, making OSPF stable.
+    </div>
+
+    <h3>1.4 OSPF Neighbor States</h3>
+    <table>
+        <tr><th>State</th><th>Meaning</th></tr>
+        <tr><td><strong>Down</strong></td><td>No Hellos received — no neighbor relationship</td></tr>
+        <tr><td><strong>Init</strong></td><td>Hello received but our Router ID not in it yet</td></tr>
+        <tr><td><strong>2-Way</strong></td><td>Bidirectional communication — DR/BDR election happens here</td></tr>
+        <tr><td><strong>ExStart</strong></td><td>Master/Slave negotiation for database exchange</td></tr>
+        <tr><td><strong>Exchange</strong></td><td>DBD (Database Description) packets exchanged — summary of LSDB</td></tr>
+        <tr><td><strong>Loading</strong></td><td>LSR/LSU packets — requesting and receiving missing LSAs</td></tr>
+        <tr><td><strong>Full</strong></td><td>✅ Fully adjacent — LSDBs synchronized, routing can begin</td></tr>
+    </table>
+
+    <h3>1.5 DR/BDR Election on Multi-Access Networks</h3>
+    <ul>
+        <li>On Ethernet segments, OSPF elects a <strong>DR</strong> (Designated Router) and <strong>BDR</strong> (Backup DR)</li>
+        <li>All other routers (DROther) form adjacency ONLY with DR and BDR — not with each other</li>
+        <li>Reduces LSA flooding: instead of n(n-1)/2 adjacencies, only n adjacencies needed</li>
+        <li><strong>Election:</strong> Highest OSPF priority wins (default = 1). Tie → highest Router ID wins</li>
+        <li>Priority 0 = never becomes DR or BDR</li>
+        <li>Election is <strong>non-preemptive</strong> — changing priority doesn't kick out existing DR</li>
+    </ul>
+
+    <h3>1.6 OSPF Cost Calculation</h3>
+    <p>OSPF metric = <strong>Cost</strong>. Cost = Reference Bandwidth / Interface Bandwidth. Default reference bandwidth = 100 Mbps.</p>
+    <table>
+        <tr><th>Interface</th><th>Bandwidth</th><th>Default Cost</th><th>Cost with 1Gbps Reference</th></tr>
+        <tr><td>Serial (T1)</td><td>1.544 Mbps</td><td>64</td><td>647</td></tr>
+        <tr><td>FastEthernet</td><td>100 Mbps</td><td>1</td><td>10</td></tr>
+        <tr><td>GigabitEthernet</td><td>1000 Mbps</td><td>1</td><td>1</td></tr>
+        <tr><td>10-GigabitEthernet</td><td>10,000 Mbps</td><td>1</td><td>1</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>FastEthernet and GigabitEthernet both have cost 1 by default — that's wrong!</strong> Change the reference bandwidth to 10000 (10 Gbps) on ALL routers so faster links get lower costs. Must be consistent on every router or you'll get routing loops. Do this before any other OSPF config.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Single-Area OSPFv2 Configuration <span class="exam-tag">Module 2</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>2.1 Basic OSPFv2 Configuration</h3>
+    <pre><code>! ===== STEP 1: Enable OSPF and set Router ID =====
+R1(config)# router ospf 1                    ! Process ID (1-65535) — local significance only
+R1(config-router)# router-id 1.1.1.1         ! Manually set Router ID (best practice)
+
+! ===== STEP 2: Fix reference bandwidth (do on ALL routers) =====
+R1(config-router)# auto-cost reference-bandwidth 10000   ! 10 Gbps reference
+
+! ===== STEP 3: Advertise networks =====
+! Wildcard mask = inverse of subnet mask (255.255.255.255 - subnet mask)
+! /24 = mask 255.255.255.0 → wildcard 0.0.0.255
+! /30 = mask 255.255.255.252 → wildcard 0.0.0.3
+
+R1(config-router)# network 192.168.10.0 0.0.0.255 area 0   ! Advertise LAN
+R1(config-router)# network 10.0.0.0 0.0.0.3 area 0         ! Advertise WAN link
+
+! ===== ALTERNATIVE: network command with host wildcard =====
+R1(config-router)# network 192.168.10.1 0.0.0.0 area 0    ! Exact interface IP
+
+! ===== ALTERNATIVE: Enable OSPF directly on interface (modern way) =====
+R1(config)# interface gi0/0
+R1(config-if)# ip ospf 1 area 0              ! Enable OSPF process 1 on this interface
+
+! ===== STEP 4: Set passive interfaces (don't send Hellos on LAN-facing ports) =====
+R1(config-router)# passive-interface gi0/0   ! Specific interface
+R1(config-router)# passive-interface default ! All interfaces passive by default
+R1(config-router)# no passive-interface gi0/1 ! Then un-passive the OSPF-facing links
+
+! ===== STEP 5: Default route redistribution =====
+R1(config)# ip route 0.0.0.0 0.0.0.0 [ISP-next-hop]       ! Static default to ISP
+R1(config-router)# default-information originate            ! Share default route via OSPF</code></pre>
+
+    <h3>2.2 OSPF Tuning</h3>
+    <pre><code>! ===== HELLO & DEAD INTERVALS =====
+R1(config)# interface gi0/1
+R1(config-if)# ip ospf hello-interval 5      ! Hello every 5 sec (default=10 on Ethernet)
+R1(config-if)# ip ospf dead-interval 20      ! Dead after 20 sec (must match neighbor!)
+
+! ===== OSPF PRIORITY (DR/BDR election) =====
+R1(config)# interface gi0/0
+R1(config-if)# ip ospf priority 200          ! Higher = more likely DR (0 = never DR)
+
+! ===== INTERFACE COST (manual override) =====
+R1(config)# interface gi0/1
+R1(config-if)# ip ospf cost 10               ! Override calculated cost
+
+! ===== LOOPBACK INTERFACE (stabilize RID) =====
+R1(config)# interface loopback 0
+R1(config-if)# ip address 1.1.1.1 255.255.255.255   ! /32 — host route
+R1(config-if)# ip ospf 1 area 0             ! Optionally advertise loopback
+
+! ===== OSPF AUTHENTICATION =====
+R1(config)# interface gi0/1
+R1(config-if)# ip ospf authentication message-digest
+R1(config-if)# ip ospf message-digest-key 1 md5 OSPFpass123</code></pre>
+
+    <h3>2.3 OSPFv3 for IPv6</h3>
+    <pre><code>! OSPFv3 handles IPv6 routing — similar to OSPFv2 but for IPv6
+
+R1(config)# ipv6 unicast-routing               ! Enable IPv6 routing
+R1(config)# ipv6 router ospf 1
+R1(config-rtr)# router-id 1.1.1.1
+
+! Enable on interface (OSPFv3 uses interface commands, not network statements)
+R1(config)# interface gi0/0
+R1(config-if)# ipv6 ospf 1 area 0
+
+! Passive interface
+R1(config)# ipv6 router ospf 1
+R1(config-rtr)# passive-interface gi0/0</code></pre>
+
+    <h3>2.4 OSPF Verification</h3>
+    <pre><code>R1# show ip ospf neighbor                    ! Neighbor table — check for FULL state
+R1# show ip ospf neighbor detail             ! Full neighbor info including RID
+R1# show ip ospf                             ! Process info, RID, area, SPF stats
+R1# show ip ospf interface                   ! OSPF info per interface
+R1# show ip ospf interface brief             ! Quick summary
+R1# show ip ospf database                    ! LSDB — all LSAs
+R1# show ip route ospf                       ! Only OSPF-learned routes
+R1# show ip protocols                        ! Routing protocol summary
+
+! Troubleshooting OSPF adjacency:
+! 1. Are they in the same area?
+! 2. Same subnet? (network command correct?)
+! 3. Hello/Dead timers match?
+! 4. Same MTU? (show interfaces — MTU mismatch prevents Full state)
+! 5. Authentication configured correctly?
+! 6. Not passive-interface on the connecting interface?</code></pre>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Network Security Concepts <span class="exam-tag">Module 3</span></h2>
+
+    <h3>3.1 Current Threat Landscape</h3>
+    <table>
+        <tr><th>Threat Category</th><th>Examples</th><th>Description</th></tr>
+        <tr><td><strong>Malware</strong></td><td>Virus, worm, ransomware, Trojan</td><td>Malicious software — damages, steals, or holds data hostage</td></tr>
+        <tr><td><strong>Reconnaissance</strong></td><td>Port scans, ping sweeps, packet sniffing</td><td>Gathering info before an attack</td></tr>
+        <tr><td><strong>Access Attacks</strong></td><td>Password attacks, MitM, buffer overflow</td><td>Gaining unauthorized access</td></tr>
+        <tr><td><strong>DoS/DDoS</strong></td><td>SYN flood, Smurf, Ping of Death</td><td>Overwhelm resources — deny service to legitimate users</td></tr>
+        <tr><td><strong>Social Engineering</strong></td><td>Phishing, pretexting, tailgating</td><td>Manipulate people, not technology</td></tr>
+        <tr><td><strong>APT</strong></td><td>Nation-state attacks, Stuxnet</td><td>Advanced Persistent Threat — long-term, targeted, sophisticated</td></tr>
+    </table>
+
+    <h3>3.2 Defense-in-Depth</h3>
+    <ul>
+        <li>No single security control is enough — layer multiple controls</li>
+        <li><strong>Physical:</strong> Locked server rooms, badge access, cameras</li>
+        <li><strong>Perimeter:</strong> Firewalls, IPS, DMZ, border router ACLs</li>
+        <li><strong>Network:</strong> VLANs, switch security, 802.1X port authentication</li>
+        <li><strong>Endpoint:</strong> AV, EDR, host firewalls, patch management</li>
+        <li><strong>Application:</strong> WAF, secure coding, input validation</li>
+        <li><strong>Data:</strong> Encryption at rest and in transit, DLP, backups</li>
+        <li><strong>User:</strong> Security awareness training — the weakest link</li>
+    </ul>
+
+    <h3>3.3 Cryptography in Network Security</h3>
+    <table>
+        <tr><th>Algorithm Type</th><th>Examples</th><th>Use Case</th></tr>
+        <tr><td><strong>Symmetric Encryption</strong></td><td>AES-128/256, 3DES</td><td>Bulk data encryption — fast, same key both ends</td></tr>
+        <tr><td><strong>Asymmetric Encryption</strong></td><td>RSA, ECC, DH</td><td>Key exchange, digital signatures — slow</td></tr>
+        <tr><td><strong>Hashing</strong></td><td>SHA-256, MD5 (broken)</td><td>Data integrity — one-way, verifies data not tampered</td></tr>
+        <tr><td><strong>HMAC</strong></td><td>HMAC-SHA256</td><td>Hash + secret key = authenticated integrity check</td></tr>
+    </table>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. ACL Concepts <span class="exam-tag">Module 4</span></h2>
+
+    <h3>4.1 What ACLs Do</h3>
+    <ul>
+        <li>ACLs are ordered lists of <strong>permit</strong> or <strong>deny</strong> statements</li>
+        <li>Applied to a router interface — filter traffic <strong>in</strong> or <strong>out</strong></li>
+        <li>Processed <strong>top to bottom</strong> — first match wins, processing stops</li>
+        <li>Implicit <strong>deny all</strong> at the end of every ACL — if nothing matches, traffic is dropped</li>
+        <li>One ACL per interface, per direction, per protocol (one IPv4 in, one IPv4 out)</li>
+    </ul>
+
+    <h3>4.2 ACL Types</h3>
+    <table>
+        <tr><th>Type</th><th>Number Range</th><th>Filters On</th><th>Placement Rule</th></tr>
+        <tr><td><strong>Standard IPv4</strong></td><td>1–99, 1300–1999</td><td>Source IP only</td><td>Place CLOSE to destination</td></tr>
+        <tr><td><strong>Extended IPv4</strong></td><td>100–199, 2000–2699</td><td>Source IP, Dest IP, Protocol, Port</td><td>Place CLOSE to source</td></tr>
+        <tr><td><strong>Named</strong></td><td>Any name</td><td>Standard or Extended rules</td><td>Same placement rules apply</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>ACL placement rule explained:</strong> Standard ACLs only filter by source IP — placed close to destination so they don't accidentally block traffic from reaching other parts of the network. Extended ACLs filter on source + destination — placed close to source to stop unwanted traffic as early as possible, saving bandwidth.
+    </div>
+
+    <h3>4.3 Wildcard Masks</h3>
+    <p>Wildcard masks work opposite to subnet masks: <strong>0 = must match</strong>, <strong>1 = ignore (wildcard)</strong>.</p>
+    <table>
+        <tr><th>Subnet Mask</th><th>Wildcard Mask</th><th>Matches</th></tr>
+        <tr><td>255.255.255.255</td><td>0.0.0.0</td><td>Exact host match</td></tr>
+        <tr><td>255.255.255.0</td><td>0.0.0.255</td><td>Entire /24 subnet</td></tr>
+        <tr><td>255.255.0.0</td><td>0.0.255.255</td><td>Entire /16 subnet</td></tr>
+        <tr><td>255.0.0.0</td><td>0.255.255.255</td><td>Entire /8 subnet</td></tr>
+        <tr><td>any</td><td>255.255.255.255</td><td>Any address (0.0.0.0 255.255.255.255)</td></tr>
+        <tr><td>host</td><td>0.0.0.0</td><td>Exact single host (192.168.1.1 0.0.0.0)</td></tr>
+    </table>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. ACLs for IPv4 Configuration <span class="exam-tag">Module 5</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>5.1 Standard ACL Configuration</h3>
+    <pre><code>! ===== NUMBERED STANDARD ACL =====
+R1(config)# access-list 10 remark Block host 192.168.1.100
+R1(config)# access-list 10 deny host 192.168.1.100        ! Deny specific host
+R1(config)# access-list 10 permit 192.168.1.0 0.0.0.255   ! Permit rest of subnet
+! Implicit deny any at end
+
+! Apply to interface — close to destination
+R1(config)# interface gi0/1
+R1(config-if)# ip access-group 10 out                     ! Filter outbound traffic
+
+! ===== NAMED STANDARD ACL (preferred — easier to edit) =====
+R1(config)# ip access-list standard BLOCK_HOST
+R1(config-std-nacl)# remark Deny specific host, permit subnet
+R1(config-std-nacl)# 10 deny host 192.168.1.100           ! Sequence number 10
+R1(config-std-nacl)# 20 permit 192.168.1.0 0.0.0.255      ! Sequence number 20
+R1(config-std-nacl)# exit
+
+R1(config)# interface gi0/1
+R1(config-if)# ip access-group BLOCK_HOST out</code></pre>
+
+    <h3>5.2 Extended ACL Configuration</h3>
+    <pre><code>! ===== NAMED EXTENDED ACL =====
+R1(config)# ip access-list extended INTERNET-FILTER
+
+! Deny Telnet from any source to any destination
+R1(config-ext-nacl)# 10 deny tcp any any eq 23
+
+! Permit web traffic from LAN to internet
+R1(config-ext-nacl)# 20 permit tcp 192.168.10.0 0.0.0.255 any eq 80
+R1(config-ext-nacl)# 30 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+
+! Permit DNS
+R1(config-ext-nacl)# 40 permit udp 192.168.10.0 0.0.0.255 any eq 53
+
+! Permit ICMP (ping) — only from inside LAN
+R1(config-ext-nacl)# 50 permit icmp 192.168.10.0 0.0.0.255 any
+
+! Permit established TCP sessions returning from internet (stateless return traffic)
+R1(config-ext-nacl)# 60 permit tcp any 192.168.10.0 0.0.0.255 established
+
+! Everything else denied (implicit deny)
+R1(config-ext-nacl)# exit
+
+! Apply close to source
+R1(config)# interface gi0/0                               ! LAN-facing interface
+R1(config-if)# ip access-group INTERNET-FILTER in        ! Inbound from LAN
+
+! ===== PROTECT VTY LINES with ACL =====
+R1(config)# ip access-list standard SSH-ONLY
+R1(config-std-nacl)# permit 192.168.1.0 0.0.0.255        ! Only management subnet
+R1(config-std-nacl)# exit
+
+R1(config)# line vty 0 15
+R1(config-line)# access-class SSH-ONLY in                ! ACL on VTY lines</code></pre>
+
+    <h3>5.3 Editing and Verifying ACLs</h3>
+    <pre><code>! ===== ADD A RULE (named ACL — insert by sequence number) =====
+R1(config)# ip access-list extended INTERNET-FILTER
+R1(config-ext-nacl)# 15 permit tcp 192.168.20.0 0.0.0.255 any eq 80  ! Inserts between 10 and 20
+
+! ===== DELETE A RULE =====
+R1(config)# ip access-list extended INTERNET-FILTER
+R1(config-ext-nacl)# no 30                               ! Remove sequence 30
+
+! ===== DELETE ENTIRE ACL =====
+R1(config)# no ip access-list extended INTERNET-FILTER
+
+! ===== RENUMBER SEQUENCES =====
+R1(config)# ip access-list resequence INTERNET-FILTER 10 10  ! Start at 10, increment by 10
+
+! ===== VERIFICATION =====
+R1# show access-lists                                    ! All ACLs with hit counts
+R1# show access-lists INTERNET-FILTER                    ! Specific ACL
+R1# show ip interface gi0/0                             ! Which ACLs applied to interface
+R1# show running-config | section access-list            ! ACLs in config
+R1# clear ip access-list counters                       ! Reset hit counters</code></pre>
+
+    <div class="note">
+        <strong>ACL hit counts are your best friend for troubleshooting.</strong> After applying an ACL, generate test traffic and run <code>show access-lists</code>. Each statement shows how many packets matched. If a permit rule shows 0 hits but traffic should be flowing — either the traffic isn't reaching the router, or a deny rule above it is matching first. Always check the order.
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. NAT for IPv4 <span class="exam-tag">Module 6</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>6.1 NAT Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Inside Local</strong></td><td>Private IP of internal host as seen from inside — e.g., 192.168.1.10</td></tr>
+        <tr><td><strong>Inside Global</strong></td><td>Public IP of internal host as seen from outside — the translated address</td></tr>
+        <tr><td><strong>Outside Local</strong></td><td>IP of external host as seen from inside network</td></tr>
+        <tr><td><strong>Outside Global</strong></td><td>Actual public IP of external host — usually same as Outside Local</td></tr>
+        <tr><td><strong>Static NAT</strong></td><td>One-to-one permanent mapping — inside local ↔ inside global</td></tr>
+        <tr><td><strong>Dynamic NAT</strong></td><td>Maps inside locals to a pool of public IPs — one-to-one but dynamic</td></tr>
+        <tr><td><strong>PAT (NAT Overload)</strong></td><td>Many-to-one — multiple private IPs share ONE public IP using port numbers</td></tr>
+    </table>
+
+    <h3>6.2 Static NAT Configuration</h3>
+    <pre><code>! Static NAT — one internal server always gets same public IP
+! Example: web server at 192.168.1.10 always appears as 203.0.113.10
+
+R1(config)# ip nat inside source static 192.168.1.10 203.0.113.10
+
+! Mark inside and outside interfaces
+R1(config)# interface gi0/0                             ! LAN interface
+R1(config-if)# ip nat inside
+
+R1(config)# interface gi0/1                             ! WAN/ISP interface
+R1(config-if)# ip nat outside</code></pre>
+
+    <h3>6.3 Dynamic NAT Configuration</h3>
+    <pre><code>! Define the pool of public IPs
+R1(config)# ip nat pool PUBLIC-POOL 203.0.113.1 203.0.113.10 netmask 255.255.255.240
+
+! Define which inside addresses get translated (standard ACL)
+R1(config)# access-list 1 permit 192.168.1.0 0.0.0.255
+
+! Link ACL to pool
+R1(config)# ip nat inside source list 1 pool PUBLIC-POOL
+
+! Mark interfaces
+R1(config)# interface gi0/0
+R1(config-if)# ip nat inside
+R1(config)# interface gi0/1
+R1(config-if)# ip nat outside</code></pre>
+
+    <h3>6.4 PAT (NAT Overload) — Most Common</h3>
+    <pre><code>! PAT using the router's WAN interface IP (most common — single public IP)
+R1(config)# access-list 1 permit 192.168.0.0 0.0.255.255   ! All private traffic
+
+R1(config)# ip nat inside source list 1 interface gi0/1 overload   ! Key: overload keyword
+
+R1(config)# interface gi0/0
+R1(config-if)# ip nat inside
+R1(config)# interface gi0/1
+R1(config-if)# ip nat outside
+
+! PAT using a pool (when you have multiple public IPs)
+R1(config)# ip nat inside source list 1 pool PUBLIC-POOL overload
+
+! ===== VERIFICATION =====
+R1# show ip nat translations                ! NAT table — inside local/global mappings
+R1# show ip nat translations verbose        ! Detailed with timers
+R1# show ip nat statistics                  ! Hit counts, active translations
+R1# clear ip nat translation *              ! Clear all dynamic NAT entries
+R1# debug ip nat                            ! Watch NAT translations in real time</code></pre>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. WAN Concepts <span class="exam-tag">Module 7</span></h2>
+
+    <h3>7.1 WAN Terminology</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>CPE</strong></td><td>Customer Premises Equipment — routers/switches at customer site</td></tr>
+        <tr><td><strong>Demarcation Point (Demarc)</strong></td><td>Where ISP responsibility ends and customer responsibility begins</td></tr>
+        <tr><td><strong>Local Loop</strong></td><td>Cable from demarc to ISP's central office (CO)</td></tr>
+        <tr><td><strong>CO (Central Office)</strong></td><td>ISP's facility that connects local loop to WAN backbone</td></tr>
+        <tr><td><strong>Toll Network</strong></td><td>ISP's backbone WAN infrastructure</td></tr>
+    </table>
+
+    <h3>7.2 WAN Connection Types</h3>
+    <table>
+        <tr><th>Type</th><th>Technology</th><th>Speed</th><th>Notes</th></tr>
+        <tr><td><strong>Dedicated Leased Line</strong></td><td>T1, T3, E1</td><td>1.5–45 Mbps</td><td>Point-to-point, always on, expensive</td></tr>
+        <tr><td><strong>DSL</strong></td><td>ADSL, VDSL</td><td>Up to 100 Mbps</td><td>Uses phone lines — asymmetric (download faster than upload)</td></tr>
+        <tr><td><strong>Cable</strong></td><td>DOCSIS</td><td>Up to 1 Gbps</td><td>Shared coax infrastructure — speeds vary with neighborhood usage</td></tr>
+        <tr><td><strong>Fiber (FTTH)</strong></td><td>GPON, EPON</td><td>Up to 10 Gbps</td><td>Best performance, growing availability</td></tr>
+        <tr><td><strong>Cellular/5G</strong></td><td>LTE, 5G NR</td><td>Up to 10 Gbps (5G)</td><td>Mobile, used for backup or remote sites</td></tr>
+        <tr><td><strong>MPLS</strong></td><td>Label switching</td><td>Varies</td><td>ISP-managed, QoS-capable, connects branch offices</td></tr>
+        <tr><td><strong>Satellite</strong></td><td>GEO, LEO (Starlink)</td><td>Varies</td><td>Rural/remote — GEO has high latency (~600ms), LEO much better</td></tr>
+    </table>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. VPN & IPsec Concepts <span class="exam-tag">Module 8</span></h2>
+
+    <h3>8.1 VPN Benefits</h3>
+    <ul>
+        <li><strong>Cost savings:</strong> Use public internet instead of expensive leased lines</li>
+        <li><strong>Security:</strong> Encrypted tunnel — data unreadable in transit</li>
+        <li><strong>Scalability:</strong> Add sites without new physical infrastructure</li>
+        <li><strong>Compatibility:</strong> Works over any IP network</li>
+    </ul>
+
+    <h3>8.2 VPN Types</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>Use Case</th></tr>
+        <tr><td><strong>Site-to-Site VPN</strong></td><td>Permanent encrypted tunnel between two routers</td><td>Branch office to HQ</td></tr>
+        <tr><td><strong>Remote Access VPN</strong></td><td>Individual user connects to corporate network</td><td>Work from home</td></tr>
+        <tr><td><strong>GRE Tunnel</strong></td><td>Generic Routing Encapsulation — tunnels any protocol, no encryption alone</td><td>Connect non-contiguous networks, often combined with IPsec</td></tr>
+        <tr><td><strong>DMVPN</strong></td><td>Dynamic Multipoint VPN — hub-and-spoke with dynamic spoke-to-spoke</td><td>Large branch deployments</td></tr>
+        <tr><td><strong>SSL/TLS VPN</strong></td><td>Browser-based or client — uses HTTPS</td><td>Clientless remote access</td></tr>
+    </table>
+
+    <h3>8.3 IPsec Framework</h3>
+    <table>
+        <tr><th>Component</th><th>Options</th><th>Purpose</th></tr>
+        <tr><td><strong>IKE (Key Exchange)</strong></td><td>IKEv1, IKEv2</td><td>Negotiate security parameters, exchange keys</td></tr>
+        <tr><td><strong>Confidentiality</strong></td><td>AES-128/256, 3DES</td><td>Encrypt data</td></tr>
+        <tr><td><strong>Integrity</strong></td><td>SHA-256, MD5</td><td>Verify data not tampered</td></tr>
+        <tr><td><strong>Authentication</strong></td><td>PSK, RSA signatures</td><td>Verify peer identity</td></tr>
+        <tr><td><strong>DH Group</strong></td><td>DH 14, 19, 20, 21</td><td>Key exchange algorithm — higher group = more secure</td></tr>
+        <tr><td><strong>Protocol</strong></td><td>AH, ESP</td><td>AH = integrity only. ESP = encryption + integrity (use ESP)</td></tr>
+    </table>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. QoS Concepts <span class="exam-tag">Module 9</span></h2>
+
+    <h3>9.1 Why QoS?</h3>
+    <p>Networks experience <strong>congestion</strong> when more traffic arrives than can be forwarded. Without QoS, all traffic is treated equally — a large file download competes equally with a VoIP call. VoIP loses. QoS prioritizes time-sensitive traffic so voice and video get guaranteed bandwidth and low latency.</p>
+
+    <h3>9.2 QoS Characteristics</h3>
+    <table>
+        <tr><th>Characteristic</th><th>Definition</th><th>Affects</th></tr>
+        <tr><td><strong>Bandwidth</strong></td><td>Rate of data transfer (bps)</td><td>Throughput — how much data can flow</td></tr>
+        <tr><td><strong>Delay (Latency)</strong></td><td>Time for packet to travel source to destination</td><td>VoIP quality — should be &lt;150ms one-way</td></tr>
+        <tr><td><strong>Jitter</strong></td><td>Variation in delay between packets</td><td>VoIP/video — causes choppy audio</td></tr>
+        <tr><td><strong>Packet Loss</strong></td><td>Packets dropped due to congestion</td><td>VoIP — should be &lt;1%, video &lt;5%</td></tr>
+    </table>
+
+    <h3>9.3 QoS Models</h3>
+    <table>
+        <tr><th>Model</th><th>How It Works</th><th>Use Case</th></tr>
+        <tr><td><strong>Best Effort</strong></td><td>No QoS — all traffic treated equally, FIFO queue</td><td>Default — basic networks</td></tr>
+        <tr><td><strong>IntServ</strong></td><td>Applications request guaranteed bandwidth (RSVP)</td><td>High-control — doesn't scale well</td></tr>
+        <tr><td><strong>DiffServ</strong></td><td>Traffic classified and marked — each class gets different treatment</td><td>Enterprise standard — scalable</td></tr>
+    </table>
+
+    <h3>9.4 DiffServ Markings</h3>
+    <table>
+        <tr><th>Marking</th><th>Field</th><th>Bits</th><th>Common Use</th></tr>
+        <tr><td><strong>DSCP EF</strong></td><td>IP ToS/DSCP</td><td>101110 (46)</td><td>VoIP — Expedited Forwarding</td></tr>
+        <tr><td><strong>DSCP AF41</strong></td><td>IP ToS/DSCP</td><td>100010 (34)</td><td>Video conferencing</td></tr>
+        <tr><td><strong>DSCP CS0</strong></td><td>IP ToS/DSCP</td><td>000000 (0)</td><td>Best effort / default</td></tr>
+        <tr><td><strong>CoS 5</strong></td><td>802.1Q PCP</td><td>101</td><td>VoIP (Layer 2 marking)</td></tr>
+        <tr><td><strong>CoS 0</strong></td><td>802.1Q PCP</td><td>000</td><td>Best effort (Layer 2)</td></tr>
+    </table>
+
+    <h3>9.5 QoS Queuing Methods</h3>
+    <table>
+        <tr><th>Method</th><th>Description</th><th>Best For</th></tr>
+        <tr><td><strong>FIFO</strong></td><td>First In, First Out — no priority</td><td>High-speed links with no congestion</td></tr>
+        <tr><td><strong>WFQ</strong></td><td>Weighted Fair Queuing — automatic fair sharing</td><td>Mixed traffic, minimal config</td></tr>
+        <tr><td><strong>CBWFQ</strong></td><td>Class-Based WFQ — define traffic classes, assign bandwidth %</td><td>Enterprise — gives guaranteed bandwidth per class</td></tr>
+        <tr><td><strong>LLQ</strong></td><td>Low Latency Queuing — CBWFQ + priority queue for voice</td><td>VoIP — industry standard for voice networks</td></tr>
+    </table>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Network Management <span class="exam-tag">Module 10</span></h2>
+
+    <h3>10.1 Syslog</h3>
+    <table>
+        <tr><th>Level</th><th>Keyword</th><th>Description</th><th>Example</th></tr>
+        <tr><td>0</td><td>Emergency</td><td>System unusable</td><td>System crash</td></tr>
+        <tr><td>1</td><td>Alert</td><td>Immediate action needed</td><td>Temperature critical</td></tr>
+        <tr><td>2</td><td>Critical</td><td>Critical condition</td><td>Memory allocation failure</td></tr>
+        <tr><td>3</td><td>Error</td><td>Error condition</td><td>Interface error</td></tr>
+        <tr><td>4</td><td>Warning</td><td>Warning condition</td><td>Config change</td></tr>
+        <tr><td>5</td><td>Notice</td><td>Normal but significant</td><td>Interface up/down</td></tr>
+        <tr><td>6</td><td>Informational</td><td>Informational messages</td><td>ACL match logged</td></tr>
+        <tr><td>7</td><td>Debug</td><td>Debug messages</td><td>Detailed troubleshooting</td></tr>
+    </table>
+
+    <pre><code>! ===== SYSLOG CONFIGURATION =====
+R1(config)# logging 192.168.1.100            ! Send logs to syslog server
+R1(config)# logging trap warnings            ! Send level 4 (warning) and above
+R1(config)# logging source-interface lo0     ! Use loopback as source
+R1(config)# service timestamps log datetime msec  ! Add timestamps
+
+! ===== SNMP CONFIGURATION =====
+R1(config)# snmp-server community PUBLIC ro          ! Read-only community string
+R1(config)# snmp-server community PRIVATE rw         ! Read-write (be careful!)
+R1(config)# snmp-server host 192.168.1.100 PUBLIC    ! Send traps to NMS
+R1(config)# snmp-server enable traps                 ! Enable SNMP traps
+
+! ===== NTP (Network Time Protocol) =====
+R1(config)# ntp server 216.239.35.0                  ! Sync to public NTP server
+R1(config)# ntp server 192.168.1.100 prefer          ! Internal NTP server (preferred)
+R1(config)# ntp update-calendar                      ! Sync hardware clock
+R1(config)# clock timezone CST -6                    ! Set timezone
+
+R1# show ntp status                                  ! NTP sync status
+R1# show ntp associations                            ! NTP peers
+R1# show clock detail                                ! Current time and source</code></pre>
+
+    <h3>10.2 CDP and LLDP</h3>
+    <pre><code>! CDP — Cisco Discovery Protocol (Cisco proprietary)
+R1# show cdp neighbors                       ! Directly connected Cisco devices
+R1# show cdp neighbors detail               ! With IP addresses, IOS version
+R1# show cdp entry R2                        ! Specific neighbor
+
+! Disable CDP globally (security — don't advertise to untrusted)
+R1(config)# no cdp run
+
+! Disable CDP on specific interface
+R1(config)# interface gi0/0
+R1(config-if)# no cdp enable
+
+! LLDP — Link Layer Discovery Protocol (open standard, 802.1AB)
+R1(config)# lldp run                         ! Enable LLDP globally
+R1# show lldp neighbors
+R1# show lldp neighbors detail</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Network Design <span class="exam-tag">Module 11</span></h2>
+
+    <h3>11.1 Hierarchical Network Design</h3>
+    <table>
+        <tr><th>Layer</th><th>Role</th><th>Devices</th><th>Key Features</th></tr>
+        <tr><td><strong>Access</strong></td><td>Connect end devices to network</td><td>Access switches, WAPs</td><td>Port security, VLANs, PoE, STP PortFast</td></tr>
+        <tr><td><strong>Distribution</strong></td><td>Aggregate access layer, policy enforcement</td><td>L3 switches, routers</td><td>Inter-VLAN routing, ACLs, QoS, redundancy</td></tr>
+        <tr><td><strong>Core</strong></td><td>High-speed backbone — move traffic fast</td><td>High-speed L3 switches/routers</td><td>Speed, redundancy, no complex policy — just forward fast</td></tr>
+    </table>
+
+    <h3>11.2 Scalable Network Design Principles</h3>
+    <ul>
+        <li><strong>Redundancy:</strong> Eliminate single points of failure — dual links, dual devices</li>
+        <li><strong>Modularity:</strong> Build in blocks — easier to expand and troubleshoot</li>
+        <li><strong>Resiliency:</strong> Network continues operating despite failures</li>
+        <li><strong>Flexibility:</strong> Support future growth without redesign</li>
+        <li><strong>Manageability:</strong> Consistent naming, addressing, and documentation</li>
+    </ul>
+
+    <h3>11.3 Switched Network Design Considerations</h3>
+    <ul>
+        <li><strong>Collision domain:</strong> Each switch port is its own collision domain — full duplex eliminates collisions</li>
+        <li><strong>Broadcast domain:</strong> One VLAN = one broadcast domain — route between VLANs</li>
+        <li><strong>MAC table size:</strong> Large switches support 100,000+ MAC entries</li>
+        <li><strong>Port density:</strong> Number of ports per switch — affects cabling and rack space</li>
+        <li><strong>PoE budget:</strong> Total watts available for powered devices — WAPs + IP phones</li>
+    </ul>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Network Troubleshooting <span class="exam-tag">Module 12</span> <span class="lab-tag">Lab Heavy</span></h2>
+
+    <h3>12.1 Structured Troubleshooting Approaches</h3>
+    <table>
+        <tr><th>Approach</th><th>Description</th><th>Best When</th></tr>
+        <tr><td><strong>Bottom-Up</strong></td><td>Start at Physical (Layer 1), work up to Application</td><td>New installations, unknown problems</td></tr>
+        <tr><td><strong>Top-Down</strong></td><td>Start at Application, work down</td><td>User-reported app issues</td></tr>
+        <tr><td><strong>Divide and Conquer</strong></td><td>Start in the middle (usually Layer 3), work outward</td><td>Experienced techs, complex networks</td></tr>
+        <tr><td><strong>Follow the Path</strong></td><td>Trace traffic path from source to destination</td><td>Connectivity between two specific endpoints</td></tr>
+        <tr><td><strong>Spot the Differences</strong></td><td>Compare working vs non-working configs</td><td>Recent change broke something</td></tr>
+    </table>
+
+    <h3>12.2 OSPF Troubleshooting</h3>
+    <pre><code>! OSPF neighbors won't form — check these:
+R1# show ip ospf neighbor                    ! State should be FULL (or 2-WAY for DROther)
+R1# show ip ospf interface gi0/1            ! Hello/Dead timers, area, DR/BDR
+
+! Common OSPF problems:
+! 1. Different area numbers
+! 2. Hello/Dead timer mismatch
+! 3. MTU mismatch (stuck in EXSTART/EXCHANGE)
+! 4. Passive-interface on wrong interface
+! 5. ACL blocking OSPF multicast (224.0.0.5 and 224.0.0.6)
+! 6. Different network types (point-to-point vs broadcast)
+! 7. Authentication mismatch
+
+! Fix MTU mismatch
+R1(config)# interface gi0/1
+R1(config-if)# ip ospf mtu-ignore           ! Ignore MTU during adjacency
+
+! Check if ACL blocking OSPF
+R1# show ip access-lists                    ! Look for hits on permit/deny for OSPF traffic</code></pre>
+
+    <h3>12.3 ACL Troubleshooting</h3>
+    <pre><code>! ACLs blocking unexpected traffic — systematic checks:
+
+! 1. What ACLs are applied where?
+R1# show ip interface                        ! Shows inbound/outbound ACL per interface
+
+! 2. What does the ACL actually say?
+R1# show access-lists ACL-NAME              ! With hit counts
+
+! 3. Reset counters, generate test traffic, check counts
+R1# clear ip access-list counters
+! [generate traffic]
+R1# show access-lists                        ! Which rules got hits?
+
+! 4. Common mistakes:
+!    - Wrong direction (in vs out)
+!    - Wrong interface
+!    - Too permissive or too restrictive
+!    - Missing permit for return traffic
+!    - Implicit deny blocking needed traffic
+
+! TEMPORARY: Add permit any to test (REMOVE after!)
+R1(config)# ip access-list extended TEST-ACL
+R1(config-ext-nacl)# 999 permit ip any any  ! Temp — if traffic flows now, ACL is the problem</code></pre>
+
+    <h3>12.4 NAT Troubleshooting</h3>
+    <pre><code>! NAT not translating — check these:
+
+! 1. Is the translation happening?
+R1# show ip nat translations                ! Is there an entry for the source IP?
+
+! 2. Are interfaces marked correctly?
+R1# show ip nat statistics                  ! Shows inside/outside interfaces
+
+! 3. Is the ACL matching traffic?
+R1# show access-lists                       ! Is the permit ACL getting hits?
+
+! 4. Test from inside
+R1# ping 8.8.8.8 source 192.168.1.10       ! Ping from inside IP
+
+! Common NAT mistakes:
+! - Wrong interface marked inside/outside
+! - ACL too restrictive — not matching inside traffic
+! - Pool exhausted (dynamic NAT)
+! - Missing overload keyword (PAT)
+! - Routing issue — traffic not reaching NAT router</code></pre>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. Network Virtualization <span class="exam-tag">Module 13</span></h2>
+
+    <h3>13.1 Cloud Computing Review</h3>
+    <table>
+        <tr><th>Model</th><th>You Manage</th><th>Provider Manages</th><th>Examples</th></tr>
+        <tr><td><strong>IaaS</strong></td><td>OS, apps, data</td><td>Hardware, VMs, networking</td><td>AWS EC2, Azure VMs, GCP Compute</td></tr>
+        <tr><td><strong>PaaS</strong></td><td>Apps and data only</td><td>OS, middleware, runtime</td><td>Heroku, AWS Elastic Beanstalk</td></tr>
+        <tr><td><strong>SaaS</strong></td><td>Just use it</td><td>Everything</td><td>Office 365, Salesforce, Gmail</td></tr>
+    </table>
+
+    <h3>13.2 Virtual Network Infrastructure</h3>
+    <ul>
+        <li><strong>vSwitch (Virtual Switch):</strong> Software switch inside a hypervisor — connects VMs to each other and to physical NICs</li>
+        <li><strong>vNIC:</strong> Virtual Network Interface Card — assigned to each VM</li>
+        <li><strong>Distributed vSwitch (DVS):</strong> VMware feature — single vSwitch spanning multiple ESXi hosts, managed centrally</li>
+        <li><strong>NSX:</strong> VMware's network virtualization platform — full Layer 2–7 networking in software</li>
+        <li><strong>VXLAN:</strong> Virtual Extensible LAN — extends Layer 2 over Layer 3 using UDP encapsulation (24-bit VNID = 16M segments vs 4096 VLANs)</td></li>
+    </ul>
+
+    <h3>13.3 Software Defined Networking (SDN)</h3>
+    <table>
+        <tr><th>Plane</th><th>Traditional Location</th><th>SDN Location</th><th>Function</th></tr>
+        <tr><td><strong>Data Plane</strong></td><td>Each device</td><td>Each device (unchanged)</td><td>Forward packets based on forwarding table</td></tr>
+        <tr><td><strong>Control Plane</strong></td><td>Each device</td><td>Centralized SDN Controller</td><td>Makes routing/switching decisions, builds forwarding tables</td></tr>
+        <tr><td><strong>Management Plane</strong></td><td>CLI/SNMP per device</td><td>Centralized controller</td><td>Configure, monitor, manage devices</td></tr>
+    </table>
+
+    <ul>
+        <li><strong>SDN Controller:</strong> Cisco DNA Center, OpenDaylight, ONOS — centralized intelligence</li>
+        <li><strong>Northbound API:</strong> Between controller and applications (REST API)</li>
+        <li><strong>Southbound API:</strong> Between controller and network devices (OpenFlow, NETCONF, RESTCONF)</li>
+        <li><strong>Benefit:</strong> Centralized management, programmable, vendor-agnostic (open standards)</li>
+    </ul>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. Network Automation <span class="exam-tag">Module 14</span></h2>
+
+    <h3>14.1 Why Network Automation?</h3>
+    <ul>
+        <li>Manual CLI config doesn't scale — 1000 switches × 50 commands = errors and inconsistency</li>
+        <li>Automation = consistent, repeatable, fast, auditable changes</li>
+        <li>Reduces human error — the #1 cause of network outages</li>
+        <li>Enables Infrastructure as Code (IaC) — network config in version control</li>
+    </ul>
+
+    <h3>14.2 Data Formats</h3>
+    <table>
+        <tr><th>Format</th><th>Use</th><th>Example</th></tr>
+        <tr><td><strong>JSON</strong></td><td>REST APIs, modern tools — most common</td><td><code>{"hostname": "R1", "ip": "10.0.0.1"}</code></td></tr>
+        <tr><td><strong>XML</strong></td><td>NETCONF, older APIs</td><td><code>&lt;hostname&gt;R1&lt;/hostname&gt;</code></td></tr>
+        <tr><td><strong>YAML</strong></td><td>Ansible playbooks, human-readable config</td><td><code>hostname: R1</code></td></tr>
+    </table>
+
+    <h3>14.3 APIs</h3>
+    <ul>
+        <li><strong>REST API:</strong> Uses HTTP methods — GET (read), POST (create), PUT (update), DELETE (remove)</li>
+        <li><strong>NETCONF:</strong> Network Configuration Protocol — uses XML over SSH, RFC 6241</li>
+        <li><strong>RESTCONF:</strong> REST-like version of NETCONF — uses HTTP + JSON/XML</li>
+        <li><strong>gRPC:</strong> Google's high-performance RPC — used in streaming telemetry</li>
+    </ul>
+
+    <h3>14.4 Automation Tools</h3>
+    <table>
+        <tr><th>Tool</th><th>Type</th><th>Key Feature</th><th>Language</th></tr>
+        <tr><td><strong>Ansible</strong></td><td>Agentless automation</td><td>YAML playbooks, SSH — no agent on devices</td><td>Python/YAML</td></tr>
+        <tr><td><strong>Puppet</strong></td><td>Agent-based config management</td><td>Declarative — define desired state</td><td>Ruby/DSL</td></tr>
+        <tr><td><strong>Chef</strong></td><td>Agent-based config management</td><td>Recipes and cookbooks — procedural</td><td>Ruby</td></tr>
+        <tr><td><strong>Python + Netmiko</strong></td><td>Script-based automation</td><td>SSH into Cisco devices, run commands</td><td>Python</td></tr>
+        <tr><td><strong>Cisco DNA Center</strong></td><td>Intent-based networking</td><td>GUI + API — enterprise Cisco automation</td><td>REST API</td></tr>
+    </table>
+
+    <h3>14.5 Simple Python Network Automation Example</h3>
+    <pre><code># Using Netmiko to configure multiple routers
+from netmiko import ConnectHandler
+
+device = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.1',
+    'username': 'admin',
+    'password': 'Cisco123!',
+    'secret': 'class',           # Enable password
+}
+
+commands = [
+    'interface loopback 0',
+    'ip address 1.1.1.1 255.255.255.255',
+    'no shutdown',
+    'description Loopback for OSPF RID',
+]
+
+# Connect and send commands
+with ConnectHandler(**device) as net_connect:
+    net_connect.enable()         # Enter privileged EXEC
+    output = net_connect.send_config_set(commands)
+    net_connect.save_config()    # copy run start
+    print(output)</code></pre>
+
+    <h3>14.6 Cisco IOS RESTCONF Example</h3>
+    <pre><code># GET request to retrieve interface info via RESTCONF
+import requests
+import json
+
+url = "https://192.168.1.1/restconf/data/ietf-interfaces:interfaces"
+headers = {
+    "Accept": "application/yang-data+json",
+    "Content-Type": "application/yang-data+json"
+}
+
+response = requests.get(
+    url,
+    headers=headers,
+    auth=('admin', 'Cisco123!'),
+    verify=False                 # Disable SSL verify for lab
+)
+
+data = response.json()
+print(json.dumps(data, indent=2))</code></pre>
+
+    <h3>14.7 Complete CCNA 3 Verification Checklist</h3>
+    <pre><code>! ===== OSPF =====
+show ip ospf neighbor                ! All neighbors in FULL state?
+show ip ospf interface brief         ! Correct area, passive interfaces set?
+show ip route ospf                   ! All expected routes learned?
+show ip ospf database                ! LSDB complete?
+
+! ===== ACLs =====
+show access-lists                    ! Hit counts show expected traffic matching?
+show ip interface [int]              ! Correct ACL applied, correct direction?
+
+! ===== NAT =====
+show ip nat translations             ! Translations being created?
+show ip nat statistics               ! Inside/outside interfaces correct?
+
+! ===== QoS =====
+show policy-map interface            ! QoS applied, traffic classified correctly?
+
+! ===== GENERAL =====
+show ip protocols                    ! All routing protocols configured?
+show ip interface brief              ! All interfaces up/up?
+show version                         ! IOS version, uptime?
+show running-config                  ! Config as expected?</code></pre>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>You made it through the hardest CCNA course — go pass that exam!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
