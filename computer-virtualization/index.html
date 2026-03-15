@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Virtualization · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        /* LAB BOX — matches course lab style */
+        .lab {
+            background: #f0fdf4; border: 2px solid #16a34a; border-radius: 16px;
+            padding: 1.5rem; margin: 2rem 0; position: relative;
+        }
+        .lab-title {
+            font-size: 1.1rem; font-weight: 700; color: #15803d;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .lab ol, .lab ul { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .lab li { margin-bottom: 0.4rem; font-size: 0.95rem; }
+        .lab-warn {
+            background: #fefce8; border-left: 6px solid #ca8a04;
+            padding: 0.75rem 1rem; border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0; font-size: 0.9rem; color: #854d0e;
+        }
+        .lab-stop {
+            background: #fef2f2; border-left: 6px solid #dc2626;
+            padding: 0.75rem 1rem; border-radius: 0 8px 8px 0;
+            margin: 0.75rem 0; font-size: 0.9rem; color: #991b1b; font-weight: 600;
+        }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .exam-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .lab-tag {
+            display: inline-block; background: #166534; color: #bbf7d0; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .proxmox-tag {
+            display: inline-block; background: #7c2d12; color: #fed7aa; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>⚙️ Computer Virtualization</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · Hypervisors & Proxmox VE</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Virtualization Fundamentals</a></li>
+            <li><a href="#part2">2. CPU Virtualization & SLAT</a></li>
+            <li><a href="#part3">3. Hypervisor Types</a></li>
+            <li><a href="#part4">4. Proxmox VE Overview</a></li>
+            <li><a href="#part5">5. Installing Proxmox VE</a></li>
+            <li><a href="#part6">6. Proxmox Web UI Navigation</a></li>
+            <li><a href="#part7">7. Creating Virtual Machines</a></li>
+            <li><a href="#part8">8. VM Storage & Disk Management</a></li>
+            <li><a href="#part9">9. Virtual Networking in Proxmox</a></li>
+            <li><a href="#part10">10. Containers (LXC) in Proxmox</a></li>
+            <li><a href="#part11">11. Snapshots, Backups & Templates</a></li>
+            <li><a href="#part12">12. Proxmox Clustering & HA</a></li>
+            <li><a href="#part13">13. Nested Virtualization</a></li>
+            <li><a href="#part14">14. Proxmox CLI Reference</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Virtualization Fundamentals</h2>
+
+    <h3>1.1 What is Virtualization?</h3>
+    <p>Virtualization is the process of creating a software-based (virtual) version of a physical resource — a computer, server, storage device, or network. Instead of one server running one operating system doing one job, virtualization lets one physical machine run <strong>multiple virtual machines simultaneously</strong>, each with their own OS, resources, and applications.</p>
+
+    <h3>1.2 Key Virtualization Terminology</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Host</strong></td><td>The physical machine running the hypervisor</td></tr>
+        <tr><td><strong>Guest / VM</strong></td><td>The virtual machine running on top of the hypervisor</td></tr>
+        <tr><td><strong>Hypervisor</strong></td><td>Software layer that creates and manages virtual machines</td></tr>
+        <tr><td><strong>vCPU</strong></td><td>Virtual CPU — a logical CPU allocated to a VM</td></tr>
+        <tr><td><strong>vRAM</strong></td><td>Virtual RAM — memory allocated to a VM from host's physical RAM</td></tr>
+        <tr><td><strong>vDisk</strong></td><td>Virtual disk — a file on the host that acts as the VM's hard drive</td></tr>
+        <tr><td><strong>vNIC</strong></td><td>Virtual Network Interface Card — connects VM to virtual network</td></tr>
+        <tr><td><strong>Snapshot</strong></td><td>Point-in-time capture of VM state — instant rollback</td></tr>
+        <tr><td><strong>Template</strong></td><td>A master VM image used to rapidly deploy identical VMs</td></tr>
+        <tr><td><strong>Migration</strong></td><td>Moving a VM from one host to another</td></tr>
+        <tr><td><strong>Overcommitment</strong></td><td>Allocating more virtual resources than physically available — relies on VMs not using max simultaneously</td></tr>
+    </table>
+
+    <h3>1.3 Benefits of Virtualization</h3>
+    <table>
+        <tr><th>Benefit</th><th>Explanation</th></tr>
+        <tr><td><strong>Server Consolidation</strong></td><td>Run 20+ VMs on one physical server instead of 20 separate servers — massive cost savings</td></tr>
+        <tr><td><strong>Isolation</strong></td><td>Each VM is isolated — a crashed or infected VM doesn't affect others</td></tr>
+        <tr><td><strong>Flexibility</strong></td><td>Spin up, clone, or destroy VMs in minutes instead of hours/days for physical</td></tr>
+        <tr><td><strong>Hardware Independence</strong></td><td>VMs are portable — move them between physical hosts freely</td></tr>
+        <tr><td><strong>Disaster Recovery</strong></td><td>Snapshots and backups of entire VMs — restore in minutes</td></tr>
+        <tr><td><strong>Testing & Labs</strong></td><td>Spin up isolated environments for testing without affecting production</td></tr>
+        <tr><td><strong>Energy Efficiency</strong></td><td>Fewer physical servers = less power, less cooling, smaller footprint</td></tr>
+    </table>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. CPU Virtualization & SLAT <span class="lab-tag">Lab 1</span></h2>
+
+    <h3>2.1 How CPU Virtualization Works</h3>
+    <p>Modern CPUs have hardware-level virtualization extensions that allow a hypervisor to run guest OSes with near-native performance. Without hardware support, every privileged CPU instruction from a guest OS would need to be trapped and emulated — extremely slow. With hardware virtualization, the CPU handles this directly.</p>
+
+    <table>
+        <tr><th>Feature</th><th>Intel Name</th><th>AMD Name</th><th>What It Does</th></tr>
+        <tr><td><strong>Hardware Virtualization</strong></td><td>VT-x (VMX)</td><td>AMD-V (SVM)</td><td>Allows hypervisor to run guest VMs with hardware acceleration</td></tr>
+        <tr><td><strong>SLAT</strong></td><td>EPT (Extended Page Tables)</td><td>RVI (Rapid Virtualization Indexing)</td><td>Allows nested page table mapping — speeds up memory access in VMs significantly</td></tr>
+        <tr><td><strong>I/O Virtualization</strong></td><td>VT-d</td><td>AMD-Vi / IOMMU</td><td>Allows VMs to directly access physical hardware (PCIe passthrough)</td></tr>
+    </table>
+
+    <h3>2.2 SLAT — Second Level Address Translation</h3>
+    <ul>
+        <li>Without SLAT: Guest OS manages virtual→physical memory translations, hypervisor must intercept each one — very slow</li>
+        <li>With SLAT (EPT/RVI): CPU handles <strong>two levels</strong> of address translation in hardware — guest virtual → guest physical → host physical — without hypervisor intervention</li>
+        <li>Result: <strong>Much better VM performance</strong>, especially for memory-intensive workloads</li>
+        <li>Required for: Proxmox VE, VMware ESXi, Hyper-V, nested virtualization</li>
+        <li>Check for SLAT: System Information → <em>Hyper-V Second Level Address Translation Extensions: Yes</em></li>
+    </ul>
+
+    <h3>2.3 Virtualization-Based Security (VBS)</h3>
+    <ul>
+        <li>Windows 11 feature that uses Hyper-V to create an isolated secure region of memory</li>
+        <li>Protects Windows kernel from malware — but <strong>conflicts with other hypervisors</strong></li>
+        <li>When VBS is active, Hyper-V claims the hardware virtualization extensions — other hypervisors (Proxmox, VMware, VirtualBox) can't use them</li>
+        <li>Must be <strong>disabled</strong> on Windows hosts when running Proxmox nested VMs or VMware Workstation</li>
+    </ul>
+
+    <!-- LAB 1 -->
+    <div class="lab">
+        <div class="lab-title">🧪 Lab 1 — Enabling SLAT & Disabling VBS on Windows 11</div>
+        <p>In this lab you will configure your Windows 11 system to enable Second Level Address Translation (SLAT) for nested virtualization. Intel calls their implementation <strong>Extended Page Tables (EPT)</strong>; AMD calls theirs <strong>Rapid Virtualization Indexing (RVI)</strong>. The goal: disable Windows features that block nested virtualization so we can run VMs inside VMs.</p>
+
+        <div class="lab-warn">⚠️ Not every system is the same. Most Windows 11 machines only need the steps below, but as Windows adds new features, additional steps may be necessary.</div>
+
+        <h4>Step 1 — Disable Hyper-V and Related Features</h4>
+        <ol>
+            <li>Open the <strong>Windows Start Menu</strong></li>
+            <li>Search for <strong>"Features"</strong></li>
+            <li>Select <strong>"Turn Windows features on or off"</strong></li>
+            <li>Find and <strong>uncheck "Hyper-V"</strong></li>
+            <li>Find and <strong>uncheck "Virtual Machine Platform"</strong></li>
+            <li>Find and <strong>uncheck "Windows Hypervisor Platform"</strong></li>
+            <li>Click <strong>OK</strong> and allow Windows to make changes</li>
+        </ol>
+
+        <h4>Step 2 — Disable Memory Integrity</h4>
+        <ol>
+            <li>Open the <strong>Windows Start Menu</strong></li>
+            <li>Search for <strong>"Core"</strong></li>
+            <li>Select <strong>"Core Isolation"</strong></li>
+            <li>Find <strong>Memory Integrity</strong> and the toggle below it</li>
+            <li>Flip the toggle to the <strong>Off</strong> position</li>
+            <li><strong>Reboot Windows</strong></li>
+        </ol>
+
+        <h4>Step 3 — Verify VBS is Disabled and SLAT is Enabled</h4>
+        <ol>
+            <li>Open the <strong>Windows Start Menu</strong></li>
+            <li>Type <strong>"sysinfo"</strong></li>
+            <li>Select the <strong>"System Information"</strong> app</li>
+            <li>Select <strong>"System Summary"</strong> in the left column</li>
+            <li>In the right column, find <strong>Virtualization-based security</strong> — verify it shows <strong>"Not enabled"</strong></li>
+            <li>In the right column, find <strong>Hyper-V - Second Level Address Translation Extensions</strong> — verify it shows <strong>"Yes"</strong></li>
+        </ol>
+
+        <div class="lab-stop">🛑 If Virtualization-based Security is "Not enabled" AND Second Level Address Translation Extensions is "Yes" — you are ready to proceed. If either is incorrectly set, contact your instructor before continuing.</div>
+    </div>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Hypervisor Types</h2>
+
+    <h3>3.1 Type 1 vs Type 2 Hypervisors</h3>
+    <table>
+        <tr><th>Feature</th><th>Type 1 (Bare Metal)</th><th>Type 2 (Hosted)</th></tr>
+        <tr><td><strong>Runs on</strong></td><td>Directly on hardware — no host OS</td><td>On top of a host OS (Windows, macOS, Linux)</td></tr>
+        <tr><td><strong>Performance</strong></td><td>Near-native — no host OS overhead</td><td>Lower — host OS consumes resources</td></tr>
+        <tr><td><strong>Use case</strong></td><td>Production servers, data centers, labs</td><td>Desktop development, testing, learning</td></tr>
+        <tr><td><strong>Examples</strong></td><td>Proxmox VE, VMware ESXi, Microsoft Hyper-V, Xen</td><td>VMware Workstation, VirtualBox, Parallels</td></tr>
+        <tr><td><strong>Management</strong></td><td>Web UI or CLI over network</td><td>Local GUI on the host desktop</td></tr>
+        <tr><td><strong>Hardware access</strong></td><td>Full — direct hardware control</td><td>Indirect — through host OS</td></tr>
+    </table>
+
+    <h3>3.2 Hypervisor Comparison</h3>
+    <table>
+        <tr><th>Hypervisor</th><th>Type</th><th>Vendor</th><th>License</th><th>Best For</th></tr>
+        <tr><td><strong>Proxmox VE</strong></td><td>Type 1</td><td>Proxmox Server Solutions</td><td>Open source (AGPLv3)</td><td>Labs, SMB, homelab, education — full-featured free</td></tr>
+        <tr><td><strong>VMware ESXi</strong></td><td>Type 1</td><td>Broadcom (formerly VMware)</td><td>Commercial (free tier removed)</td><td>Enterprise production — industry standard</td></tr>
+        <tr><td><strong>Microsoft Hyper-V</strong></td><td>Type 1</td><td>Microsoft</td><td>Included with Windows Server</td><td>Windows-heavy environments</td></tr>
+        <tr><td><strong>KVM</strong></td><td>Type 1</td><td>Linux kernel</td><td>Open source</td><td>Linux servers — Proxmox uses KVM under the hood</td></tr>
+        <tr><td><strong>Xen</strong></td><td>Type 1</td><td>Linux Foundation</td><td>Open source</td><td>Cloud providers — AWS originally used Xen</td></tr>
+        <tr><td><strong>VMware Workstation</strong></td><td>Type 2</td><td>Broadcom</td><td>Commercial / free personal use</td><td>Developer desktops, testing</td></tr>
+        <tr><td><strong>VirtualBox</strong></td><td>Type 2</td><td>Oracle</td><td>Open source</td><td>Free desktop virtualization — learning</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Proxmox is built on KVM + QEMU + LXC.</strong> KVM (Kernel-based Virtual Machine) is built into the Linux kernel and handles hardware virtualization. QEMU emulates hardware devices for VMs. LXC (Linux Containers) provides lightweight OS-level containers. Proxmox wraps all of this in a polished web interface. When you create a VM in Proxmox, you're really running a KVM/QEMU virtual machine.
+    </div>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Proxmox VE Overview <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>4.1 What is Proxmox VE?</h3>
+    <p>Proxmox Virtual Environment (Proxmox VE or PVE) is a free, open-source Type 1 hypervisor platform based on Debian Linux. It combines <strong>KVM virtualization</strong> for full virtual machines and <strong>LXC containers</strong> for lightweight Linux containers — all managed through a powerful web-based interface.</p>
+
+    <h3>4.2 Proxmox Architecture</h3>
+    <table>
+        <tr><th>Component</th><th>What It Is</th><th>Role</th></tr>
+        <tr><td><strong>Debian Linux</strong></td><td>Base OS</td><td>Foundation Proxmox runs on</td></tr>
+        <tr><td><strong>KVM</strong></td><td>Linux kernel module</td><td>Hardware virtualization engine — full VMs</td></tr>
+        <tr><td><strong>QEMU</strong></td><td>Machine emulator</td><td>Emulates hardware devices (disk, NIC, etc.) for VMs</td></tr>
+        <tr><td><strong>LXC</strong></td><td>Linux containers</td><td>Lightweight containers sharing host kernel</td></tr>
+        <tr><td><strong>ZFS</strong></td><td>Filesystem/volume manager</td><td>Advanced storage — snapshots, compression, integrity</td></tr>
+        <tr><td><strong>Corosync</strong></td><td>Cluster communication</td><td>Keeps cluster nodes in sync — heartbeat</td></tr>
+        <tr><td><strong>Web UI (PVE)</strong></td><td>Management interface</td><td>Browser-based admin interface — port 8006</td></tr>
+        <tr><td><strong>pvesh / qm / pct</strong></td><td>CLI tools</td><td>Command-line management of VMs and containers</td></tr>
+    </table>
+
+    <h3>4.3 Proxmox vs VMware ESXi — Key Differences</h3>
+    <table>
+        <tr><th>Feature</th><th>Proxmox VE</th><th>VMware ESXi</th></tr>
+        <tr><td>Cost</td><td>Free (enterprise support subscription optional)</td><td>Now requires paid license (Broadcom acquisition)</td></tr>
+        <tr><td>Base OS</td><td>Debian Linux — full Linux accessible</td><td>Proprietary VMkernel — limited shell access</td></tr>
+        <tr><td>Containers</td><td>LXC built-in</td><td>No native container support</td></tr>
+        <tr><td>Storage</td><td>ZFS, LVM, Ceph, NFS, iSCSI, Gluster</td><td>VMFS, NFS, iSCSI, vSAN (paid)</td></tr>
+        <tr><td>Clustering</td><td>Built-in, free</td><td>Requires vCenter (additional cost)</td></tr>
+        <tr><td>Live Migration</td><td>Built-in (online migration)</td><td>vMotion (requires vCenter)</td></tr>
+        <tr><td>HA</td><td>Built-in HA</td><td>Requires vSphere HA (vCenter)</td></tr>
+        <tr><td>Community</td><td>Large, active forums</td><td>Large enterprise community</td></tr>
+    </table>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Installing Proxmox VE <span class="lab-tag">Lab 2</span> <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>5.1 Hardware Requirements</h3>
+    <table>
+        <tr><th>Component</th><th>Minimum</th><th>Recommended for Labs</th></tr>
+        <tr><td>CPU</td><td>64-bit Intel/AMD with VT-x or AMD-V</td><td>Multi-core with EPT/RVI support</td></tr>
+        <tr><td>RAM</td><td>2 GB (just for Proxmox itself)</td><td>16–32 GB to run multiple VMs</td></tr>
+        <tr><td>Storage</td><td>32 GB</td><td>500 GB+ SSD (NVMe preferred)</td></tr>
+        <tr><td>Network</td><td>1x Gigabit NIC</td><td>2+ NICs (management + VM traffic)</td></tr>
+        <tr><td>BIOS/UEFI</td><td>VT-x/AMD-V enabled in BIOS</td><td>IOMMU enabled for passthrough</td></tr>
+    </table>
+
+    <h3>5.2 Installation Process</h3>
+    <div class="lab">
+        <div class="lab-title">🧪 Lab 2 — Installing Proxmox VE</div>
+
+        <h4>Step 1 — Download Proxmox ISO</h4>
+        <ol>
+            <li>Go to <strong>proxmox.com/downloads</strong></li>
+            <li>Download the latest <strong>Proxmox VE ISO Installer</strong></li>
+            <li>Flash to USB using <strong>Rufus</strong> (Windows) or <strong>Etcher</strong> (cross-platform)</li>
+        </ol>
+
+        <h4>Step 2 — BIOS Configuration</h4>
+        <ol>
+            <li>Boot into BIOS/UEFI (usually F2, F10, or DEL on startup)</li>
+            <li>Enable <strong>Intel VT-x</strong> or <strong>AMD-V</strong> (CPU Virtualization)</li>
+            <li>Enable <strong>VT-d</strong> or <strong>AMD IOMMU</strong> (for PCIe passthrough)</li>
+            <li>Set boot order: USB first</li>
+            <li>Save and reboot</li>
+        </ol>
+
+        <h4>Step 3 — Install Proxmox VE</h4>
+        <ol>
+            <li>Boot from USB — select <strong>"Install Proxmox VE (Graphical)"</strong></li>
+            <li>Accept the EULA</li>
+            <li>Select target hard disk — <strong>this will be wiped!</strong></li>
+            <li>Set country, timezone, keyboard layout</li>
+            <li>Set <strong>root password</strong> and email address</li>
+            <li>Configure network: hostname (e.g. <code>pve.tstc.local</code>), IP address, gateway, DNS</li>
+            <li>Review summary — click <strong>Install</strong></li>
+            <li>Remove USB when prompted, system reboots</li>
+        </ol>
+
+        <h4>Step 4 — Access the Web Interface</h4>
+        <ol>
+            <li>From another machine, open a browser</li>
+            <li>Navigate to <strong>https://[your-proxmox-IP]:8006</strong></li>
+            <li>Accept the self-signed certificate warning</li>
+            <li>Login: username <code>root</code>, password you set during install, realm <code>Linux PAM</code></li>
+            <li>Dismiss the "No valid subscription" notice — click OK</li>
+        </ol>
+
+        <div class="lab-warn">⚠️ Always use a static IP for your Proxmox host. If the IP changes, you lose access to the web UI and all VMs lose their network paths.</div>
+    </div>
+
+    <h3>5.3 Post-Installation Configuration</h3>
+    <pre><code># ===== UPDATE PROXMOX (run as root via SSH or web shell) =====
+
+# Remove enterprise repo (requires paid subscription)
+rm /etc/apt/sources.list.d/pve-enterprise.list
+
+# Add free community repo
+echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > \
+    /etc/apt/sources.list.d/pve-no-subscription.list
+
+# Update and upgrade
+apt update && apt full-upgrade -y
+
+# Optional: Remove subscription nag from web UI
+sed -i.bak "s/res === null || res === undefined ||.*Ext.Msg.show/void(0 \/\//" \
+    /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+systemctl restart pveproxy
+
+# Reboot after updates
+reboot</code></pre>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Proxmox Web UI Navigation <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>6.1 Web UI Layout</h3>
+    <table>
+        <tr><th>Panel/Area</th><th>Location</th><th>What It Contains</th></tr>
+        <tr><td><strong>Resource Tree</strong></td><td>Left sidebar</td><td>Datacenter → Nodes → VMs/Containers — your full inventory</td></tr>
+        <tr><td><strong>Content Panel</strong></td><td>Center/right</td><td>Details and settings for selected object</td></tr>
+        <tr><td><strong>Task Log</strong></td><td>Bottom</td><td>Running and recent tasks — watch this for errors</td></tr>
+        <tr><td><strong>Top Menu</strong></td><td>Top bar</td><td>Create VM, Create CT, search, user menu</td></tr>
+        <tr><td><strong>Node View</strong></td><td>Click a node</td><td>Summary, shell, storage, network, updates for that physical host</td></tr>
+        <tr><td><strong>VM/CT View</strong></td><td>Click a VM/CT</td><td>Summary, console, hardware, options, snapshots, backups</td></tr>
+    </table>
+
+    <h3>6.2 Key Proxmox Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Node</strong></td><td>A physical Proxmox host — one physical server = one node</td></tr>
+        <tr><td><strong>Datacenter</strong></td><td>Top-level container for all nodes in a cluster</td></tr>
+        <tr><td><strong>VMID</strong></td><td>Unique numeric ID for each VM/container (100+) — used in CLI commands</td></tr>
+        <tr><td><strong>Storage</strong></td><td>Where VM disks, ISO images, and backups are stored</td></tr>
+        <tr><td><strong>local</strong></td><td>Default storage — stores ISOs, backups, and snippets on local disk</td></tr>
+        <tr><td><strong>local-lvm</strong></td><td>Default LVM storage — stores VM disk images (faster than directory)</td></tr>
+        <tr><td><strong>Bridge</strong></td><td>Virtual switch in Proxmox — VMs connect to bridges (vmbr0, vmbr1, etc.)</td></tr>
+    </table>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Creating Virtual Machines <span class="lab-tag">Lab 3</span> <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>7.1 VM Creation Wizard — Step by Step</h3>
+
+    <div class="lab">
+        <div class="lab-title">🧪 Lab 3 — Creating Your First VM in Proxmox</div>
+
+        <h4>Step 1 — Upload ISO to Proxmox</h4>
+        <ol>
+            <li>In the left tree, click your node → <strong>local</strong> storage</li>
+            <li>Click <strong>ISO Images</strong> tab</li>
+            <li>Click <strong>Upload</strong> to upload from your computer, OR click <strong>Download from URL</strong> to pull directly (paste the ISO URL)</li>
+        </ol>
+
+        <h4>Step 2 — Create VM</h4>
+        <ol>
+            <li>Click <strong>"Create VM"</strong> in the top right</li>
+            <li><strong>General:</strong> Set Node, VMID (auto), Name (e.g. <code>ubuntu-server</code>), click Next</li>
+            <li><strong>OS:</strong> Select ISO image from local storage, set Guest OS type (Linux/Windows/Other), click Next</li>
+            <li><strong>System:</strong> Leave defaults for most VMs. For Windows: enable <strong>Qemu Agent</strong>. Click Next</li>
+            <li><strong>Disks:</strong> Set storage (local-lvm), disk size (e.g. 32GB), Bus (VirtIO SCSI for Linux, SATA for Windows). Click Next</li>
+            <li><strong>CPU:</strong> Set number of sockets and cores. Enable <strong>host</strong> CPU type for best performance. Click Next</li>
+            <li><strong>Memory:</strong> Set RAM in MB (2048 = 2GB, 4096 = 4GB). Click Next</li>
+            <li><strong>Network:</strong> Select bridge (vmbr0), model (VirtIO for Linux, E1000 for Windows until drivers installed). Click Next</li>
+            <li><strong>Confirm:</strong> Review settings, check <strong>"Start after created"</strong> if ready, click <strong>Finish</strong></li>
+        </ol>
+
+        <h4>Step 3 — Install the OS</h4>
+        <ol>
+            <li>Click the VM in the left tree</li>
+            <li>Click the <strong>Console</strong> tab — you'll see the VM's screen</li>
+            <li>Click <strong>Start</strong> if VM isn't running</li>
+            <li>Complete the OS installation normally as if it were a physical machine</li>
+            <li>After installation, go to Hardware → CD/DVD Drive → set to "Do not use any media" to remove the ISO</li>
+        </ol>
+
+        <div class="lab-warn">⚠️ Always install the QEMU Guest Agent after OS installation. It allows Proxmox to communicate with the VM — enables clean shutdowns, IP reporting, and freeze-consistent snapshots.</div>
+    </div>
+
+    <h3>7.2 VM Hardware Settings Explained</h3>
+    <table>
+        <tr><th>Setting</th><th>Options</th><th>Best Practice</th></tr>
+        <tr><td><strong>CPU Type</strong></td><td>kvm64, host, specific CPU model</td><td>Use <code>host</code> for best performance. Use <code>kvm64</code> if migrating between different CPU generations.</td></tr>
+        <tr><td><strong>Disk Bus</strong></td><td>VirtIO SCSI, SATA, IDE, SCSI</td><td>VirtIO SCSI = fastest for Linux. SATA for Windows until VirtIO drivers installed.</td></tr>
+        <tr><td><strong>Disk Cache</strong></td><td>None, Write back, Write through</td><td>Write back = faster but less safe. None = safe default. Use Write back on SSDs.</td></tr>
+        <tr><td><strong>Network Model</strong></td><td>VirtIO, E1000, RTL8139</td><td>VirtIO = fastest. E1000 for Windows compatibility until VirtIO drivers installed.</td></tr>
+        <tr><td><strong>BIOS</strong></td><td>SeaBIOS, OVMF (UEFI)</td><td>OVMF for modern OS (Windows 11, Ubuntu 22+). SeaBIOS for legacy/older OS.</td></tr>
+        <tr><td><strong>Machine Type</strong></td><td>i440fx, q35</td><td>q35 is modern — required for PCIe passthrough and NVMe emulation.</td></tr>
+    </table>
+
+    <h3>7.3 Installing QEMU Guest Agent</h3>
+    <pre><code># ===== LINUX (Ubuntu/Debian) =====
+sudo apt update
+sudo apt install qemu-guest-agent -y
+sudo systemctl enable qemu-guest-agent
+sudo systemctl start qemu-guest-agent
+
+# ===== LINUX (RHEL/Rocky/AlmaLinux) =====
+sudo dnf install qemu-guest-agent -y
+sudo systemctl enable --now qemu-guest-agent
+
+# ===== WINDOWS =====
+# Download VirtIO drivers ISO from fedorapeople.org/groups/virt/virtio-win/
+# Mount the ISO in the VM
+# Run virtio-win-guest-tools.exe — installs all drivers + QEMU agent
+
+# ===== VERIFY in Proxmox =====
+# VM Summary tab should show the IP address once agent is running
+# "Guest Agent" section will show agent version</code></pre>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. VM Storage & Disk Management <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>8.1 Storage Types in Proxmox</h3>
+    <table>
+        <tr><th>Storage Type</th><th>Format</th><th>Snapshots</th><th>Best For</th></tr>
+        <tr><td><strong>LVM-Thin</strong></td><td>Raw block device</td><td>✅ Yes</td><td>VM disks — fast, thin-provisioned</td></tr>
+        <tr><td><strong>Directory</strong></td><td>qcow2, raw files</td><td>✅ Yes (qcow2)</td><td>ISOs, backups, simple setups</td></tr>
+        <tr><td><strong>ZFS</strong></td><td>ZFS datasets/zvols</td><td>✅ Yes</td><td>Best overall — integrity, compression, snapshots</td></tr>
+        <tr><td><strong>NFS</strong></td><td>qcow2, raw</td><td>✅ Yes (qcow2)</td><td>Shared storage across multiple nodes</td></tr>
+        <tr><td><strong>Ceph</strong></td><td>RBD (RADOS Block Device)</td><td>✅ Yes</td><td>Distributed storage for clusters — no single point of failure</td></tr>
+        <tr><td><strong>iSCSI</strong></td><td>Raw block</td><td>Depends</td><td>SAN integration</td></tr>
+    </table>
+
+    <h3>8.2 Disk Image Formats</h3>
+    <table>
+        <tr><th>Format</th><th>Description</th><th>Thin Provisioned?</th></tr>
+        <tr><td><strong>raw</strong></td><td>Raw disk image — maximum performance, no features</td><td>No — pre-allocates full size</td></tr>
+        <tr><td><strong>qcow2</strong></td><td>QEMU Copy-On-Write — supports snapshots, compression, encryption</td><td>Yes — grows as needed</td></tr>
+        <tr><td><strong>vmdk</strong></td><td>VMware format — importable into Proxmox</td><td>Depends on variant</td></tr>
+        <tr><td><strong>vhd/vhdx</strong></td><td>Microsoft Hyper-V format — importable</td><td>Depends</td></tr>
+    </table>
+
+    <h3>8.3 Disk Operations via CLI</h3>
+    <pre><code># ===== RESIZE VM DISK =====
+# Step 1 — Resize in Proxmox (add space)
+qm resize 101 scsi0 +20G       # Add 20GB to VM 101's scsi0 disk
+
+# Step 2 — Inside Linux VM — extend partition and filesystem
+sudo fdisk -l                   # Verify disk shows new size
+sudo growpart /dev/sda 1        # Extend partition 1
+sudo resize2fs /dev/sda1        # Extend ext4 filesystem
+# OR for LVM:
+sudo pvresize /dev/sda3
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+
+# ===== MOVE DISK TO DIFFERENT STORAGE =====
+qm move-disk 101 scsi0 local-zfs --delete   # Move VM 101 disk to local-zfs, delete source
+
+# ===== IMPORT DISK FROM IMAGE FILE =====
+qm importdisk 101 /path/to/disk.qcow2 local-lvm
+
+# ===== CONVERT DISK FORMAT =====
+qemu-img convert -f vmdk -O qcow2 source.vmdk output.qcow2</code></pre>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Virtual Networking in Proxmox <span class="lab-tag">Lab 4</span> <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>9.1 Proxmox Network Concepts</h3>
+    <table>
+        <tr><th>Component</th><th>Description</th></tr>
+        <tr><td><strong>Linux Bridge (vmbr)</strong></td><td>Software switch — connects VMs to each other and to physical NICs. Default: vmbr0</td></tr>
+        <tr><td><strong>Bond</strong></td><td>Combines multiple physical NICs — redundancy or increased bandwidth</td></tr>
+        <tr><td><strong>VLAN</strong></td><td>Create tagged VLANs on bridges for network segmentation</td></tr>
+        <tr><td><strong>OVS (Open vSwitch)</strong></td><td>Advanced virtual switch — more features than Linux bridge</td></tr>
+        <tr><td><strong>SDN</strong></td><td>Proxmox Software Defined Networking — advanced VXLAN/EVPN networking</td></tr>
+    </table>
+
+    <h3>9.2 Common Network Configurations</h3>
+    <pre><code># ===== /etc/network/interfaces — Proxmox network config =====
+
+# Single NIC — Management + VMs on same bridge
+auto lo
+iface lo inet loopback
+
+auto eno1
+iface eno1 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+    address 192.168.1.10/24
+    gateway 192.168.1.1
+    bridge-ports eno1
+    bridge-stp off
+    bridge-fd 0
+    dns-nameservers 192.168.1.1
+
+# ===== TWO NIC SETUP — Management separate from VM traffic =====
+# eno1 = Management network
+auto eno1
+iface eno1 inet static
+    address 192.168.1.10/24
+    gateway 192.168.1.1
+
+# eno2 = VM traffic bridge (no IP — VMs get their own IPs)
+auto eno2
+iface eno2 inet manual
+
+auto vmbr1
+iface vmbr1 inet manual
+    bridge-ports eno2
+    bridge-stp off
+    bridge-fd 0
+
+# ===== VLAN-AWARE BRIDGE =====
+auto vmbr0
+iface vmbr0 inet static
+    address 192.168.1.10/24
+    gateway 192.168.1.1
+    bridge-ports eno1
+    bridge-stp off
+    bridge-fd 0
+    bridge-vlan-aware yes       ! Enables VLAN tagging per VM port</code></pre>
+
+    <h3>9.3 VM Network Modes</h3>
+    <table>
+        <tr><th>Mode</th><th>Description</th><th>VM Gets</th></tr>
+        <tr><td><strong>Bridged</strong></td><td>VM connects to physical network through bridge</td><td>Real IP on same network as host</td></tr>
+        <tr><td><strong>NAT</strong></td><td>VM behind host's IP (Proxmox doesn't do this natively — use pfSense VM)</td><td>Private IP, shared host IP for internet</td></tr>
+        <tr><td><strong>Host-Only (isolated bridge)</strong></td><td>Bridge with no physical NIC — VMs can talk to each other only</td><td>Private network, no internet</td></tr>
+        <tr><td><strong>VLAN Tagged</strong></td><td>VM traffic tagged with VLAN ID on VLAN-aware bridge</td><td>Traffic isolated per VLAN tag</td></tr>
+    </table>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Containers (LXC) in Proxmox <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>10.1 VMs vs LXC Containers</h3>
+    <table>
+        <tr><th>Feature</th><th>VM (KVM)</th><th>LXC Container</th></tr>
+        <tr><td>Isolation</td><td>Full — separate kernel</td><td>Shared host kernel — process isolation only</td></tr>
+        <tr><td>OS Support</td><td>Any OS — Windows, Linux, BSD</td><td>Linux only (shares host kernel)</td></tr>
+        <tr><td>Overhead</td><td>Higher — full hardware emulation</td><td>Very low — near-bare-metal</td></tr>
+        <tr><td>Boot time</td><td>Seconds to minutes</td><td>Sub-second</td></tr>
+        <tr><td>Disk size</td><td>Full OS install (10GB+)</td><td>Minimal (100MB–1GB)</td></tr>
+        <tr><td>Security</td><td>Strong isolation</td><td>Weaker — shared kernel vulnerabilities</td></tr>
+        <tr><td>Use case</td><td>Full OS needed, Windows, isolation critical</td><td>Linux services, web servers, DNS — lightweight</td></tr>
+    </table>
+
+    <h3>10.2 Creating an LXC Container</h3>
+    <pre><code># ===== DOWNLOAD CONTAINER TEMPLATE =====
+# In Web UI: Node → local storage → CT Templates → Templates button → search and download
+# OR via CLI:
+pveam update                                        # Update template list
+pveam available                                     # List available templates
+pveam download local debian-12-standard_12.7-1_amd64.tar.zst  # Download Debian 12
+
+# ===== CREATE CONTAINER VIA CLI =====
+pct create 200 local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst \
+    --hostname webserver \
+    --memory 512 \
+    --cores 1 \
+    --net0 name=eth0,bridge=vmbr0,ip=192.168.1.50/24,gw=192.168.1.1 \
+    --storage local-lvm \
+    --rootfs local-lvm:8 \
+    --password YourRootPass \
+    --unprivileged 1                                # Unprivileged = safer
+
+# ===== START / STOP / STATUS =====
+pct start 200
+pct stop 200
+pct status 200
+pct list                                            # List all containers
+
+# ===== ENTER CONTAINER SHELL =====
+pct enter 200                                       # Drop into container shell
+pct exec 200 -- bash                               # Run bash in container</code></pre>
+
+    <div class="note">
+        <strong>Use unprivileged containers whenever possible.</strong> Unprivileged containers run with a mapped UID/GID range — root inside the container is NOT root on the host. This dramatically limits what an attacker can do if they escape the container. Only use privileged containers when you specifically need hardware access (like USB passthrough or specific kernel features).
+    </div>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Snapshots, Backups & Templates <span class="lab-tag">Lab 5</span> <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>11.1 Snapshots</h3>
+    <ul>
+        <li>A snapshot captures the <strong>entire state</strong> of a VM at a point in time — disk, RAM, and config</li>
+        <li>Instant to create — stored as metadata + delta from current disk state</li>
+        <li>Use before: OS updates, software installs, config changes, student labs</li>
+        <li>Requires <strong>qcow2</strong> disk format or ZFS/LVM-Thin storage (raw format on LVM doesn't support snapshots)</li>
+        <li>Too many snapshots = performance degradation — snapshots are not backups!</li>
+    </ul>
+
+    <pre><code># ===== SNAPSHOT VIA CLI =====
+qm snapshot 101 snap-before-update --description "Before apt upgrade" --vmstate
+# --vmstate includes RAM state (can resume exactly where left off)
+
+# ===== LIST SNAPSHOTS =====
+qm listsnapshot 101
+
+# ===== ROLLBACK TO SNAPSHOT =====
+qm rollback 101 snap-before-update
+
+# ===== DELETE SNAPSHOT =====
+qm delsnapshot 101 snap-before-update
+
+# ===== CONTAINERS =====
+pct snapshot 200 snap1 --description "Clean Debian install"
+pct rollback 200 snap1</code></pre>
+
+    <h3>11.2 Backups</h3>
+    <pre><code># ===== MANUAL BACKUP VIA CLI =====
+vzdump 101 --storage local --mode snapshot --compress zstd
+# Modes: snapshot (fastest, requires storage support), suspend, stop (safest)
+# Compress: zstd (fast+good), gzip, lzo, none
+
+# ===== SCHEDULED BACKUPS (Web UI) =====
+# Datacenter → Backup → Add
+# Set schedule (cron-style), storage, VMs to include, retention policy
+
+# ===== RESTORE FROM BACKUP =====
+# Web UI: local storage → Backups → select file → Restore
+# OR CLI:
+qmrestore /var/lib/vz/dump/vzdump-qemu-101-2024_01_15.vma.zst 101 --storage local-lvm</code></pre>
+
+    <h3>11.3 VM Templates</h3>
+    <pre><code># Templates let you rapidly clone identical VMs — perfect for lab deployments
+
+# ===== CREATE TEMPLATE FROM VM =====
+# Step 1: Prepare the VM (install OS, updates, remove machine-specific config)
+# Inside the VM — run cloud-init prep (Linux):
+sudo cloud-init clean
+sudo truncate -s 0 /etc/machine-id
+sudo rm /var/lib/dbus/machine-id
+sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
+sudo poweroff
+
+# Step 2: Convert VM to template in Proxmox
+qm template 101                          # VM 101 becomes a template (irreversible!)
+# OR: Right-click VM in Web UI → Convert to template
+
+# ===== CLONE FROM TEMPLATE =====
+# Full clone — completely independent copy
+qm clone 101 200 --name student-vm-01 --full
+
+# Linked clone — shares base disk (saves space, faster, depends on template)
+qm clone 101 201 --name student-vm-02
+
+# ===== CLONE IN WEB UI =====
+# Right-click template → Clone → set VMID, name, mode (full/linked), target storage</code></pre>
+
+    <div class="note">
+        <strong>Templates + cloning = your superpower as an instructor.</strong> Build one clean VM, install the OS, configure it exactly right, convert to a template, then clone it for every student in seconds. Need to reset a lab? Delete the clone and re-clone from the template. This is how you run 20-student labs on one Proxmox server without losing your mind.
+    </div>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Proxmox Clustering & High Availability <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>12.1 Proxmox Cluster Concepts</h3>
+    <ul>
+        <li>A Proxmox cluster groups multiple physical hosts into one management unit</li>
+        <li>Manage all nodes from any node's web UI</li>
+        <li>Enables <strong>live migration</strong> — move running VMs between nodes with no downtime</li>
+        <li>Enables <strong>HA (High Availability)</strong> — if a node fails, its VMs restart on surviving nodes</li>
+        <li>Minimum 3 nodes for quorum — prevents split-brain (2 nodes can't agree who's in charge)</li>
+        <li>Uses <strong>Corosync</strong> for cluster communication — needs low-latency dedicated link</li>
+    </ul>
+
+    <h3>12.2 Creating a Cluster</h3>
+    <pre><code># ===== ON THE FIRST NODE (will be cluster master) =====
+pvecm create TSTC-Lab-Cluster
+
+# ===== ON ADDITIONAL NODES (join existing cluster) =====
+pvecm add 192.168.1.10          # IP of first node
+
+# ===== VERIFY CLUSTER STATUS =====
+pvecm status                    # Cluster health, quorum, nodes
+pvecm nodes                     # List all nodes
+
+# ===== LIVE MIGRATE VM TO ANOTHER NODE =====
+qm migrate 101 pve2             # Migrate VM 101 to node "pve2"
+qm migrate 101 pve2 --online    # Live migration — VM keeps running</code></pre>
+
+    <h3>12.3 High Availability</h3>
+    <pre><code># HA automatically restarts VMs on another node if the host fails
+
+# ===== ENABLE HA FOR A VM =====
+# Web UI: Datacenter → HA → Add → select VM
+# OR CLI:
+ha-manager add vm:101 --state started --group lab-cluster
+
+# ===== HA GROUPS =====
+# Groups define which nodes a VM can run on
+ha-manager groupadd lab-cluster --nodes pve1,pve2,pve3
+
+# ===== VIEW HA STATUS =====
+ha-manager status</code></pre>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. Nested Virtualization <span class="lab-tag">Lab 6</span> <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>13.1 What is Nested Virtualization?</h3>
+    <p>Nested virtualization allows you to run a <strong>hypervisor inside a VM</strong> — a VM running inside Proxmox that can itself run VMs. This is how you build entire virtual lab environments on a single physical machine — one Proxmox host running student VMs, each of which can run their own virtual network.</p>
+
+    <h3>13.2 Enable Nested Virtualization in Proxmox</h3>
+    <pre><code># ===== CHECK IF NESTED VIRT IS ALREADY ENABLED =====
+# Intel:
+cat /sys/module/kvm_intel/parameters/nested    # Should show "Y" or "1"
+# AMD:
+cat /sys/module/kvm_amd/parameters/nested      # Should show "Y" or "1"
+
+# ===== ENABLE PERMANENTLY =====
+# Intel:
+echo "options kvm-intel nested=Y" > /etc/modprobe.d/kvm-intel.conf
+# AMD:
+echo "options kvm-amd nested=1" > /etc/modprobe.d/kvm-amd.conf
+
+# Reload module
+modprobe -r kvm_intel && modprobe kvm_intel      # Intel
+modprobe -r kvm_amd && modprobe kvm_amd          # AMD
+
+# ===== SET VM CPU TYPE TO "host" =====
+# In Web UI: VM → Hardware → Processors → Type: host
+# OR CLI:
+qm set 101 --cpu host</code></pre>
+
+    <div class="lab">
+        <div class="lab-title">🧪 Lab 6 — Configuring Nested Virtualization</div>
+        <p>In this lab you will configure both the Proxmox host AND your Windows client to enable nested virtualization — the ability to run VMs inside VMs.</p>
+
+        <h4>On the Proxmox Host:</h4>
+        <ol>
+            <li>SSH into your Proxmox node or open the Shell in the web UI</li>
+            <li>Check your CPU vendor: <code>grep -m1 vendor_id /proc/cpuinfo</code></li>
+            <li>For <strong>Intel:</strong> run <code>echo "options kvm-intel nested=Y" > /etc/modprobe.d/kvm-intel.conf</code></li>
+            <li>For <strong>AMD:</strong> run <code>echo "options kvm-amd nested=1" > /etc/modprobe.d/kvm-amd.conf</code></li>
+            <li>Reload the module (or reboot)</li>
+            <li>Set the VM's CPU type to <strong>host</strong> in VM Hardware settings</li>
+        </ol>
+
+        <h4>On the Windows 11 Client (for running Proxmox in a VM):</h4>
+        <ol>
+            <li>Follow <strong>Lab 1</strong> steps to disable Hyper-V, VMP, and Windows Hypervisor Platform</li>
+            <li>Disable Memory Integrity in Core Isolation</li>
+            <li>Reboot and verify in System Information: VBS = "Not enabled", SLAT = "Yes"</li>
+        </ol>
+
+        <div class="lab-warn">⚠️ Nested virtualization has a performance cost — each layer adds overhead. For production workloads, always run on bare metal. For labs, nested is perfectly acceptable.</div>
+    </div>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. Proxmox CLI Reference <span class="proxmox-tag">Proxmox</span></h2>
+
+    <h3>14.1 VM Management (qm)</h3>
+    <pre><code># ===== VM LIFECYCLE =====
+qm list                             # List all VMs and status
+qm start 101                        # Start VM 101
+qm stop 101                         # Forcefully stop VM 101
+qm shutdown 101                     # Graceful shutdown (via guest agent)
+qm reboot 101                       # Reboot VM
+qm reset 101                        # Hard reset (like power button)
+qm suspend 101                      # Suspend to disk
+qm resume 101                       # Resume from suspend
+
+# ===== VM CONFIG =====
+qm config 101                       # View full VM config
+qm set 101 --memory 4096            # Change RAM to 4GB
+qm set 101 --cores 4                # Change to 4 CPU cores
+qm set 101 --name new-name          # Rename VM
+qm set 101 --onboot 1               # Auto-start on host boot
+qm set 101 --protection 1           # Protect from accidental deletion
+
+# ===== VM CONSOLE =====
+qm terminal 101                     # Serial terminal to VM
+qm monitor 101                      # QEMU monitor prompt
+
+# ===== VM DISK =====
+qm resize 101 scsi0 +10G            # Add 10GB to disk
+qm move-disk 101 scsi0 local-zfs    # Move disk to different storage
+
+# ===== SNAPSHOTS =====
+qm snapshot 101 snap1               # Create snapshot
+qm listsnapshot 101                 # List snapshots
+qm rollback 101 snap1               # Rollback to snapshot
+qm delsnapshot 101 snap1            # Delete snapshot
+
+# ===== MIGRATION =====
+qm migrate 101 pve2 --online        # Live migrate to node pve2</code></pre>
+
+    <h3>14.2 Container Management (pct)</h3>
+    <pre><code># ===== CONTAINER LIFECYCLE =====
+pct list                            # List all containers
+pct start 200                       # Start container 200
+pct stop 200                        # Stop container
+pct shutdown 200                    # Graceful shutdown
+pct reboot 200                      # Reboot
+
+# ===== CONTAINER ACCESS =====
+pct enter 200                       # Shell into container
+pct exec 200 -- command             # Run command in container
+
+# ===== CONTAINER CONFIG =====
+pct config 200                      # View config
+pct set 200 --memory 1024           # Change RAM
+pct set 200 --cores 2               # Change CPU cores
+
+# ===== SNAPSHOTS =====
+pct snapshot 200 snap1
+pct rollback 200 snap1
+pct delsnapshot 200 snap1</code></pre>
+
+    <h3>14.3 Storage & Node Management</h3>
+    <pre><code># ===== STORAGE =====
+pvesm status                        # Storage status and usage
+pvesm list local                    # List contents of local storage
+pvesm scan nfs 192.168.1.20         # Scan NFS server for shares
+
+# ===== NODE STATUS =====
+pveversion                          # Proxmox version
+pvesh get /nodes/pve/status         # Node health via API
+pveperf                             # Node performance benchmark
+free -h                             # Host RAM usage
+df -h                               # Host disk usage
+top                                 # CPU/RAM usage (q to quit)
+htop                                # Nicer top
+
+# ===== UPDATES =====
+apt update && apt full-upgrade -y   # Update Proxmox
+pveupgrade                          # Check for Proxmox updates
+
+# ===== CLUSTER =====
+pvecm status                        # Cluster health
+pvecm nodes                         # Cluster node list
+ha-manager status                   # HA status
+
+# ===== BACKUPS =====
+vzdump 101 --storage local --mode snapshot --compress zstd
+vzdump 101 102 103 --storage local  # Backup multiple VMs
+
+# ===== LOGS =====
+journalctl -u pvedaemon             # Proxmox daemon logs
+journalctl -u qemu-server           # QEMU/VM logs
+tail -f /var/log/pve/tasks/index    # Task log</code></pre>
+
+    <h3>14.4 Quick Troubleshooting Reference</h3>
+    <table>
+        <tr><th>Problem</th><th>Check</th><th>Fix</th></tr>
+        <tr><td>VM won't start — "KVM not available"</td><td><code>kvm-ok</code> or <code>egrep '(vmx|svm)' /proc/cpuinfo</code></td><td>Enable VT-x/AMD-V in BIOS</td></tr>
+        <tr><td>Can't create snapshot</td><td>Disk format and storage type</td><td>Use qcow2 format or ZFS/LVM-Thin storage</td></tr>
+        <tr><td>VM has no network</td><td>Bridge config, VM NIC settings</td><td>Verify vmbr0 exists and has correct bridge-ports</td></tr>
+        <tr><td>Can't access web UI</td><td>Service running, firewall, port 8006</td><td><code>systemctl restart pveproxy</code></td></tr>
+        <tr><td>VM disk full</td><td>df -h inside VM</td><td><code>qm resize</code> then extend partition inside VM</td></tr>
+        <tr><td>Live migration fails</td><td>Shared storage, same storage name on both nodes</td><td>Use shared storage (NFS/Ceph) for VM disks</td></tr>
+        <tr><td>Cluster quorum lost</td><td><code>pvecm status</code></td><td>Bring nodes back online; check Corosync: <code>systemctl status corosync</code></td></tr>
+    </table>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Virtualize everything — hardware is just a suggestion!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
