@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A+ Study Guide · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            position: relative;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            border-left: 10px solid #b91c1c;
+            padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem;
+            color: #334155;
+            margin-bottom: 2rem;
+            margin-top: 0.2rem;
+            padding-left: 2.2rem;
+            font-weight: 400;
+            border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 1.5rem 0 0.5rem;
+        }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #b91c1c;
+            border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1.2rem;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 1.2rem 0;
+            border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            padding: 12px 10px;
+            text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6;
+            border-left: 8px solid #fbbf24;
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05);
+            position: relative;
+            font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:";
+            font-weight: 700;
+            font-style: normal;
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right;
+            width: 200px;
+            background: #fef9c3;
+            border: 2px solid #fbbf24;
+            padding: 0.8rem;
+            margin: 0 0 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b;
+            font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            columns: 2 250px;
+            column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.5rem;
+        }
+        .exam-tag {
+            display: inline-block;
+            background: #1e3a5f;
+            color: #facc15;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            letter-spacing: 0.04em;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>💻 A+ Study Guide</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · CompTIA 220-1101 (Core 1) & 220-1102 (Core 2)</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Mobile Devices (1101)</a></li>
+            <li><a href="#part2">2. Networking Fundamentals (1101)</a></li>
+            <li><a href="#part3">3. Hardware & Components (1101)</a></li>
+            <li><a href="#part4">4. Virtualization & Cloud (1101)</a></li>
+            <li><a href="#part5">5. Hardware & Network Troubleshooting (1101)</a></li>
+            <li><a href="#part6">6. Operating Systems (1102)</a></li>
+            <li><a href="#part7">7. Security Fundamentals (1102)</a></li>
+            <li><a href="#part8">8. Software Troubleshooting (1102)</a></li>
+            <li><a href="#part9">9. Operational Procedures (1102)</a></li>
+            <li><a href="#part10">10. Windows Command Line Tools</a></li>
+            <li><a href="#part11">11. Printers & Peripherals (1101)</a></li>
+            <li><a href="#part12">12. Power & Safety</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Mobile Devices <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>1.1 Laptop Hardware Components</h3>
+    <table>
+        <tr><th>Component</th><th>Description</th><th>Key Detail</th></tr>
+        <tr><td><strong>RAM</strong></td><td>SO-DIMM form factor (smaller than desktop)</td><td>DDR4/DDR5 — soldered on many modern laptops</td></tr>
+        <tr><td><strong>Storage</strong></td><td>2.5" SATA SSD or M.2 NVMe</td><td>M.2 NVMe = much faster than SATA</td></tr>
+        <tr><td><strong>Display</strong></td><td>LCD (IPS, TN, VA) or OLED</td><td>IPS = best color/viewing angles</td></tr>
+        <tr><td><strong>Battery</strong></td><td>Li-Ion or Li-Polymer</td><td>Never fully discharge Li-Ion — damages cells</td></tr>
+        <tr><td><strong>Keyboard</strong></td><td>Built-in — replaceable as unit</td><td>Use compressed air to clean — never liquid</td></tr>
+        <tr><td><strong>Touchpad</strong></td><td>Capacitive pointing device</td><td>Built-in left/right click zones</td></tr>
+        <tr><td><strong>DC Jack</strong></td><td>Power input connector</td><td>Common failure — wiggling charger = bad jack</td></tr>
+        <tr><td><strong>Inverter</strong></td><td>Powers CCFL backlight (older LCD)</td><td>Dim screen = bad inverter or backlight</td></tr>
+    </table>
+
+    <h3>1.2 Mobile Device Connection Types</h3>
+    <table>
+        <tr><th>Connection</th><th>Description</th><th>Key Detail</th></tr>
+        <tr><td><strong>USB-C</strong></td><td>Reversible connector, supports USB 3.x, Thunderbolt, DisplayPort, power</td><td>One port, many protocols</td></tr>
+        <tr><td><strong>Thunderbolt 3/4</strong></td><td>40 Gbps, uses USB-C connector</td><td>Backwards compatible with USB-C</td></tr>
+        <tr><td><strong>Lightning</strong></td><td>Apple proprietary — older iPhones/iPads</td><td>Being replaced by USB-C</td></tr>
+        <tr><td><strong>microUSB</strong></td><td>Older Android devices</td><td>Not reversible — being phased out</td></tr>
+        <tr><td><strong>Bluetooth</strong></td><td>Short-range wireless (10m typical)</td><td>Pairing = one-time authentication</td></tr>
+        <tr><td><strong>NFC</strong></td><td>Near Field Communication — &lt;4cm range</td><td>Used for tap-to-pay, quick Bluetooth pairing</td></tr>
+        <tr><td><strong>Hotspot</strong></td><td>Share cellular data as Wi-Fi</td><td>Tethering = USB version of hotspot</td></tr>
+    </table>
+
+    <h3>1.3 Mobile Device Security</h3>
+    <ul>
+        <li><strong>MDM (Mobile Device Management):</strong> Corporate software to manage, monitor, wipe devices remotely</li>
+        <li><strong>Remote Wipe:</strong> Erase all data from a lost/stolen device</li>
+        <li><strong>Screen Lock:</strong> PIN, pattern, fingerprint, face unlock</li>
+        <li><strong>Full Device Encryption:</strong> Default on modern iOS and Android</li>
+        <li><strong>Locator apps:</strong> Find My (Apple), Find My Device (Android)</li>
+        <li><strong>MicroSD:</strong> External storage — can also store malware; disable if policy requires</li>
+    </ul>
+
+    <div class="note">
+        <strong>Rooting vs Jailbreaking:</strong> Rooting = Android (gaining root/superuser access). Jailbreaking = iOS (bypassing Apple restrictions). Both void warranties, remove security protections, and violate most corporate MDM policies. If a user's phone is rooted, treat it as untrusted.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Networking Fundamentals <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>2.1 Ports & Protocols — Must Memorize</h3>
+    <table>
+        <tr><th>Port</th><th>Protocol</th><th>Use</th></tr>
+        <tr><td>21</td><td>FTP</td><td>File transfer (unencrypted)</td></tr>
+        <tr><td>22</td><td>SSH / SFTP</td><td>Secure shell, secure file transfer</td></tr>
+        <tr><td>23</td><td>Telnet</td><td>Remote access — unencrypted, avoid</td></tr>
+        <tr><td>25</td><td>SMTP</td><td>Send email</td></tr>
+        <tr><td>53</td><td>DNS</td><td>Name resolution</td></tr>
+        <tr><td>67/68</td><td>DHCP</td><td>Dynamic IP assignment</td></tr>
+        <tr><td>80</td><td>HTTP</td><td>Web (unencrypted)</td></tr>
+        <tr><td>110</td><td>POP3</td><td>Receive email (downloads to client)</td></tr>
+        <tr><td>143</td><td>IMAP</td><td>Receive email (stays on server)</td></tr>
+        <tr><td>443</td><td>HTTPS</td><td>Encrypted web</td></tr>
+        <tr><td>445</td><td>SMB</td><td>Windows file/printer sharing</td></tr>
+        <tr><td>3389</td><td>RDP</td><td>Windows Remote Desktop</td></tr>
+    </table>
+
+    <h3>2.2 Network Hardware</h3>
+    <table>
+        <tr><th>Device</th><th>Layer</th><th>Function</th></tr>
+        <tr><td><strong>Hub</strong></td><td>1</td><td>Repeats to all ports — creates collisions, obsolete</td></tr>
+        <tr><td><strong>Switch</strong></td><td>2</td><td>Forwards by MAC address — smart, efficient</td></tr>
+        <tr><td><strong>Router</strong></td><td>3</td><td>Routes between networks by IP</td></tr>
+        <tr><td><strong>WAP</strong></td><td>2</td><td>Wireless access point — bridges wireless to wired</td></tr>
+        <tr><td><strong>Modem</strong></td><td>1</td><td>Modulates/demodulates — converts digital to analog signal for ISP</td></tr>
+        <tr><td><strong>PoE Switch</strong></td><td>2</td><td>Powers devices (WAPs, cameras) over Ethernet cable</td></tr>
+        <tr><td><strong>Patch Panel</strong></td><td>1</td><td>Organizes cable runs in a rack — passive device</td></tr>
+    </table>
+
+    <h3>2.3 IP Addressing</h3>
+    <table>
+        <tr><th>Type</th><th>Range / Example</th><th>Notes</th></tr>
+        <tr><td><strong>Private Class A</strong></td><td>10.0.0.0/8</td><td>Large enterprise networks</td></tr>
+        <tr><td><strong>Private Class B</strong></td><td>172.16.0.0 – 172.31.255.255</td><td>Medium networks</td></tr>
+        <tr><td><strong>Private Class C</strong></td><td>192.168.0.0/16</td><td>Home/small office — most common</td></tr>
+        <tr><td><strong>APIPA</strong></td><td>169.254.x.x</td><td>Auto-assigned when DHCP fails — no internet access</td></tr>
+        <tr><td><strong>Loopback</strong></td><td>127.0.0.1</td><td>Points back to local machine — test TCP/IP stack</td></tr>
+        <tr><td><strong>Broadcast</strong></td><td>255.255.255.255</td><td>Sends to all hosts on subnet</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>APIPA = Problem indicator:</strong> If a device shows 169.254.x.x, it means DHCP failed. First checks: Is the DHCP server running? Is the cable connected? Can the device reach the router? APIPA is your canary — something upstream is broken.
+    </div>
+
+    <h3>2.4 Wireless Standards</h3>
+    <table>
+        <tr><th>Standard</th><th>Wi-Fi Name</th><th>Max Speed</th><th>Frequency</th></tr>
+        <tr><td>802.11a</td><td>—</td><td>54 Mbps</td><td>5 GHz</td></tr>
+        <tr><td>802.11b</td><td>—</td><td>11 Mbps</td><td>2.4 GHz</td></tr>
+        <tr><td>802.11g</td><td>—</td><td>54 Mbps</td><td>2.4 GHz</td></tr>
+        <tr><td>802.11n</td><td>Wi-Fi 4</td><td>600 Mbps</td><td>2.4 / 5 GHz</td></tr>
+        <tr><td>802.11ac</td><td>Wi-Fi 5</td><td>3.5 Gbps</td><td>5 GHz</td></tr>
+        <tr><td>802.11ax</td><td>Wi-Fi 6/6E</td><td>9.6 Gbps</td><td>2.4 / 5 / 6 GHz</td></tr>
+    </table>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Hardware & Components <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>3.1 CPU Concepts</h3>
+    <ul>
+        <li><strong>Cores:</strong> Physical processing units — more cores = better multitasking</li>
+        <li><strong>Threads:</strong> Logical processors — hyperthreading doubles thread count per core</li>
+        <li><strong>Cache:</strong> L1 (fastest/smallest) → L2 → L3 (slowest/largest) — stores frequently used data</li>
+        <li><strong>Socket types:</strong> Intel LGA (pins on motherboard), AMD AM5 (pins on CPU)</li>
+        <li><strong>TDP:</strong> Thermal Design Power — how much heat the CPU produces; determines cooler needed</li>
+        <li><strong>Overclocking:</strong> Running CPU faster than rated speed — requires better cooling, voids warranty</li>
+    </ul>
+
+    <h3>3.2 RAM</h3>
+    <table>
+        <tr><th>Type</th><th>Form Factor</th><th>Use</th><th>Key Detail</th></tr>
+        <tr><td>DDR4</td><td>DIMM / SO-DIMM</td><td>Desktop / Laptop</td><td>Current standard — 2133–3200 MHz</td></tr>
+        <tr><td>DDR5</td><td>DIMM / SO-DIMM</td><td>Desktop / Laptop</td><td>Newer — faster, higher capacity</td></tr>
+        <tr><td>ECC RAM</td><td>DIMM</td><td>Servers/workstations</td><td>Error Correcting Code — detects/fixes single-bit errors</td></tr>
+        <tr><td>Virtual RAM</td><td>Pagefile/Swap</td><td>All systems</td><td>Disk used as slow RAM overflow — causes sluggishness</td></tr>
+    </table>
+
+    <div class="sidenote">
+        <p>🧠 <strong>RAM is NOT permanent storage.</strong> It loses everything when power is cut. That's why you save files to disk — RAM is just your workspace.</p>
+    </div>
+
+    <h3>3.3 Storage Types</h3>
+    <table>
+        <tr><th>Type</th><th>Interface</th><th>Speed</th><th>Notes</th></tr>
+        <tr><td><strong>HDD</strong></td><td>SATA</td><td>80–160 MB/s</td><td>Spinning platters — cheap, high capacity, fragile</td></tr>
+        <tr><td><strong>SATA SSD</strong></td><td>SATA</td><td>~550 MB/s</td><td>No moving parts — much faster than HDD</td></tr>
+        <tr><td><strong>M.2 SATA</strong></td><td>M.2 slot</td><td>~550 MB/s</td><td>Same speed as SATA SSD, smaller form factor</td></tr>
+        <tr><td><strong>M.2 NVMe</strong></td><td>PCIe / M.2</td><td>3,500+ MB/s</td><td>Fastest consumer storage — use for OS drive</td></tr>
+        <tr><td><strong>Optane</strong></td><td>PCIe</td><td>Very fast</td><td>Intel 3D XPoint — discontinued but may appear on exam</td></tr>
+    </table>
+
+    <h3>3.4 Motherboard Components</h3>
+    <table>
+        <tr><th>Component</th><th>Function</th></tr>
+        <tr><td><strong>BIOS/UEFI</strong></td><td>Firmware that initializes hardware and boots OS. UEFI = modern replacement for BIOS</td></tr>
+        <tr><td><strong>CMOS Battery</strong></td><td>CR2032 coin cell — keeps BIOS settings and clock alive when unplugged</td></tr>
+        <tr><td><strong>Chipset</strong></td><td>Controls communication between CPU, RAM, PCIe, storage</td></tr>
+        <tr><td><strong>PCIe Slots</strong></td><td>x1, x4, x8, x16 — GPU goes in x16, NVMe in x4 or M.2</td></tr>
+        <tr><td><strong>SATA Ports</strong></td><td>Connect HDDs and SATA SSDs — up to 6 Gbps</td></tr>
+        <tr><td><strong>Front Panel Headers</strong></td><td>Power button, reset, HDD LED, USB — tiny pin connectors</td></tr>
+        <tr><td><strong>Form Factors</strong></td><td>ATX (full), Micro-ATX (smaller), Mini-ITX (smallest) — must match case</td></tr>
+    </table>
+
+    <h3>3.5 Power Supply (PSU)</h3>
+    <ul>
+        <li><strong>Wattage:</strong> Match to system needs — GPU-heavy systems need 750W+</li>
+        <li><strong>80 PLUS Rating:</strong> Efficiency certification: Standard → Bronze → Silver → Gold → Platinum → Titanium</li>
+        <li><strong>Modular vs Non-modular:</strong> Modular = only connect cables you need (cleaner builds)</li>
+        <li><strong>Connectors:</strong> 24-pin ATX (motherboard), 8-pin EPS (CPU), PCIe 6/8-pin (GPU), SATA power, Molex</li>
+        <li><strong>Voltage rails:</strong> +3.3V, +5V, +12V (most important — powers CPU/GPU)</li>
+    </ul>
+
+    <div class="note">
+        <strong>POST Beep Codes:</strong> If a system won't boot and beeps, count the beeps — they're error codes. 1 beep = usually OK. Multiple beeps = RAM, GPU, or CPU issue depending on BIOS manufacturer. No beep at all = likely dead PSU, CPU, or motherboard.
+    </div>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Virtualization & Cloud Computing <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>4.1 Virtualization Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Hypervisor</strong></td><td>Software that creates and manages VMs</td></tr>
+        <tr><td><strong>Type 1 Hypervisor</strong></td><td>Runs directly on hardware (bare metal) — VMware ESXi, Hyper-V, Xen. Used in data centers.</td></tr>
+        <tr><td><strong>Type 2 Hypervisor</strong></td><td>Runs on top of an OS — VMware Workstation, VirtualBox. Used on desktops for testing.</td></tr>
+        <tr><td><strong>VM (Virtual Machine)</strong></td><td>Software-emulated computer running inside a host</td></tr>
+        <tr><td><strong>Snapshot</strong></td><td>Point-in-time capture of VM state — instant rollback</td></tr>
+        <tr><td><strong>Container</strong></td><td>Lightweight alternative to VM — shares host OS kernel (Docker)</td></tr>
+        <tr><td><strong>VM Sprawl</strong></td><td>Uncontrolled creation of VMs — wastes resources, security risk</td></tr>
+    </table>
+
+    <h3>4.2 Cloud Service Models</h3>
+    <table>
+        <tr><th>Model</th><th>You Manage</th><th>Provider Manages</th><th>Example</th></tr>
+        <tr><td><strong>IaaS</strong></td><td>OS, apps, data</td><td>Hardware, networking, virtualization</td><td>AWS EC2, Azure VMs</td></tr>
+        <tr><td><strong>PaaS</strong></td><td>Apps and data only</td><td>Everything else including OS</td><td>Heroku, Google App Engine</td></tr>
+        <tr><td><strong>SaaS</strong></td><td>Nothing — just use it</td><td>Everything</td><td>Gmail, Office 365, Salesforce</td></tr>
+    </table>
+
+    <h3>4.3 Cloud Deployment Models</h3>
+    <ul>
+        <li><strong>Public Cloud:</strong> Resources owned by provider, shared with others — AWS, Azure, GCP</li>
+        <li><strong>Private Cloud:</strong> Cloud infrastructure dedicated to one organization — on-premises or hosted</li>
+        <li><strong>Hybrid Cloud:</strong> Mix of public and private — sensitive data stays private, burst to public</li>
+        <li><strong>Community Cloud:</strong> Shared by organizations with common interests (government, healthcare)</li>
+    </ul>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Hardware & Network Troubleshooting <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>5.1 Troubleshooting Methodology (CompTIA Official Steps)</h3>
+    <ol>
+        <li><strong>Identify the problem</strong> — Question the user, review logs, duplicate issue if possible</li>
+        <li><strong>Establish a theory of probable cause</strong> — Start simple (Is it plugged in? Is the service running?)</li>
+        <li><strong>Test the theory</strong> — If confirmed, move to fix. If not, establish new theory.</li>
+        <li><strong>Establish a plan of action</strong> — Know your fix. Consider side effects before acting.</li>
+        <li><strong>Implement the solution or escalate</strong> — Fix it or pass to the right person.</li>
+        <li><strong>Verify full system functionality</strong> — Test beyond just the reported issue.</li>
+        <li><strong>Document findings, actions, and outcomes</strong> — Future you (and your team) will thank you.</li>
+    </ol>
+
+    <h3>5.2 Common Hardware Issues</h3>
+    <table>
+        <tr><th>Symptom</th><th>Probable Cause</th><th>Fix</th></tr>
+        <tr><td>No POST, no video</td><td>RAM not seated, dead GPU, PSU failure</td><td>Reseat RAM, test with single stick, check PSU</td></tr>
+        <tr><td>Overheating / shutdowns</td><td>Dust buildup, bad thermal paste, failed fan</td><td>Clean with compressed air, replace thermal paste</td></tr>
+        <tr><td>Slow performance</td><td>Low RAM, HDD failing, malware, full disk</td><td>Check Task Manager, run diagnostics, scan for malware</td></tr>
+        <tr><td>Clicking HDD sounds</td><td>Mechanical HDD failure imminent</td><td>BACKUP IMMEDIATELY — replace drive</td></tr>
+        <tr><td>Blue Screen (BSOD)</td><td>Driver issue, RAM failure, corrupted OS</td><td>Check event log, run memtest86, update drivers</td></tr>
+        <tr><td>Capacitor bulge on mobo</td><td>Failed capacitors — age or power surge</td><td>Replace motherboard</td></tr>
+        <tr><td>Burning smell</td><td>PSU failure, short circuit, overheating component</td><td>Power off immediately — investigate before restarting</td></tr>
+    </table>
+
+    <h3>5.3 Network Troubleshooting Steps</h3>
+    <pre><code># Step 1 — Can you ping yourself?
+ping 127.0.0.1          # Tests local TCP/IP stack
+
+# Step 2 — Do you have an IP?
+ipconfig /all           # Check for valid IP (not 169.254.x.x)
+
+# Step 3 — Can you reach your gateway?
+ping 192.168.1.1        # Replace with your default gateway
+
+# Step 4 — Can you reach the internet by IP?
+ping 8.8.8.8            # Google DNS — bypasses DNS resolution
+
+# Step 5 — Can you resolve DNS?
+ping google.com         # If this works but step 4 fails — routing issue
+nslookup google.com     # If this fails — DNS issue
+
+# Step 6 — Trace the path
+tracert google.com      # See where packets stop</code></pre>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Operating Systems <span class="exam-tag">Core 2 — 1102</span></h2>
+
+    <h3>6.1 Windows Versions</h3>
+    <table>
+        <tr><th>Version</th><th>Key Features</th><th>Target</th></tr>
+        <tr><td><strong>Windows 10 Home</strong></td><td>Basic features, no domain join, no Group Policy</td><td>Consumers</td></tr>
+        <tr><td><strong>Windows 10/11 Pro</strong></td><td>Domain join, BitLocker, Remote Desktop host, Group Policy</td><td>Business users</td></tr>
+        <tr><td><strong>Windows 10/11 Enterprise</strong></td><td>All Pro features + DirectAccess, AppLocker, BranchCache</td><td>Large enterprises</td></tr>
+        <tr><td><strong>Windows Server</strong></td><td>Active Directory, DNS, DHCP, file server roles</td><td>Servers/data centers</td></tr>
+    </table>
+
+    <h3>6.2 Windows File Systems</h3>
+    <table>
+        <tr><th>File System</th><th>Max File Size</th><th>Use Case</th></tr>
+        <tr><td><strong>FAT32</strong></td><td>4 GB max file size</td><td>USB drives, older compatibility — can't do large files</td></tr>
+        <tr><td><strong>exFAT</strong></td><td>16 EB theoretical</td><td>Flash drives, SD cards — large files, cross-platform</td></tr>
+        <tr><td><strong>NTFS</strong></td><td>16 EB theoretical</td><td>Windows internal drives — permissions, encryption, journaling</td></tr>
+        <tr><td><strong>ext4</strong></td><td>16 TB</td><td>Linux standard file system</td></tr>
+        <tr><td><strong>APFS</strong></td><td>Very large</td><td>macOS/iOS — optimized for SSDs</td></tr>
+    </table>
+
+    <h3>6.3 Windows Administrative Tools</h3>
+    <pre><code>msconfig        # System Configuration — startup, boot options, services
+regedit         # Registry Editor — advanced settings (be careful!)
+gpedit.msc      # Group Policy Editor (Pro/Enterprise only)
+compmgmt.msc    # Computer Management — all-in-one admin console
+devmgmt.msc     # Device Manager — drivers and hardware
+diskmgmt.msc    # Disk Management — partitions and volumes
+eventvwr.msc    # Event Viewer — system and application logs
+services.msc    # Services — start, stop, configure Windows services
+taskmgr         # Task Manager — processes, performance, startup
+lusrmgr.msc     # Local Users and Groups (Pro/Enterprise)
+mmc             # Microsoft Management Console — build custom tools</code></pre>
+
+    <h3>6.4 macOS & Linux Basics</h3>
+    <table>
+        <tr><th>Task</th><th>macOS</th><th>Linux</th></tr>
+        <tr><td>Package manager</td><td>Homebrew (third-party)</td><td>apt (Debian), dnf (RHEL)</td></tr>
+        <tr><td>System info</td><td>About This Mac → System Report</td><td><code>uname -a</code>, <code>lshw</code></td></tr>
+        <tr><td>Task manager</td><td>Activity Monitor</td><td><code>top</code>, <code>htop</code></td></tr>
+        <tr><td>Disk utility</td><td>Disk Utility app</td><td><code>fdisk</code>, <code>gparted</code></td></tr>
+        <tr><td>Remote access</td><td>Screen Sharing (VNC), SSH</td><td>SSH, VNC, RDP (xrdp)</td></tr>
+        <tr><td>Firewall config</td><td>System Settings → Firewall</td><td><code>ufw</code>, <code>firewalld</code></td></tr>
+    </table>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Security Fundamentals <span class="exam-tag">Core 2 — 1102</span></h2>
+
+    <h3>7.1 Malware Removal Process</h3>
+    <ol>
+        <li><strong>Investigate and verify</strong> — Confirm it's actually malware, not a false positive</li>
+        <li><strong>Quarantine the infected system</strong> — Disconnect from network to prevent spread</li>
+        <li><strong>Disable System Restore</strong> — Prevents malware from hiding in restore points</li>
+        <li><strong>Boot into Safe Mode</strong> — Minimal drivers, harder for malware to run</li>
+        <li><strong>Run malware scans</strong> — Use multiple tools (Malwarebytes, Windows Defender)</li>
+        <li><strong>Remove all infections</strong> — Follow tool recommendations, manual removal if needed</li>
+        <li><strong>Re-enable System Restore and create restore point</strong></li>
+        <li><strong>Patch and update everything</strong> — Close the vulnerability that allowed infection</li>
+        <li><strong>Educate the user</strong> — How did this happen? Don't let it happen again.</li>
+    </ol>
+
+    <h3>7.2 Windows Security Features</h3>
+    <table>
+        <tr><th>Feature</th><th>What It Does</th></tr>
+        <tr><td><strong>Windows Defender</strong></td><td>Built-in AV/anti-malware — on by default, actually good now</td></tr>
+        <tr><td><strong>Windows Firewall</strong></td><td>Host-based packet filter — controls inbound/outbound per app</td></tr>
+        <tr><td><strong>BitLocker</strong></td><td>Full disk encryption — requires TPM chip or USB key (Pro/Enterprise)</td></tr>
+        <tr><td><strong>EFS</strong></td><td>Encrypting File System — per-file/folder encryption in NTFS</td></tr>
+        <tr><td><strong>UAC</strong></td><td>User Account Control — prompts for elevation before admin actions</td></tr>
+        <tr><td><strong>Windows Hello</strong></td><td>Biometric login — fingerprint, face recognition</td></tr>
+        <tr><td><strong>Secure Boot</strong></td><td>UEFI feature — prevents unauthorized OS from loading</td></tr>
+    </table>
+
+    <h3>7.3 Common Threats</h3>
+    <table>
+        <tr><th>Threat</th><th>Description</th><th>Defense</th></tr>
+        <tr><td><strong>Phishing</strong></td><td>Fake email/site to steal credentials</td><td>User training, email filtering, MFA</td></tr>
+        <tr><td><strong>Ransomware</strong></td><td>Encrypts files, demands payment</td><td>Backups, AV, patch management</td></tr>
+        <tr><td><strong>Keylogger</strong></td><td>Records keystrokes to steal passwords</td><td>AV, virtual keyboards for sensitive input</td></tr>
+        <tr><td><strong>Man-in-the-Middle</strong></td><td>Intercepts communications</td><td>HTTPS, VPN, certificate validation</td></tr>
+        <tr><td><strong>Insider Threat</strong></td><td>Employee abusing access</td><td>Least privilege, auditing, DLP</td></tr>
+        <tr><td><strong>Zero-Day</strong></td><td>Unknown vulnerability, no patch exists yet</td><td>Defense in depth, behavior-based AV</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Principle of Least Privilege:</strong> Every user, app, and service should have the minimum access needed to do their job — nothing more. An accountant doesn't need admin rights. A web server process shouldn't run as root. This single principle limits the damage of ANY compromise.
+    </div>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Software Troubleshooting <span class="exam-tag">Core 2 — 1102</span></h2>
+
+    <h3>8.1 Windows Boot Issues</h3>
+    <table>
+        <tr><th>Issue</th><th>Cause</th><th>Fix</th></tr>
+        <tr><td>BOOTMGR missing</td><td>Corrupted boot sector</td><td>Boot from Windows media → <code>bootrec /fixmbr</code> and <code>bootrec /fixboot</code></td></tr>
+        <tr><td>NTLDR missing</td><td>Old XP/Vista boot file missing</td><td>Boot from media, copy NTLDR</td></tr>
+        <tr><td>Boot loop / BSOD</td><td>Bad driver, corrupted OS</td><td>Safe Mode → roll back driver or run <code>sfc /scannow</code></td></tr>
+        <tr><td>Stuck on spinning dots</td><td>Corrupted Windows files</td><td>WinRE → Startup Repair or System Restore</td></tr>
+        <tr><td>Wrong OS boots</td><td>Boot order misconfigured</td><td>Check BIOS boot order, fix BCD with <code>bcdedit</code></td></tr>
+    </table>
+
+    <h3>8.2 Key Recovery Tools</h3>
+    <pre><code># Run from Windows Recovery Environment (WinRE) or elevated CMD:
+
+sfc /scannow              # System File Checker — repairs corrupted Windows files
+DISM /Online /Cleanup-Image /RestoreHealth  # Repair Windows image
+chkdsk C: /f /r           # Check and repair disk errors
+bootrec /fixmbr           # Fix Master Boot Record
+bootrec /fixboot          # Fix boot sector
+bootrec /rebuildbcd       # Rebuild Boot Configuration Data
+bcdedit                   # View/edit boot configuration
+
+# Safe Mode options (F8 or Shift+F8 on startup):
+# Safe Mode          — minimal drivers
+# Safe Mode + Network — drivers + network
+# Safe Mode + Command Prompt — CMD only</code></pre>
+
+    <h3>8.3 Application Issues</h3>
+    <ul>
+        <li><strong>App won't install:</strong> Check permissions (run as admin), .NET version, 32-bit vs 64-bit compatibility</li>
+        <li><strong>App crashes on launch:</strong> Check Event Viewer → Application log for error codes</li>
+        <li><strong>Slow application:</strong> Check RAM usage in Task Manager, disk I/O, background processes</li>
+        <li><strong>App not responding:</strong> Task Manager → End Task. Check for updates or reinstall.</li>
+        <li><strong>Missing DLL error:</strong> Reinstall the application or install the required runtime (Visual C++, .NET)</li>
+        <li><strong>Profile issues:</strong> Create new user profile — old profile may be corrupted</li>
+    </ul>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Operational Procedures <span class="exam-tag">Core 2 — 1102</span></h2>
+
+    <h3>9.1 Documentation Best Practices</h3>
+    <ul>
+        <li><strong>Network diagrams:</strong> Physical (cables, devices) and logical (IPs, VLANs, subnets)</li>
+        <li><strong>Asset inventory:</strong> Every device — serial number, location, owner, software installed</li>
+        <li><strong>Change management:</strong> Document every change BEFORE making it — who approved it, rollback plan</li>
+        <li><strong>Knowledge base:</strong> Solutions to recurring problems — saves time for everyone</li>
+        <li><strong>Standard operating procedures (SOPs):</strong> Step-by-step processes for common tasks</li>
+        <li><strong>Incident reports:</strong> What happened, when, impact, resolution, prevention</li>
+    </ul>
+
+    <h3>9.2 Change Management</h3>
+    <table>
+        <tr><th>Step</th><th>Description</th></tr>
+        <tr><td><strong>Request for Change (RFC)</strong></td><td>Formal request describing what you want to change and why</td></tr>
+        <tr><td><strong>Impact analysis</strong></td><td>Who/what does this affect? What could go wrong?</td></tr>
+        <tr><td><strong>Approval</strong></td><td>Change Advisory Board (CAB) or manager signs off</td></tr>
+        <tr><td><strong>Implementation</strong></td><td>Make the change during approved maintenance window</td></tr>
+        <tr><td><strong>Rollback plan</strong></td><td>If it breaks — what exactly do you do to undo it?</td></tr>
+        <tr><td><strong>Documentation</strong></td><td>Record what was done, any issues, final state</td></tr>
+    </table>
+
+    <h3>9.3 Backup Types</h3>
+    <table>
+        <tr><th>Type</th><th>What It Backs Up</th><th>Restore Time</th><th>Storage Used</th></tr>
+        <tr><td><strong>Full</strong></td><td>Everything — every file</td><td>Fastest restore</td><td>Most storage</td></tr>
+        <tr><td><strong>Incremental</strong></td><td>Changes since last backup (any type)</td><td>Slowest restore (need full + all incrementals)</td><td>Least storage</td></tr>
+        <tr><td><strong>Differential</strong></td><td>Changes since last FULL backup</td><td>Fast restore (full + latest differential)</td><td>Medium storage</td></tr>
+        <tr><td><strong>Synthetic Full</strong></td><td>Creates full backup from existing full + incrementals</td><td>Fast — no need for original full</td><td>Medium</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>3-2-1 Backup Rule:</strong> Keep <strong>3</strong> copies of data, on <strong>2</strong> different media types, with <strong>1</strong> copy stored off-site. If ransomware hits and your only backup is on the same network — you have no backup.
+    </div>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. Windows Command Line Tools <span class="exam-tag">Core 2 — 1102</span></h2>
+
+    <h3>Essential CMD Commands</h3>
+    <pre><code># Navigation & Files
+dir                       # List directory contents (like ls)
+cd C:\Users               # Change directory
+mkdir NewFolder           # Create directory
+del file.txt              # Delete file
+copy source dest          # Copy file
+move source dest          # Move/rename file
+xcopy /s source dest      # Copy directory tree
+robocopy source dest /mir # Mirror directories (better than xcopy)
+
+# System Info & Management
+systeminfo                # Detailed system info
+hostname                  # Computer name
+whoami                    # Current user
+net user                  # List all local users
+net user username password /add   # Create local user
+net localgroup administrators username /add  # Add to admin group
+gpupdate /force           # Force Group Policy update
+gpresult /r               # Show applied Group Policy
+
+# Networking
+ipconfig /all             # Full IP config
+ipconfig /release         # Release DHCP lease
+ipconfig /renew           # Renew DHCP lease
+ipconfig /flushdns        # Clear DNS cache
+ping hostname             # Test connectivity
+tracert hostname          # Trace network path
+nslookup domain.com       # DNS lookup
+netstat -an               # All connections and listening ports
+arp -a                    # View ARP cache
+nbtstat -a hostname       # NetBIOS info about remote host
+
+# Disk & File System
+chkdsk C: /f /r           # Check and fix disk errors
+diskpart                  # Interactive disk partition tool
+format C: /fs:ntfs        # Format drive (DANGEROUS — know before using)
+convert C: /fs:ntfs       # Convert FAT32 to NTFS without data loss
+
+# Process & Services
+tasklist                  # Show running processes
+taskkill /PID 1234 /F     # Force kill process by PID
+sc query                  # List services
+sc start ServiceName      # Start a service
+sc stop ServiceName       # Stop a service
+net start ServiceName     # Alternative service start</code></pre>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Printers & Peripherals <span class="exam-tag">Core 1 — 1101</span></h2>
+
+    <h3>11.1 Printer Types</h3>
+    <table>
+        <tr><th>Type</th><th>How It Works</th><th>Pros / Cons</th></tr>
+        <tr><td><strong>Laser</strong></td><td>Toner fused to paper with heat (fuser) — drum, corona wire, toner cartridge</td><td>Fast, cheap per page, sharp text — expensive up front</td></tr>
+        <tr><td><strong>Inkjet</strong></td><td>Liquid ink sprayed through microscopic nozzles</td><td>Good photos, cheap printer — expensive ink, clogs if unused</td></tr>
+        <tr><td><strong>Thermal</strong></td><td>Heat activates special paper — no ink</td><td>Used for receipts, labels — paper yellows over time</td></tr>
+        <tr><td><strong>Impact/Dot Matrix</strong></td><td>Pins strike ribbon against paper</td><td>Can print multi-part forms — noisy, low quality</td></tr>
+        <tr><td><strong>3D Printer</strong></td><td>FDM: Fused Deposition Modeling — melts filament layer by layer</td><td>Makes physical objects — slow, requires calibration</td></tr>
+    </table>
+
+    <h3>11.2 Laser Printer Process (MUST KNOW — In Order)</h3>
+    <ol>
+        <li><strong>Processing</strong> — Data sent to printer, RIP creates bitmap of page</li>
+        <li><strong>Charging</strong> — Corona wire/charge roller applies uniform negative charge to drum</li>
+        <li><strong>Exposing</strong> — Laser writes image onto drum — exposed areas lose charge</li>
+        <li><strong>Developing</strong> — Negatively charged toner sticks to laser-exposed (positive) areas</li>
+        <li><strong>Transferring</strong> — Transfer belt/roller moves toner from drum to paper</li>
+        <li><strong>Fusing</strong> — Fuser unit (heat + pressure) permanently bonds toner to paper</li>
+        <li><strong>Cleaning</strong> — Blade removes remaining toner from drum, ready for next page</li>
+    </ol>
+
+    <div class="sidenote">
+        <p>🖨️ <strong>Memory trick:</strong> "People Can Expect Dedicated Technicians For Customers" — Processing, Charging, Exposing, Developing, Transferring, Fusing, Cleaning</p>
+    </div>
+
+    <h3>11.3 Printer Troubleshooting</h3>
+    <table>
+        <tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr>
+        <tr><td>Faded print (laser)</td><td>Low toner</td><td>Shake cartridge to redistribute, then replace</td></tr>
+        <tr><td>Smearing toner</td><td>Fuser failure</td><td>Replace fuser unit</td></tr>
+        <tr><td>Repeating marks on page</td><td>Dirty/damaged drum</td><td>Measure spacing — identifies which roller. Replace drum.</td></tr>
+        <tr><td>Ghost images on page</td><td>Drum not cleaning properly</td><td>Replace drum or cleaning blade</td></tr>
+        <tr><td>Paper jams repeatedly</td><td>Worn pickup rollers or debris</td><td>Clean/replace pickup rollers</td></tr>
+        <tr><td>Inkjet streaks/lines</td><td>Clogged nozzles</td><td>Run head cleaning utility from driver</td></tr>
+        <tr><td>Wrong colors (inkjet)</td><td>Wrong color profile or empty cartridge</td><td>Check ink levels, run color calibration</td></tr>
+    </table>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Power, Safety & Environmental Controls <span class="exam-tag">Core 1 & 2</span></h2>
+
+    <h3>12.1 Power Protection Devices</h3>
+    <table>
+        <tr><th>Device</th><th>Protection Level</th><th>Key Detail</th></tr>
+        <tr><td><strong>Surge Protector</strong></td><td>Basic — absorbs voltage spikes</td><td>Joule rating matters — higher = better protection</td></tr>
+        <tr><td><strong>UPS (Uninterruptible Power Supply)</strong></td><td>Best — battery backup + surge protection</td><td>Gives time for graceful shutdown during outage</td></tr>
+        <tr><td><strong>Line Conditioner</strong></td><td>Filters power noise</td><td>Smooths out brownouts and electrical noise</td></tr>
+        <tr><td><strong>Generator</strong></td><td>Long-term backup power</td><td>Needs transfer switch — can't just plug in</td></tr>
+    </table>
+
+    <h3>12.2 ESD (Electrostatic Discharge) Safety</h3>
+    <ul>
+        <li><strong>Anti-static wrist strap:</strong> Ground yourself before touching components — wear it every time</li>
+        <li><strong>Anti-static mat:</strong> Work surface that dissipates static charges</li>
+        <li><strong>Anti-static bags:</strong> Store components in these — never on foam or carpet</li>
+        <li><strong>Touch the case:</strong> If no strap, touch unpainted metal on case to discharge before touching components</li>
+        <li><strong>Never blow air from your mouth:</strong> Moisture damages components — use canned/compressed air only</li>
+    </ul>
+
+    <h3>12.3 Safety Procedures</h3>
+    <ul>
+        <li><strong>Disconnect power before servicing:</strong> Always unplug — even "off" PSUs have standby voltage</li>
+        <li><strong>CRT monitors:</strong> Capacitors hold thousands of volts even when unplugged — never open</li>
+        <li><strong>MSDS/SDS sheets:</strong> Material Safety Data Sheets — required documentation for chemicals (toner, batteries)</li>
+        <li><strong>Lifting technique:</strong> Bend knees, not back — servers are heavy</li>
+        <li><strong>Fire extinguisher types:</strong> Class C for electrical fires (CO₂ or dry chemical — NEVER water)</li>
+    </ul>
+
+    <h3>12.4 Environmental Controls</h3>
+    <table>
+        <tr><th>Control</th><th>Purpose</th><th>Target Range</th></tr>
+        <tr><td><strong>Temperature</strong></td><td>Prevent overheating</td><td>65–80°F (18–27°C) for server rooms</td></tr>
+        <tr><td><strong>Humidity</strong></td><td>Prevent ESD (too low) or condensation (too high)</td><td>40–60% relative humidity</td></tr>
+        <tr><td><strong>Hot/Cold Aisles</strong></td><td>Direct airflow — cold air in front, hot out back</td><td>Standard data center cooling design</td></tr>
+        <tr><td><strong>HVAC</strong></td><td>Dedicated cooling for equipment rooms</td><td>Must be separate from building HVAC</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Proper disposal matters:</strong> Batteries, toner cartridges, CRT monitors, and circuit boards contain hazardous materials. Never throw them in regular trash. Follow your local e-waste regulations. On the exam — always choose the environmentally responsible disposal option.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF. <br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>Keep learning, and go pass that A+ exam!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
