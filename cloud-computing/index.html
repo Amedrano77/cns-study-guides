@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentals of Cloud Computing · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; line-height: 1.6; padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white;
+            border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.2);
+            overflow: hidden; padding: 2rem 2.5rem; position: relative;
+        }
+        h1 {
+            font-size: 2.8rem; font-weight: 700; color: #0f2b3d;
+            border-left: 10px solid #b91c1c; padding-left: 1.5rem;
+            margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+        }
+        .subhead {
+            font-size: 1.3rem; color: #334155; margin-bottom: 2rem; margin-top: 0.2rem;
+            padding-left: 2.2rem; font-weight: 400; border-bottom: 2px dashed #cbd5e1;
+            padding-bottom: 0.75rem;
+        }
+        h2 {
+            font-size: 2rem; font-weight: 600; color: #0f2b3d; margin-top: 2.5rem;
+            margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 3px solid #b91c1c;
+            display: inline-block;
+        }
+        h3 { font-size: 1.5rem; font-weight: 600; color: #1e3a5f; margin-top: 2rem; margin-bottom: 0.75rem; }
+        h4 { font-size: 1.2rem; font-weight: 600; color: #2c3e50; margin: 1.5rem 0 0.5rem; }
+        code, .cmd {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 8px;
+            font-size: 0.9em; color: #b91c1c; border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a; color: #e2e8f0; padding: 1.2rem; border-radius: 16px;
+            overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            line-height: 1.5; margin: 1.2rem 0; border-left: 6px solid #b91c1c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        pre code { background: transparent; border: none; color: #facc15; }
+        table {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th {
+            background: #1e3a5f; color: white; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; padding: 12px 10px; text-align: left;
+        }
+        td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:hover { background: #fff7ed; }
+        .note {
+            background: #fff9e6; border-left: 8px solid #fbbf24; padding: 1rem 1.5rem;
+            margin: 2rem 0; border-radius: 0 20px 20px 0; font-style: italic;
+            box-shadow: 4px 6px 0 rgba(0,0,0,0.05); position: relative; font-size: 1rem;
+        }
+        .note::before {
+            content: "✍️ Adrian M. says:"; font-weight: 700; font-style: normal; color: #92400e;
+            display: block; margin-bottom: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.5px; font-size: 0.9rem;
+        }
+        .note strong { color: #b45309; }
+        .sidenote {
+            float: right; width: 210px; background: #fef9c3; border: 2px solid #fbbf24;
+            padding: 0.8rem; margin: 0 0 1rem 1.5rem; font-size: 0.9rem; border-radius: 12px;
+            box-shadow: 4px 4px 0 #1e293b; font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+            transform: rotate(0.5deg);
+        }
+        .sidenote p { margin: 0; }
+        .sidenote::first-line { font-weight: bold; color: #b45309; }
+        ul, ol { margin: 1rem 0 1.5rem 2rem; }
+        li { margin-bottom: 0.3rem; }
+        li::marker { color: #b91c1c; font-weight: bold; }
+        .toc {
+            background: #f1f5f9; padding: 1.5rem 2rem; border-radius: 24px;
+            margin: 2rem 0; columns: 2 250px; column-gap: 2rem;
+        }
+        .toc h3 { margin-top: 0; column-span: all; margin-bottom: 1rem; color: #0f2b3d; }
+        .toc ul { margin: 0; list-style-type: none; }
+        .toc li { margin-bottom: 0.4rem; }
+        .toc a { text-decoration: none; color: #1e3a5f; font-weight: 500; border-bottom: 1px dotted #b91c1c; }
+        .toc a:hover { color: #b91c1c; }
+        .back-link {
+            display: inline-block; margin-bottom: 1.5rem; color: #1e3a5f; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem; border-bottom: 1px dotted #b91c1c;
+        }
+        .back-link:hover { color: #b91c1c; }
+        .domain-tag {
+            display: inline-block; background: #1e3a5f; color: #facc15; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .aws-tag {
+            display: inline-block; background: #92400e; color: #fde68a; font-size: 0.78rem;
+            font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 999px; margin-left: 0.5rem;
+            vertical-align: middle; letter-spacing: 0.04em;
+        }
+        .footer {
+            margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #64748b;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .container { padding: 1.5rem; }
+            h1 { font-size: 2.2rem; }
+            .sidenote { float: none; width: auto; margin: 1rem 0; }
+        }
+        @media print {
+            body { background: white; padding: 0.2in; }
+            .container { box-shadow: none; padding: 0; }
+            .note { break-inside: avoid; }
+            pre { break-inside: avoid; }
+            a { text-decoration: none; color: black; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+
+    <h1>☁️ Fundamentals of Cloud Computing</h1>
+    <div class="subhead">TSTC Networking & Systems Administration · Instructor: Adrian M. · ITNW 1309 · CompTIA Cloud+ CV0-004</div>
+
+    <div class="toc">
+        <h3>📋 Quick Navigation</h3>
+        <ul>
+            <li><a href="#part1">1. Cloud Concepts & Models</a></li>
+            <li><a href="#part2">2. Cloud Service Models</a></li>
+            <li><a href="#part3">3. Cloud Infrastructure</a></li>
+            <li><a href="#part4">4. Storage in the Cloud</a></li>
+            <li><a href="#part5">5. Cloud Networking</a></li>
+            <li><a href="#part6">6. Compute & Virtualization</a></li>
+            <li><a href="#part7">7. Cloud Security</a></li>
+            <li><a href="#part8">8. Identity & Access Management</a></li>
+            <li><a href="#part9">9. Cloud Migration & Integration</a></li>
+            <li><a href="#part10">10. DevOps, Automation & Orchestration</a></li>
+            <li><a href="#part11">11. Business Continuity & Disaster Recovery</a></li>
+            <li><a href="#part12">12. Performance, Scaling & Optimization</a></li>
+            <li><a href="#part13">13. Troubleshooting Cloud Issues</a></li>
+            <li><a href="#part14">14. AWS Core Services Reference</a></li>
+        </ul>
+    </div>
+
+    <!-- PART 1 -->
+    <h2 id="part1">1. Cloud Concepts & Models <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>1.1 What is Cloud Computing?</h3>
+    <p>The NIST definition: Cloud computing is a model for enabling <strong>ubiquitous, convenient, on-demand network access</strong> to a shared pool of configurable computing resources (networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.</p>
+
+    <h3>1.2 Five Essential Characteristics (NIST)</h3>
+    <table>
+        <tr><th>Characteristic</th><th>Description</th></tr>
+        <tr><td><strong>On-Demand Self-Service</strong></td><td>Provision resources automatically without human interaction from provider — spin up a VM in minutes</td></tr>
+        <tr><td><strong>Broad Network Access</strong></td><td>Capabilities available over the network via standard mechanisms — accessible from any device, anywhere</td></tr>
+        <tr><td><strong>Resource Pooling</strong></td><td>Provider's resources pooled to serve multiple consumers — multi-tenant model with dynamic assignment</td></tr>
+        <tr><td><strong>Rapid Elasticity</strong></td><td>Resources can be rapidly and elastically provisioned — scale up or down automatically based on demand</td></tr>
+        <tr><td><strong>Measured Service</strong></td><td>Resource usage automatically monitored and reported — pay only for what you use (metered billing)</td></tr>
+    </table>
+
+    <h3>1.3 Cloud Deployment Models</h3>
+    <table>
+        <tr><th>Model</th><th>Description</th><th>Who Manages</th><th>Use Case</th></tr>
+        <tr><td><strong>Public Cloud</strong></td><td>Infrastructure owned and operated by third-party provider — shared with other customers</td><td>Provider</td><td>Web apps, startups, variable workloads</td></tr>
+        <tr><td><strong>Private Cloud</strong></td><td>Cloud infrastructure used exclusively by one organization — on-premises or hosted</td><td>Organization or managed provider</td><td>Regulated industries, sensitive data, consistent workloads</td></tr>
+        <tr><td><strong>Hybrid Cloud</strong></td><td>Combines public and private — data and apps shared between them</td><td>Both</td><td>Sensitive data stays private, burst to public for peak demand</td></tr>
+        <tr><td><strong>Community Cloud</strong></td><td>Shared by several organizations with common interests</td><td>One or more orgs or provider</td><td>Government agencies, healthcare groups, research</td></tr>
+        <tr><td><strong>Multi-Cloud</strong></td><td>Using two or more public cloud providers simultaneously</td><td>Organization</td><td>Avoid vendor lock-in, best-of-breed services</td></tr>
+    </table>
+
+    <h3>1.4 Cloud Business Drivers</h3>
+    <ul>
+        <li><strong>CapEx → OpEx:</strong> Convert capital expenditure (buy servers) to operational expenditure (monthly bill)</li>
+        <li><strong>Economies of scale:</strong> Provider buys hardware in massive volume — passes savings to customers</li>
+        <li><strong>Speed to market:</strong> Launch new services in hours vs. months for physical infrastructure</li>
+        <li><strong>Global reach:</strong> Deploy to any region in the world instantly</li>
+        <li><strong>Focus on core business:</strong> Stop managing datacenters — focus on your product</li>
+        <li><strong>Disaster recovery:</strong> Built-in redundancy and geo-replication at low cost</li>
+    </ul>
+
+    <div class="note">
+        <strong>Cloud+ is vendor-neutral but the exam is AWS-heavy in examples.</strong> Know all concepts generically first, then map them to AWS, Azure, and GCP equivalents. When the exam says "object storage" think S3. When it says "virtual machine service" think EC2. The concepts are the same — just different brand names.
+    </div>
+
+    <!-- PART 2 -->
+    <h2 id="part2">2. Cloud Service Models <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>2.1 The Three Core Service Models</h3>
+    <table>
+        <tr><th>Model</th><th>You Manage</th><th>Provider Manages</th><th>Examples</th></tr>
+        <tr><td><strong>IaaS</strong><br>Infrastructure as a Service</td><td>OS, middleware, runtime, apps, data</td><td>Virtualization, servers, storage, networking</td><td>AWS EC2, Azure VMs, GCP Compute Engine</td></tr>
+        <tr><td><strong>PaaS</strong><br>Platform as a Service</td><td>Applications and data only</td><td>OS, runtime, middleware, virtualization, servers</td><td>AWS Elastic Beanstalk, Heroku, Google App Engine, Azure App Service</td></tr>
+        <tr><td><strong>SaaS</strong><br>Software as a Service</td><td>Nothing — just configure and use</td><td>Everything</td><td>Microsoft 365, Salesforce, Gmail, Dropbox, ServiceNow</td></tr>
+    </table>
+
+    <h3>2.2 Emerging Service Models</h3>
+    <table>
+        <tr><th>Model</th><th>Description</th><th>Examples</th></tr>
+        <tr><td><strong>FaaS / Serverless</strong></td><td>Run individual functions on demand — no server management, pay per execution</td><td>AWS Lambda, Azure Functions, GCP Cloud Functions</td></tr>
+        <tr><td><strong>CaaS</strong></td><td>Containers as a Service — managed container orchestration</td><td>AWS ECS/EKS, Google GKE, Azure AKS</td></tr>
+        <tr><td><strong>DBaaS</strong></td><td>Database as a Service — managed database instances</td><td>AWS RDS/DynamoDB, Azure SQL, Google Cloud SQL</td></tr>
+        <tr><td><strong>DRaaS</strong></td><td>Disaster Recovery as a Service</td><td>AWS Elastic Disaster Recovery, Zerto</td></tr>
+        <tr><td><strong>SECaaS</strong></td><td>Security as a Service — outsourced security management</td><td>Cloudflare, Okta, CrowdStrike Falcon</td></tr>
+        <tr><td><strong>STaaS</strong></td><td>Storage as a Service</td><td>AWS S3, Google Cloud Storage, Azure Blob</td></tr>
+    </table>
+
+    <h3>2.3 Shared Responsibility Model</h3>
+    <p>One of the most important concepts on the Cloud+ exam — who is responsible for what depends on the service model.</p>
+    <table>
+        <tr><th>Responsibility</th><th>IaaS</th><th>PaaS</th><th>SaaS</th></tr>
+        <tr><td>Physical datacenter</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+        <tr><td>Physical network</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+        <tr><td>Hypervisor/Virtualization</td><td>Provider</td><td>Provider</td><td>Provider</td></tr>
+        <tr><td>Operating System</td><td><strong>Customer</strong></td><td>Provider</td><td>Provider</td></tr>
+        <tr><td>Middleware/Runtime</td><td><strong>Customer</strong></td><td>Provider</td><td>Provider</td></tr>
+        <tr><td>Application</td><td><strong>Customer</strong></td><td><strong>Customer</strong></td><td>Provider</td></tr>
+        <tr><td>Data</td><td><strong>Customer</strong></td><td><strong>Customer</strong></td><td><strong>Customer</strong></td></tr>
+        <tr><td>Identity & Access</td><td><strong>Customer</strong></td><td><strong>Customer</strong></td><td><strong>Customer</strong></td></tr>
+    </table>
+
+    <div class="note">
+        <strong>Data is ALWAYS your responsibility.</strong> No matter what service model you use — IaaS, PaaS, or SaaS — the classification, protection, and compliance of your data is always the customer's job. The provider secures the infrastructure. You secure what you put in it.
+    </div>
+
+    <!-- PART 3 -->
+    <h2 id="part3">3. Cloud Infrastructure <span class="domain-tag">Domain 1</span></h2>
+
+    <h3>3.1 Cloud Datacenter Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>Region</strong></td><td>A geographic area containing one or more datacenters — e.g., US-East-1, EU-West-2</td></tr>
+        <tr><td><strong>Availability Zone (AZ)</strong></td><td>One or more isolated datacenters within a region — separate power, cooling, networking. Deploy across AZs for HA.</td></tr>
+        <tr><td><strong>Edge Location</strong></td><td>CDN endpoint closer to end users — caches content for low latency delivery</td></tr>
+        <tr><td><strong>Point of Presence (PoP)</strong></td><td>Network access point — where provider's network connects to internet</td></tr>
+        <tr><td><strong>Local Zone</strong></td><td>Extension of a region closer to a specific city — ultra-low latency for that area</td></tr>
+        <tr><td><strong>Wavelength Zone</strong></td><td>Infrastructure embedded in telecom provider — ultra-low latency for 5G edge computing</td></tr>
+    </table>
+
+    <h3>3.2 Resource Tagging & Organization</h3>
+    <ul>
+        <li><strong>Tags:</strong> Key-value metadata labels applied to cloud resources — used for billing, organization, automation, access control</li>
+        <li><strong>Resource Groups:</strong> Logical containers grouping related resources (Azure) or similar concept via tagging (AWS)</li>
+        <li><strong>Accounts/Projects:</strong> Top-level isolation boundary — separate accounts per environment (dev/staging/prod) is best practice</li>
+        <li><strong>Naming conventions:</strong> Consistent names across all resources — environment, region, resource type: <code>prod-us-east-web-01</code></li>
+    </ul>
+
+    <!-- PART 4 -->
+    <h2 id="part4">4. Storage in the Cloud <span class="domain-tag">Domain 2</span></h2>
+
+    <h3>4.1 Cloud Storage Types</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>AWS</th><th>Azure</th><th>GCP</th></tr>
+        <tr><td><strong>Object Storage</strong></td><td>Flat storage for unstructured data — files stored as objects with metadata and unique ID. Massively scalable, no hierarchy.</td><td>S3</td><td>Blob Storage</td><td>Cloud Storage</td></tr>
+        <tr><td><strong>Block Storage</strong></td><td>Raw volumes attached to VMs — acts like a physical disk. Low latency, high performance.</td><td>EBS</td><td>Managed Disks</td><td>Persistent Disk</td></tr>
+        <tr><td><strong>File Storage (NAS)</strong></td><td>Shared file system accessed over network (NFS, SMB) — multiple VMs can mount same share.</td><td>EFS, FSx</td><td>Azure Files</td><td>Filestore</td></tr>
+        <tr><td><strong>Archive Storage</strong></td><td>Lowest cost, highest latency — for data rarely accessed. Retrieval takes minutes to hours.</td><td>S3 Glacier</td><td>Archive Tier</td><td>Archive Storage</td></tr>
+        <tr><td><strong>In-Memory / Cache</strong></td><td>Extremely fast, volatile storage in RAM — for caching and sessions.</td><td>ElastiCache</td><td>Azure Cache</td><td>Memorystore</td></tr>
+    </table>
+
+    <h3>4.2 Object Storage Deep Dive</h3>
+    <ul>
+        <li><strong>Bucket:</strong> Top-level container for objects (like a folder at the root)</li>
+        <li><strong>Object:</strong> The actual file + metadata + unique key</li>
+        <li><strong>Key:</strong> Unique identifier for an object within a bucket — looks like a path but isn't really</li>
+        <li><strong>Versioning:</strong> Keep multiple versions of same object — protects against accidental deletion</li>
+        <li><strong>Lifecycle policies:</strong> Automatically move objects to cheaper storage tiers or delete after set time</li>
+        <li><strong>Storage classes:</strong> Standard (frequent access), Infrequent Access, Glacier (archive) — balance cost vs. retrieval speed</li>
+    </ul>
+
+    <h3>4.3 Storage Performance Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>IOPS</strong></td><td>Input/Output Operations Per Second — measures storage performance for small random reads/writes</td></tr>
+        <tr><td><strong>Throughput</strong></td><td>MB/s transferred — measures sequential read/write performance (large files, streaming)</td></tr>
+        <tr><td><strong>Latency</strong></td><td>Time to complete one I/O operation — block storage has ms latency, archive has minutes</td></tr>
+        <tr><td><strong>Durability</strong></td><td>Probability data survives — AWS S3 = 99.999999999% (11 nines) durability</td></tr>
+        <tr><td><strong>Availability</strong></td><td>Percentage of time storage is accessible — S3 Standard = 99.99% availability</td></tr>
+        <tr><td><strong>Thin Provisioning</strong></td><td>Allocate more storage than physically exists — relies on not all being used simultaneously</td></tr>
+    </table>
+
+    <h3>4.4 Data Replication Strategies</h3>
+    <table>
+        <tr><th>Strategy</th><th>Description</th><th>RPO</th></tr>
+        <tr><td><strong>Synchronous Replication</strong></td><td>Write to both primary and replica simultaneously — write completes only when both confirm</td><td>Near zero</td></tr>
+        <tr><td><strong>Asynchronous Replication</strong></td><td>Write to primary first, replicate to secondary in background — some data loss possible</td><td>Minutes</td></tr>
+        <tr><td><strong>LRS (Locally Redundant)</strong></td><td>3 copies within one datacenter</td><td>Datacenter failure = data loss</td></tr>
+        <tr><td><strong>ZRS (Zone Redundant)</strong></td><td>3 copies across 3 availability zones in same region</td><td>AZ failure safe</td></tr>
+        <tr><td><strong>GRS (Geo-Redundant)</strong></td><td>6 copies — 3 in primary region, 3 in secondary region hundreds of miles away</td><td>Region failure safe</td></tr>
+    </table>
+
+    <!-- PART 5 -->
+    <h2 id="part5">5. Cloud Networking <span class="domain-tag">Domain 2</span></h2>
+
+    <h3>5.1 Virtual Private Cloud (VPC)</h3>
+    <ul>
+        <li>A <strong>VPC</strong> is a logically isolated section of the cloud provider's network — your private network in the cloud</li>
+        <li>You define the <strong>IP address range</strong> (CIDR block), subnets, route tables, and gateways</li>
+        <li><strong>Subnets:</strong> Subdivide the VPC — public subnets (internet accessible), private subnets (internal only)</li>
+        <li><strong>Public subnet:</strong> Has a route to the Internet Gateway — instances can be reached from internet</li>
+        <li><strong>Private subnet:</strong> No direct internet route — must use NAT Gateway to initiate outbound connections</li>
+    </ul>
+
+    <h3>5.2 Cloud Networking Components</h3>
+    <table>
+        <tr><th>Component</th><th>Function</th><th>AWS Name</th></tr>
+        <tr><td><strong>Internet Gateway (IGW)</strong></td><td>Connects VPC to the public internet — required for public subnets</td><td>Internet Gateway</td></tr>
+        <tr><td><strong>NAT Gateway</strong></td><td>Allows private subnet resources to initiate outbound internet connections — no inbound</td><td>NAT Gateway</td></tr>
+        <tr><td><strong>Virtual Private Gateway</strong></td><td>VPN endpoint on the cloud side — connects VPC to on-premises via VPN</td><td>Virtual Private Gateway</td></tr>
+        <tr><td><strong>Direct Connect / ExpressRoute</strong></td><td>Dedicated private physical connection from on-premises to cloud — bypasses public internet</td><td>AWS Direct Connect</td></tr>
+        <tr><td><strong>VPC Peering</strong></td><td>Connect two VPCs so their resources can communicate privately — same or different accounts</td><td>VPC Peering</td></tr>
+        <tr><td><strong>Transit Gateway</strong></td><td>Hub-and-spoke network transit — connect multiple VPCs and on-premises networks through one gateway</td><td>AWS Transit Gateway</td></tr>
+        <tr><td><strong>Security Group</strong></td><td>Stateful virtual firewall at the instance level — allow/deny by port and source IP</td><td>Security Groups</td></tr>
+        <tr><td><strong>NACL</strong></td><td>Network Access Control List — stateless firewall at the subnet level — explicit allow AND deny rules</td><td>Network ACLs</td></tr>
+        <tr><td><strong>Route Table</strong></td><td>Rules that determine where network traffic is directed within a VPC</td><td>Route Tables</td></tr>
+        <tr><td><strong>Elastic IP</strong></td><td>Static public IPv4 address you can allocate and attach to resources</td><td>Elastic IP Address</td></tr>
+    </table>
+
+    <h3>5.3 Load Balancing</h3>
+    <table>
+        <tr><th>Type</th><th>OSI Layer</th><th>Balances On</th><th>Use Case</th></tr>
+        <tr><td><strong>Application LB (ALB)</strong></td><td>Layer 7</td><td>HTTP/HTTPS content, URL path, host header</td><td>Web apps, microservices, container routing</td></tr>
+        <tr><td><strong>Network LB (NLB)</strong></td><td>Layer 4</td><td>TCP/UDP/TLS connections</td><td>Ultra-high performance, static IP required, gaming, IoT</td></tr>
+        <tr><td><strong>Classic LB</strong></td><td>Layer 4 & 7</td><td>Both TCP and HTTP</td><td>Legacy — use ALB or NLB instead</td></tr>
+        <tr><td><strong>Global LB</strong></td><td>DNS-based</td><td>Geographic routing, latency, health</td><td>Multi-region active/active deployments</td></tr>
+    </table>
+
+    <h3>5.4 Content Delivery Network (CDN)</h3>
+    <ul>
+        <li>CDN caches content at <strong>edge locations</strong> globally — reduces latency for end users by serving from nearest location</li>
+        <li>Reduces load on origin servers — edge serves cached responses</li>
+        <li><strong>AWS CloudFront, Azure CDN, Cloudflare</strong> are common CDNs</li>
+        <li>Best for: static assets (images, CSS, JS), video streaming, large file downloads, DDoS mitigation</li>
+    </ul>
+
+    <div class="note">
+        <strong>Security Groups vs NACLs:</strong> Security Groups are <em>stateful</em> — if you allow inbound traffic, the response is automatically allowed outbound. NACLs are <em>stateless</em> — you must explicitly allow both inbound AND outbound. Security Groups operate at the instance level; NACLs at the subnet level. Use both for defense in depth.
+    </div>
+
+    <!-- PART 6 -->
+    <h2 id="part6">6. Compute & Virtualization in the Cloud <span class="domain-tag">Domain 2</span></h2>
+
+    <h3>6.1 Virtual Machine Instance Types</h3>
+    <table>
+        <tr><th>Category</th><th>Optimized For</th><th>AWS Examples</th><th>Use Cases</th></tr>
+        <tr><td><strong>General Purpose</strong></td><td>Balanced CPU/RAM/network</td><td>t3, m6i</td><td>Web servers, dev environments, small DBs</td></tr>
+        <tr><td><strong>Compute Optimized</strong></td><td>High CPU performance</td><td>c6i, c7g</td><td>HPC, batch processing, game servers, video encoding</td></tr>
+        <tr><td><strong>Memory Optimized</strong></td><td>High RAM</td><td>r6i, x2idn</td><td>In-memory databases (Redis), SAP HANA, real-time analytics</td></tr>
+        <tr><td><strong>Storage Optimized</strong></td><td>High IOPS local storage</td><td>i3, d3</td><td>NoSQL databases, data warehousing, Elasticsearch</td></tr>
+        <tr><td><strong>Accelerated Computing</strong></td><td>GPU/FPGA</td><td>p4, g5, f1</td><td>Machine learning, AI training, 3D rendering, genomics</td></tr>
+    </table>
+
+    <h3>6.2 Instance Purchasing Options (AWS)</h3>
+    <table>
+        <tr><th>Option</th><th>Commitment</th><th>Discount</th><th>Best For</th></tr>
+        <tr><td><strong>On-Demand</strong></td><td>None — pay per second/hour</td><td>0%</td><td>Dev/test, unpredictable workloads, short-term</td></tr>
+        <tr><td><strong>Reserved Instances</strong></td><td>1 or 3 year commitment</td><td>Up to 72%</td><td>Steady-state production workloads — predictable usage</td></tr>
+        <tr><td><strong>Savings Plans</strong></td><td>1 or 3 year $/hr commitment</td><td>Up to 66%</td><td>Flexible reserved pricing — applies across instance types</td></tr>
+        <tr><td><strong>Spot Instances</strong></td><td>None — can be interrupted</td><td>Up to 90%</td><td>Fault-tolerant batch jobs, big data, CI/CD, stateless apps</td></tr>
+        <tr><td><strong>Dedicated Hosts</strong></td><td>On-demand or reserved</td><td>Varies</td><td>Licensing compliance (Windows Server, SQL Server per-socket)</td></tr>
+    </table>
+
+    <h3>6.3 Containers vs VMs in Cloud</h3>
+    <table>
+        <tr><th>Feature</th><th>Virtual Machines</th><th>Containers</th></tr>
+        <tr><td>Isolation</td><td>Full OS isolation</td><td>Process-level isolation (shared kernel)</td></tr>
+        <tr><td>Size</td><td>GBs — full OS included</td><td>MBs — just app and dependencies</td></tr>
+        <tr><td>Startup</td><td>Minutes</td><td>Seconds or less</td></tr>
+        <tr><td>Portability</td><td>Hypervisor dependent</td><td>Runs anywhere Docker runs</td></tr>
+        <tr><td>Orchestration</td><td>Requires VM manager</td><td>Kubernetes, ECS, Docker Swarm</td></tr>
+    </table>
+
+    <h3>6.4 Serverless Computing</h3>
+    <ul>
+        <li><strong>No server management</strong> — provider handles all infrastructure</li>
+        <li>Code runs in <strong>stateless functions</strong> triggered by events</li>
+        <li><strong>Pay per execution</strong> — billed in milliseconds, not per hour</li>
+        <li><strong>Auto-scales</strong> automatically — from zero to thousands of executions instantly</li>
+        <li><strong>Cold start:</strong> First invocation after idle period has higher latency — container must initialize</li>
+        <li>AWS Lambda: max 15 minute execution, 10GB RAM, 512MB–10GB temp storage</li>
+    </ul>
+
+    <!-- PART 7 -->
+    <h2 id="part7">7. Cloud Security <span class="domain-tag">Domain 3</span></h2>
+
+    <h3>7.1 Cloud Security Principles</h3>
+    <ul>
+        <li><strong>Defense in Depth:</strong> Multiple layers of security controls — never rely on one control</li>
+        <li><strong>Least Privilege:</strong> Grant minimum permissions needed — nothing more</li>
+        <li><strong>Zero Trust:</strong> Never trust, always verify — authenticate and authorize every request regardless of location</li>
+        <li><strong>Encryption Everywhere:</strong> Data encrypted at rest AND in transit — no exceptions</li>
+        <li><strong>Immutable Infrastructure:</strong> Don't patch running systems — replace them with new images</li>
+        <li><strong>Shift Left Security:</strong> Integrate security into development pipeline — not bolted on at the end</li>
+    </ul>
+
+    <h3>7.2 Cloud Threat Landscape</h3>
+    <table>
+        <tr><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+        <tr><td><strong>Misconfiguration</strong></td><td>#1 cause of cloud breaches — open S3 buckets, overly permissive IAM, exposed management ports</td><td>CSPM tools, infrastructure as code, least privilege</td></tr>
+        <tr><td><strong>Insecure APIs</strong></td><td>Cloud management APIs exposed or poorly authenticated</td><td>API gateway, authentication, rate limiting, WAF</td></tr>
+        <tr><td><strong>Account Compromise</strong></td><td>Stolen credentials giving attacker access to cloud console</td><td>MFA on all accounts, credential rotation, monitor for anomalies</td></tr>
+        <tr><td><strong>Insider Threat</strong></td><td>Malicious or careless employee abusing cloud access</td><td>Least privilege, audit logs, separation of duties</td></tr>
+        <tr><td><strong>Data Exfiltration</strong></td><td>Unauthorized copying of data out of cloud environment</td><td>DLP, VPC endpoints, monitor data transfer, encryption</td></tr>
+        <tr><td><strong>Cryptojacking</strong></td><td>Attacker compromises cloud account to mine cryptocurrency using your compute</td><td>Monitor billing anomalies, MFA, least privilege</td></tr>
+        <tr><td><strong>Supply Chain</strong></td><td>Compromise of third-party libraries, containers, or marketplace images</td><td>Image scanning, SBOMs, trusted registries only</td></tr>
+    </table>
+
+    <h3>7.3 Encryption in the Cloud</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>AWS Service</th></tr>
+        <tr><td><strong>Encryption at Rest</strong></td><td>Data encrypted when stored — on disk, in database, in object storage</td><td>AWS KMS, S3 SSE, EBS encryption</td></tr>
+        <tr><td><strong>Encryption in Transit</strong></td><td>Data encrypted while moving — TLS/HTTPS for all connections</td><td>ACM (certificates), TLS on all services</td></tr>
+        <tr><td><strong>Client-Side Encryption</strong></td><td>Customer encrypts data BEFORE sending to cloud — provider never sees plaintext</td><td>AWS Encryption SDK</td></tr>
+        <tr><td><strong>Key Management</strong></td><td>Centralized management of encryption keys — rotation, access control, audit</td><td>AWS KMS, Azure Key Vault, GCP Cloud KMS</td></tr>
+        <tr><td><strong>HSM</strong></td><td>Hardware Security Module — dedicated hardware for key storage and cryptographic operations</td><td>AWS CloudHSM</td></tr>
+    </table>
+
+    <h3>7.4 Cloud Security Services</h3>
+    <table>
+        <tr><th>Category</th><th>Purpose</th><th>AWS Service</th></tr>
+        <tr><td><strong>CSPM</strong></td><td>Cloud Security Posture Management — finds misconfigurations</td><td>AWS Security Hub, AWS Config</td></tr>
+        <tr><td><strong>CWPP</strong></td><td>Cloud Workload Protection Platform — protects VMs and containers</td><td>AWS GuardDuty, Inspector</td></tr>
+        <tr><td><strong>WAF</strong></td><td>Web Application Firewall — Layer 7 protection</td><td>AWS WAF</td></tr>
+        <tr><td><strong>DDoS Protection</strong></td><td>Absorbs volumetric attacks</td><td>AWS Shield Standard (free), Shield Advanced (paid)</td></tr>
+        <tr><td><strong>Secrets Management</strong></td><td>Store and rotate API keys, passwords, certificates</td><td>AWS Secrets Manager, Parameter Store</td></tr>
+        <tr><td><strong>Vulnerability Scanner</strong></td><td>Scan EC2 and container images for CVEs</td><td>AWS Inspector</td></tr>
+        <tr><td><strong>SIEM / Log Analysis</strong></td><td>Centralize and analyze security logs</td><td>AWS CloudWatch, Security Hub, OpenSearch</td></tr>
+    </table>
+
+    <!-- PART 8 -->
+    <h2 id="part8">8. Identity & Access Management (IAM) <span class="domain-tag">Domain 3</span></h2>
+
+    <h3>8.1 IAM Core Concepts</h3>
+    <table>
+        <tr><th>Term</th><th>Definition</th></tr>
+        <tr><td><strong>User</strong></td><td>An identity representing a person or application — has credentials (username/password, access keys)</td></tr>
+        <tr><td><strong>Group</strong></td><td>Collection of users — attach policies to group, members inherit permissions</td></tr>
+        <tr><td><strong>Role</strong></td><td>Identity with permissions that can be assumed temporarily — used by services, apps, cross-account access</td></tr>
+        <tr><td><strong>Policy</strong></td><td>JSON document defining what actions are allowed/denied on which resources</td></tr>
+        <tr><td><strong>Permission</strong></td><td>The actual allow/deny for a specific action on a specific resource</td></tr>
+        <tr><td><strong>Principle of Least Privilege</strong></td><td>Grant only the minimum permissions needed — nothing more</td></tr>
+    </table>
+
+    <h3>8.2 IAM Best Practices</h3>
+    <ul>
+        <li><strong>Never use root account</strong> for daily operations — create individual IAM users</li>
+        <li><strong>Enable MFA</strong> on root and all privileged accounts</li>
+        <li><strong>Use roles instead of access keys</strong> for applications running on AWS services</li>
+        <li><strong>Rotate credentials regularly</strong> — access keys, passwords</li>
+        <li><strong>Use groups</strong> to assign permissions — not directly to users</li>
+        <li><strong>Enable IAM Access Analyzer</strong> — identifies overly permissive policies</li>
+        <li><strong>Enforce strong password policy</strong> — minimum length, complexity, rotation</li>
+    </ul>
+
+    <h3>8.3 Federation & SSO</h3>
+    <table>
+        <tr><th>Concept</th><th>Description</th></tr>
+        <tr><td><strong>Identity Federation</strong></td><td>Allow users to access cloud using existing corporate credentials (Active Directory) — no separate cloud account needed</td></tr>
+        <tr><td><strong>SAML 2.0</strong></td><td>Standard for exchanging authentication data — used to federate corporate IdP with cloud provider</td></tr>
+        <tr><td><strong>OIDC / OAuth 2.0</strong></td><td>Modern token-based auth — used by web/mobile apps, social login (Google, GitHub)</td></tr>
+        <tr><td><strong>SSO (Single Sign-On)</strong></td><td>One login gives access to multiple services — better UX, centralized control</td></tr>
+        <tr><td><strong>AWS IAM Identity Center</strong></td><td>Centralized SSO for AWS accounts and applications — integrates with Active Directory</td></tr>
+    </table>
+
+    <!-- PART 9 -->
+    <h2 id="part9">9. Cloud Migration & Integration <span class="domain-tag">Domain 4</span></h2>
+
+    <h3>9.1 The 6 Rs of Cloud Migration</h3>
+    <table>
+        <tr><th>Strategy</th><th>Name</th><th>Description</th><th>Effort</th></tr>
+        <tr><td><strong>Rehost</strong></td><td>"Lift and Shift"</td><td>Move app to cloud with no changes — same OS, same app</td><td>Low</td></tr>
+        <tr><td><strong>Replatform</strong></td><td>"Lift, Tinker, and Shift"</td><td>Minor optimizations — move DB to managed RDS, no code changes</td><td>Medium</td></tr>
+        <tr><td><strong>Repurchase</strong></td><td>"Drop and Shop"</td><td>Replace app with cloud-native SaaS — move CRM to Salesforce</td><td>Medium</td></tr>
+        <tr><td><strong>Refactor/Re-architect</strong></td><td>"Cloud Native"</td><td>Redesign app to use cloud-native features — microservices, serverless</td><td>High</td></tr>
+        <tr><td><strong>Retire</strong></td><td>"Turn it off"</td><td>Identify and decommission apps no longer needed</td><td>None</td></tr>
+        <tr><td><strong>Retain</strong></td><td>"Keep on-prem"</td><td>Keep some workloads on-premises — not everything moves</td><td>None</td></tr>
+    </table>
+
+    <h3>9.2 Migration Phases</h3>
+    <ol>
+        <li><strong>Assess:</strong> Inventory current environment, identify dependencies, TCO analysis, define business case</li>
+        <li><strong>Mobilize:</strong> Build migration plan, create landing zone, establish security baseline, train staff</li>
+        <li><strong>Migrate & Modernize:</strong> Execute migrations in waves, test, optimize, iterate</li>
+    </ol>
+
+    <h3>9.3 Hybrid Cloud Integration</h3>
+    <table>
+        <tr><th>Method</th><th>Description</th><th>Use Case</th></tr>
+        <tr><td><strong>VPN</strong></td><td>Encrypted tunnel over internet connecting on-prem to VPC</td><td>Low-cost, acceptable latency, moderate bandwidth</td></tr>
+        <tr><td><strong>Direct Connect / ExpressRoute</strong></td><td>Dedicated private fiber connection — not over internet</td><td>High bandwidth, consistent low latency, compliance</td></tr>
+        <tr><td><strong>API Gateway</strong></td><td>Expose on-prem services as APIs consumed by cloud apps</td><td>Gradual migration, legacy system integration</td></tr>
+        <tr><td><strong>Data Sync</strong></td><td>Continuously replicate data between on-prem and cloud</td><td>DR, migration, active-active hybrid</td></tr>
+        <tr><td><strong>Outposts / Stack</strong></td><td>Cloud provider's hardware installed in your datacenter</td><td>Low-latency cloud services on-premises, data residency</td></tr>
+    </table>
+
+    <!-- PART 10 -->
+    <h2 id="part10">10. DevOps, Automation & Orchestration <span class="domain-tag">Domain 4</span></h2>
+
+    <h3>10.1 Infrastructure as Code (IaC)</h3>
+    <ul>
+        <li>Define and provision infrastructure through machine-readable config files — not manual clicks</li>
+        <li><strong>Benefits:</strong> Version controlled, repeatable, consistent, auditable, fast</li>
+        <li><strong>Declarative:</strong> Define desired end state — tool figures out how to get there (Terraform, CloudFormation)</li>
+        <li><strong>Imperative:</strong> Define exact steps to take — you control the how (Ansible, scripts)</li>
+    </ul>
+
+    <table>
+        <tr><th>Tool</th><th>Type</th><th>Provider</th><th>Language</th></tr>
+        <tr><td><strong>Terraform</strong></td><td>Declarative IaC</td><td>Multi-cloud (all providers)</td><td>HCL</td></tr>
+        <tr><td><strong>AWS CloudFormation</strong></td><td>Declarative IaC</td><td>AWS only</td><td>YAML/JSON</td></tr>
+        <tr><td><strong>Azure ARM / Bicep</strong></td><td>Declarative IaC</td><td>Azure only</td><td>JSON/Bicep</td></tr>
+        <tr><td><strong>Ansible</strong></td><td>Configuration management</td><td>Multi-platform</td><td>YAML</td></tr>
+        <tr><td><strong>Pulumi</strong></td><td>Declarative IaC</td><td>Multi-cloud</td><td>Python, JS, Go, C#</td></tr>
+    </table>
+
+    <h3>10.2 CI/CD Pipeline</h3>
+    <table>
+        <tr><th>Stage</th><th>Description</th><th>Tools</th></tr>
+        <tr><td><strong>Source Control</strong></td><td>Code stored in version control — triggers pipeline on commit</td><td>GitHub, GitLab, AWS CodeCommit</td></tr>
+        <tr><td><strong>Build</strong></td><td>Compile code, run unit tests, create artifact (Docker image, JAR, ZIP)</td><td>AWS CodeBuild, Jenkins, GitHub Actions</td></tr>
+        <tr><td><strong>Test</strong></td><td>Automated integration, security, performance testing</td><td>Selenium, JUnit, OWASP ZAP</td></tr>
+        <tr><td><strong>Deploy</strong></td><td>Push artifact to staging or production environment</td><td>AWS CodeDeploy, ArgoCD, Spinnaker</td></tr>
+        <tr><td><strong>Monitor</strong></td><td>Watch metrics, logs, alerts after deployment</td><td>CloudWatch, Datadog, PagerDuty</td></tr>
+    </table>
+
+    <h3>10.3 Deployment Strategies</h3>
+    <table>
+        <tr><th>Strategy</th><th>How It Works</th><th>Downtime</th><th>Risk</th></tr>
+        <tr><td><strong>Rolling</strong></td><td>Replace instances one at a time — gradual replacement</td><td>None</td><td>Medium — mix of old/new briefly</td></tr>
+        <tr><td><strong>Blue/Green</strong></td><td>Two identical environments — switch traffic from blue (old) to green (new) instantly</td><td>None</td><td>Low — instant rollback by switching back</td></tr>
+        <tr><td><strong>Canary</strong></td><td>Send small % of traffic to new version — monitor, gradually increase</td><td>None</td><td>Very low — limited blast radius</td></tr>
+        <tr><td><strong>In-Place</strong></td><td>Update existing instances directly</td><td>Possible</td><td>High — harder to rollback</td></tr>
+        <tr><td><strong>Immutable</strong></td><td>Never update running instances — always replace with new AMI/image</td><td>None</td><td>Low — clean deployments every time</td></tr>
+    </table>
+
+    <!-- PART 11 -->
+    <h2 id="part11">11. Business Continuity & Disaster Recovery <span class="domain-tag">Domain 2 & 4</span></h2>
+
+    <h3>11.1 Key Recovery Metrics</h3>
+    <table>
+        <tr><th>Metric</th><th>Definition</th><th>Example</th></tr>
+        <tr><td><strong>RTO</strong><br>Recovery Time Objective</td><td>Maximum acceptable time to restore service after disruption</td><td>"We must be back up within 4 hours"</td></tr>
+        <tr><td><strong>RPO</strong><br>Recovery Point Objective</td><td>Maximum acceptable data loss measured in time</td><td>"We can tolerate losing no more than 1 hour of data"</td></tr>
+        <tr><td><strong>MTTR</strong><br>Mean Time To Recover</td><td>Average time to recover from a failure</td><td>Average of all incident recovery times</td></tr>
+        <tr><td><strong>MTBF</strong><br>Mean Time Between Failures</td><td>Average time between system failures — measures reliability</td><td>System fails on average every 2000 hours</td></tr>
+        <tr><td><strong>SLA</strong><br>Service Level Agreement</td><td>Contract defining guaranteed availability — usually expressed as uptime %</td><td>99.9% = 8.7 hours downtime/year allowed</td></tr>
+    </table>
+
+    <h3>11.2 Availability Calculations</h3>
+    <table>
+        <tr><th>SLA</th><th>Downtime per Year</th><th>Downtime per Month</th></tr>
+        <tr><td>99% (two nines)</td><td>87.6 hours</td><td>7.3 hours</td></tr>
+        <tr><td>99.9% (three nines)</td><td>8.76 hours</td><td>43.8 minutes</td></tr>
+        <tr><td>99.99% (four nines)</td><td>52.6 minutes</td><td>4.38 minutes</td></tr>
+        <tr><td>99.999% (five nines)</td><td>5.26 minutes</td><td>26.3 seconds</td></tr>
+    </table>
+
+    <h3>11.3 DR Strategies (Cost vs Recovery Speed)</h3>
+    <table>
+        <tr><th>Strategy</th><th>Description</th><th>RTO</th><th>RPO</th><th>Cost</th></tr>
+        <tr><td><strong>Backup & Restore</strong></td><td>Back up data to cloud, restore from scratch when needed</td><td>Hours–Days</td><td>Hours</td><td>Lowest</td></tr>
+        <tr><td><strong>Pilot Light</strong></td><td>Core infrastructure always running in DR region — scale up on failure</td><td>Minutes–Hours</td><td>Minutes</td><td>Low</td></tr>
+        <tr><td><strong>Warm Standby</strong></td><td>Scaled-down but functional copy always running — scale to full on failover</td><td>Minutes</td><td>Seconds–Minutes</td><td>Medium</td></tr>
+        <tr><td><strong>Multi-Site Active/Active</strong></td><td>Full capacity running in multiple regions simultaneously — automatic failover</td><td>Near zero</td><td>Near zero</td><td>Highest</td></tr>
+    </table>
+
+    <!-- PART 12 -->
+    <h2 id="part12">12. Performance, Scaling & Optimization <span class="domain-tag">Domain 2 & 4</span></h2>
+
+    <h3>12.1 Scaling Types</h3>
+    <table>
+        <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+        <tr><td><strong>Vertical Scaling (Scale Up)</strong></td><td>Increase size of existing resource — bigger instance, more RAM/CPU</td><td>Change t3.small → t3.xlarge</td></tr>
+        <tr><td><strong>Horizontal Scaling (Scale Out)</strong></td><td>Add more instances — spread load across multiple resources</td><td>Add 3 more web servers behind load balancer</td></tr>
+        <tr><td><strong>Auto Scaling</strong></td><td>Automatically add/remove resources based on demand metrics</td><td>Add servers when CPU > 70%, remove when CPU < 30%</td></tr>
+        <tr><td><strong>Scheduled Scaling</strong></td><td>Scale based on known time patterns</td><td>Add capacity every Monday 8am, remove every Friday 6pm</td></tr>
+        <tr><td><strong>Predictive Scaling</strong></td><td>ML-based forecasting — provision capacity before demand hits</td><td>AWS Auto Scaling predictive mode</td></tr>
+    </table>
+
+    <h3>12.2 Cloud Cost Optimization</h3>
+    <ul>
+        <li><strong>Right-sizing:</strong> Match instance size to actual workload — most instances are over-provisioned</li>
+        <li><strong>Reserved/Savings Plans:</strong> Commit to 1–3 year usage for up to 72% discount</li>
+        <li><strong>Spot instances:</strong> Use interruptible spot for fault-tolerant workloads — up to 90% cheaper</li>
+        <li><strong>Auto Scaling:</strong> Scale down during low-demand periods — don't pay for idle capacity</li>
+        <li><strong>Storage tiering:</strong> Move infrequently accessed data to cheaper storage classes automatically</li>
+        <li><strong>Delete idle resources:</strong> Unused EIPs, unattached volumes, old snapshots — all cost money</li>
+        <li><strong>Use managed services:</strong> Often cheaper than running equivalent on EC2 when you factor in admin time</li>
+    </ul>
+
+    <h3>12.3 Monitoring & Observability</h3>
+    <table>
+        <tr><th>Concept</th><th>Description</th><th>AWS Service</th></tr>
+        <tr><td><strong>Metrics</strong></td><td>Numerical measurements over time — CPU%, request rate, latency</td><td>CloudWatch Metrics</td></tr>
+        <tr><td><strong>Logs</strong></td><td>Text records of events — application logs, access logs, error logs</td><td>CloudWatch Logs</td></tr>
+        <tr><td><strong>Traces</strong></td><td>End-to-end request tracking through distributed systems</td><td>AWS X-Ray</td></tr>
+        <tr><td><strong>Alarms</strong></td><td>Trigger notifications or actions when metric crosses threshold</td><td>CloudWatch Alarms → SNS → Lambda</td></tr>
+        <tr><td><strong>Dashboards</strong></td><td>Visual display of key metrics — operational awareness</td><td>CloudWatch Dashboards</td></tr>
+        <tr><td><strong>Audit Logs</strong></td><td>Record of all API calls and management actions — who did what, when</td><td>AWS CloudTrail</td></tr>
+    </table>
+
+    <!-- PART 13 -->
+    <h2 id="part13">13. Troubleshooting Cloud Issues <span class="domain-tag">Domain 5</span></h2>
+
+    <h3>13.1 Common Cloud Issues & Fixes</h3>
+    <table>
+        <tr><th>Issue</th><th>Likely Cause</th><th>Investigation Steps</th></tr>
+        <tr><td>Can't connect to EC2 instance</td><td>Security group blocking port, instance stopped, wrong key pair</td><td>Check SG inbound rules, instance state, VPC routing, NACL</td></tr>
+        <tr><td>Application can't reach database</td><td>Security group, wrong endpoint, credentials, DB not running</td><td>Check DB SG allows app SG, verify connection string, check DB status</td></tr>
+        <tr><td>S3 access denied</td><td>IAM policy missing, bucket policy, ACL, VPC endpoint</td><td>Check IAM policy, bucket policy, block public access settings</td></tr>
+        <tr><td>High latency / slow app</td><td>Instance undersized, disk I/O bottleneck, network congestion</td><td>CloudWatch CPU/network/disk metrics, right-size, add caching</td></tr>
+        <tr><td>Unexpected high bill</td><td>Forgotten running resources, data transfer costs, wrong region</td><td>Cost Explorer, billing alerts, check for unused EIPs/volumes/snapshots</td></tr>
+        <tr><td>Lambda timeout</td><td>Insufficient memory, code inefficiency, downstream service slow</td><td>Check CloudWatch logs, increase timeout/memory, check VPC config</td></tr>
+        <tr><td>Auto scaling not triggering</td><td>Wrong metric, cooldown period, min/max limits reached</td><td>Check scaling policy, CloudWatch alarm state, ASG activity log</td></tr>
+    </table>
+
+    <h3>13.2 Cloud Troubleshooting Tools</h3>
+    <pre><code># ===== AWS CLI — essential troubleshooting commands =====
+
+# Check EC2 instance status
+aws ec2 describe-instances --instance-ids i-1234567890abcdef0
+aws ec2 describe-instance-status --instance-ids i-1234567890abcdef0
+
+# Check security groups
+aws ec2 describe-security-groups --group-ids sg-12345678
+
+# View VPC flow logs (network traffic analysis)
+aws logs filter-log-events --log-group-name VPCFlowLogs --filter-pattern "REJECT"
+
+# Check IAM permissions
+aws iam simulate-principal-policy \
+    --policy-source-arn arn:aws:iam::123456789012:user/test-user \
+    --action-names s3:GetObject \
+    --resource-arns arn:aws:s3:::my-bucket/*
+
+# View CloudTrail events (who did what)
+aws cloudtrail lookup-events \
+    --lookup-attributes AttributeKey=EventName,AttributeValue=StopInstances
+
+# Check CloudWatch metrics
+aws cloudwatch get-metric-statistics \
+    --namespace AWS/EC2 \
+    --metric-name CPUUtilization \
+    --dimensions Name=InstanceId,Value=i-1234567890abcdef0 \
+    --start-time 2024-01-15T00:00:00Z \
+    --end-time 2024-01-15T23:59:59Z \
+    --period 3600 --statistics Average</code></pre>
+
+    <!-- PART 14 -->
+    <h2 id="part14">14. AWS Core Services Reference <span class="aws-tag">AWS</span></h2>
+
+    <h3>14.1 Compute</h3>
+    <table>
+        <tr><th>Service</th><th>What It Is</th><th>Key Use</th></tr>
+        <tr><td><strong>EC2</strong></td><td>Elastic Compute Cloud — virtual machines in the cloud</td><td>Any workload needing full OS control</td></tr>
+        <tr><td><strong>Lambda</strong></td><td>Serverless functions — run code without managing servers</td><td>Event-driven, microservices, automation</td></tr>
+        <tr><td><strong>ECS</strong></td><td>Elastic Container Service — managed Docker containers</td><td>Containerized apps, microservices</td></tr>
+        <tr><td><strong>EKS</strong></td><td>Elastic Kubernetes Service — managed Kubernetes</td><td>Large-scale container orchestration</td></tr>
+        <tr><td><strong>Fargate</strong></td><td>Serverless containers — no EC2 instances to manage</td><td>Containers without infrastructure management</td></tr>
+        <tr><td><strong>Elastic Beanstalk</strong></td><td>PaaS — deploy web apps without managing infrastructure</td><td>Quick app deployment, focus on code</td></tr>
+        <tr><td><strong>Auto Scaling</strong></td><td>Automatically adjust EC2 capacity based on demand</td><td>High availability, cost optimization</td></tr>
+    </table>
+
+    <h3>14.2 Storage</h3>
+    <table>
+        <tr><th>Service</th><th>Type</th><th>Key Use</th></tr>
+        <tr><td><strong>S3</strong></td><td>Object storage</td><td>Static files, backups, data lakes, static websites</td></tr>
+        <tr><td><strong>EBS</strong></td><td>Block storage</td><td>EC2 root volumes, databases requiring low latency</td></tr>
+        <tr><td><strong>EFS</strong></td><td>Managed NFS file storage</td><td>Shared file system across multiple EC2 instances</td></tr>
+        <tr><td><strong>S3 Glacier</strong></td><td>Archive object storage</td><td>Long-term backup, compliance archives</td></tr>
+        <tr><td><strong>Storage Gateway</strong></td><td>Hybrid storage</td><td>Connect on-premises apps to cloud storage</td></tr>
+        <tr><td><strong>FSx</strong></td><td>Managed file systems</td><td>Windows File Server (FSx for Windows), Lustre (HPC)</td></tr>
+    </table>
+
+    <h3>14.3 Database</h3>
+    <table>
+        <tr><th>Service</th><th>DB Type</th><th>Key Use</th></tr>
+        <tr><td><strong>RDS</strong></td><td>Managed relational (MySQL, PostgreSQL, Oracle, MSSQL)</td><td>Traditional relational workloads — managed patching, backups</td></tr>
+        <tr><td><strong>Aurora</strong></td><td>MySQL/PostgreSQL compatible — 5x faster than MySQL</td><td>High-performance relational — cloud-native</td></tr>
+        <tr><td><strong>DynamoDB</strong></td><td>Managed NoSQL key-value/document</td><td>Serverless, single-digit ms latency, massive scale</td></tr>
+        <tr><td><strong>ElastiCache</strong></td><td>In-memory (Redis, Memcached)</td><td>Caching, session storage, real-time leaderboards</td></tr>
+        <tr><td><strong>Redshift</strong></td><td>Managed data warehouse</td><td>Analytics, business intelligence, petabyte-scale queries</td></tr>
+        <tr><td><strong>Neptune</strong></td><td>Graph database</td><td>Social networks, recommendation engines, fraud detection</td></tr>
+    </table>
+
+    <h3>14.4 Networking</h3>
+    <table>
+        <tr><th>Service</th><th>Purpose</th></tr>
+        <tr><td><strong>VPC</strong></td><td>Virtual Private Cloud — isolated network in AWS</td></tr>
+        <tr><td><strong>Route 53</strong></td><td>Managed DNS — domain registration, health checks, routing policies</td></tr>
+        <tr><td><strong>CloudFront</strong></td><td>CDN — global content delivery with edge caching</td></tr>
+        <tr><td><strong>ALB / NLB / CLB</strong></td><td>Application, Network, Classic Load Balancers</td></tr>
+        <tr><td><strong>Direct Connect</strong></td><td>Dedicated private network connection from on-premises to AWS</td></tr>
+        <tr><td><strong>Transit Gateway</strong></td><td>Hub-and-spoke network — connect multiple VPCs and on-prem</td></tr>
+        <tr><td><strong>Global Accelerator</strong></td><td>Improve global app performance using AWS backbone network</td></tr>
+    </table>
+
+    <h3>14.5 Security & Identity</h3>
+    <table>
+        <tr><th>Service</th><th>Purpose</th></tr>
+        <tr><td><strong>IAM</strong></td><td>Identity and Access Management — users, groups, roles, policies</td></tr>
+        <tr><td><strong>KMS</strong></td><td>Key Management Service — create and manage encryption keys</td></tr>
+        <tr><td><strong>CloudTrail</strong></td><td>Audit log of all AWS API calls — who did what, when, from where</td></tr>
+        <tr><td><strong>GuardDuty</strong></td><td>Intelligent threat detection — analyzes CloudTrail, VPC flow logs, DNS</td></tr>
+        <tr><td><strong>WAF</strong></td><td>Web Application Firewall — protect against SQL injection, XSS</td></tr>
+        <tr><td><strong>Shield</strong></td><td>DDoS protection — Standard (free), Advanced (paid + 24/7 DRT)</td></tr>
+        <tr><td><strong>Secrets Manager</strong></td><td>Store, rotate, and retrieve database credentials and API keys</td></tr>
+        <tr><td><strong>Inspector</strong></td><td>Automated security assessment — CVE scanning for EC2 and ECR</td></tr>
+        <tr><td><strong>Security Hub</strong></td><td>Centralized security findings — aggregates GuardDuty, Inspector, Macie</td></tr>
+        <tr><td><strong>Macie</strong></td><td>Discovers and protects sensitive data (PII, PCI) in S3</td></tr>
+    </table>
+
+    <h3>14.6 Management & Governance</h3>
+    <table>
+        <tr><th>Service</th><th>Purpose</th></tr>
+        <tr><td><strong>CloudWatch</strong></td><td>Monitoring — metrics, logs, alarms, dashboards</td></tr>
+        <tr><td><strong>CloudFormation</strong></td><td>Infrastructure as Code — define AWS resources in YAML/JSON templates</td></tr>
+        <tr><td><strong>Systems Manager</strong></td><td>Manage EC2 fleet — patch management, run commands, parameter store</td></tr>
+        <tr><td><strong>Config</strong></td><td>Inventory and compliance — track resource configurations over time</td></tr>
+        <tr><td><strong>Organizations</strong></td><td>Manage multiple AWS accounts — consolidated billing, SCPs</td></tr>
+        <tr><td><strong>Cost Explorer</strong></td><td>Visualize and analyze AWS spending — identify optimization opportunities</td></tr>
+        <tr><td><strong>Trusted Advisor</strong></td><td>Real-time guidance — cost optimization, security, performance, fault tolerance</td></tr>
+        <tr><td><strong>Well-Architected Tool</strong></td><td>Review workloads against AWS Well-Architected Framework best practices</td></tr>
+    </table>
+
+    <div class="note">
+        <strong>The AWS Well-Architected Framework has 6 pillars — know them cold for Cloud+:</strong>
+        <strong>Operational Excellence</strong> (run and monitor systems), <strong>Security</strong> (protect data and systems), <strong>Reliability</strong> (recover from failures), <strong>Performance Efficiency</strong> (use resources efficiently), <strong>Cost Optimization</strong> (avoid unnecessary costs), and <strong>Sustainability</strong> (minimize environmental impact). Every architecture decision maps to one or more of these pillars.
+    </div>
+
+    <div class="footer">
+        ✨ Save this page (File → Save As) or print to PDF.<br>
+        Add your own handwritten notes in the margins — that's how you make it yours.<br>
+        <strong>The cloud is just someone else's computer — learn it, secure it, optimize it!</strong> — Adrian M.
+    </div>
+
+</div>
+</body>
+</html>
