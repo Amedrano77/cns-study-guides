@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNS Resource Hub · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: #0f2b3d; color: white; padding: 2rem 2rem 1.5rem;
+            text-align: center; border-bottom: 6px solid #b91c1c;
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 40px,
+                rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px);
+        }
+        header .logo { font-size: 2.5rem; margin-bottom: 0.4rem; position: relative; }
+        header h1 { font-size: 2.2rem; font-weight: 700; position: relative; }
+        header p { color: #94a3b8; margin-top: 0.3rem; position: relative; font-size: 1rem; }
+        .back-link {
+            display: inline-block; margin-top: 0.75rem; color: #facc15;
+            text-decoration: none; font-size: 0.9rem; font-weight: 600; position: relative;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* SEARCH BAR */
+        .search-wrap {
+            background: #1e3a5f; padding: 1.25rem 1.5rem; text-align: center;
+        }
+        .search-inner {
+            max-width: 600px; margin: 0 auto; position: relative;
+        }
+        .search-inner input {
+            width: 100%; padding: 0.8rem 1rem 0.8rem 3rem; border-radius: 999px;
+            border: none; font-size: 1rem; font-family: inherit; background: white;
+            color: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .search-inner input:focus { outline: none; box-shadow: 0 0 0 3px rgba(185,28,28,0.4); }
+        .search-icon {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            font-size: 1.1rem; pointer-events: none;
+        }
+
+        /* MAIN */
+        main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+        /* SECTION */
+        .section { margin-bottom: 3rem; }
+        .section-header {
+            display: flex; align-items: center; gap: 0.75rem;
+            margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+            border-bottom: 3px solid #b91c1c;
+        }
+        .section-icon { font-size: 1.6rem; }
+        .section-title { font-size: 1.4rem; font-weight: 700; color: #0f2b3d; }
+        .section-count {
+            background: #f1f5f9; color: #64748b; font-size: 0.8rem;
+            font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px;
+        }
+
+        /* RESOURCE GRID */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        /* RESOURCE CARD */
+        .resource-card {
+            background: white; border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,20,30,0.07);
+            padding: 1.25rem; display: flex; flex-direction: column;
+            gap: 0.5rem; transition: transform 0.15s, box-shadow 0.15s;
+            text-decoration: none; color: inherit;
+            border: 2px solid transparent;
+        }
+        .resource-card:hover {
+            transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,20,30,0.13);
+            border-color: #b91c1c;
+        }
+        .resource-card.disabled {
+            opacity: 0.6; cursor: not-allowed; pointer-events: none;
+        }
+        .card-top { display: flex; align-items: flex-start; gap: 0.75rem; }
+        .card-emoji { font-size: 1.8rem; line-height: 1; min-width: 2rem; }
+        .card-info { flex: 1; }
+        .card-title { font-weight: 700; color: #0f2b3d; font-size: 0.95rem; line-height: 1.3; }
+        .card-sub { font-size: 0.8rem; color: #64748b; margin-top: 0.2rem; }
+        .card-desc { font-size: 0.85rem; color: #475569; line-height: 1.5; }
+        .card-badge {
+            display: inline-block; font-size: 0.7rem; font-weight: 700;
+            padding: 0.15rem 0.5rem; border-radius: 999px;
+            text-transform: uppercase; letter-spacing: 0.04em; align-self: flex-start;
+        }
+        .badge-free { background: #dcfce7; color: #15803d; }
+        .badge-download { background: #dbeafe; color: #1d4ed8; }
+        .badge-external { background: #fef9c3; color: #a16207; }
+        .badge-coming { background: #f1f5f9; color: #64748b; }
+
+        /* CERT ROADMAP */
+        .roadmap {
+            background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.08); padding: 2rem;
+            overflow-x: auto;
+        }
+        .roadmap-track { margin-bottom: 1.75rem; }
+        .roadmap-track:last-child { margin-bottom: 0; }
+        .track-label {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; color: #64748b; margin-bottom: 0.6rem;
+        }
+        .track-certs {
+            display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+        }
+        .cert-box {
+            padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem;
+            font-weight: 700; white-space: nowrap; border: 2px solid transparent;
+        }
+        .cert-entry { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+        .cert-core { background: #dcfce7; color: #166534; border-color: #86efac; }
+        .cert-advanced { background: #fef9c3; color: #854d0e; border-color: #fde68a; }
+        .cert-expert { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+        .cert-cisco { background: #e0f2fe; color: #075985; border-color: #7dd3fc; }
+        .cert-arrow {
+            color: #94a3b8; font-size: 1.2rem; font-weight: 700; flex-shrink: 0;
+        }
+        .roadmap-legend {
+            display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem;
+            padding-top: 1rem; border-top: 1px dashed #e2e8f0;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: #64748b; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+        /* PORT TABLE */
+        .port-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .port-table th {
+            background: #1e3a5f; color: white; padding: 0.6rem 0.75rem;
+            text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .port-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
+        .port-table tr:nth-child(even) { background: #f8fafc; }
+        .port-table tr:hover { background: #fff7ed; }
+        .port-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #b91c1c; }
+        .proto-tcp { background: #dbeafe; color: #1d4ed8; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .proto-udp { background: #dcfce7; color: #166534; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .proto-both { background: #fef9c3; color: #854d0e; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+
+        /* SUBNET TABLE */
+        .subnet-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .subnet-table th { background: #1e3a5f; color: white; padding: 0.6rem 0.75rem; text-align: left; font-size: 0.78rem; text-transform: uppercase; }
+        .subnet-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #e2e8f0; font-family: 'JetBrains Mono', monospace; }
+        .subnet-table tr:nth-child(even) { background: #f8fafc; }
+        .subnet-table tr:hover { background: #fff7ed; }
+
+        /* OSI TABLE */
+        .osi-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .osi-table th { background: #1e3a5f; color: white; padding: 0.6rem 0.75rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; }
+        .osi-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        .osi-table tr:nth-child(even) { background: #f8fafc; }
+        .osi-num { font-size: 1.2rem; font-weight: 700; color: #b91c1c; }
+
+        /* NO RESULTS */
+        .no-results { text-align: center; padding: 3rem; color: #94a3b8; display: none; }
+        .no-results-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+        /* PRINT BUTTON */
+        .print-btn {
+            background: #0f2b3d; color: white; border: none; padding: 0.5rem 1rem;
+            border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            margin-left: auto; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .print-btn:hover { background: #1e3a5f; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.7rem; }
+            .resource-grid { grid-template-columns: 1fr; }
+            .track-certs { flex-wrap: wrap; }
+        }
+        @media print {
+            body { background: white; }
+            header, .search-wrap, .back-link, .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">📦</div>
+    <h1>CNS Resource Hub</h1>
+    <p>Tools, Downloads, Cheat Sheets & Reference Materials · TSTC CNS Program</p>
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+</header>
+
+<div class="search-wrap">
+    <div class="search-inner">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search resources, tools, ports, commands..." oninput="filterResources()">
+    </div>
+</div>
+
+<main>
+
+    <div class="no-results" id="noResults">
+        <div class="no-results-icon">🔍</div>
+        <div>No resources match your search. Try different keywords.</div>
+    </div>
+
+    <!-- ===== SECTION: FREE TOOLS ===== -->
+    <div class="section" data-section="tools">
+        <div class="section-header">
+            <span class="section-icon">🛠️</span>
+            <span class="section-title">Essential Free Tools</span>
+            <span class="section-count">18 tools</span>
+        </div>
+        <div class="resource-grid">
+
+            <a href="https://www.netacad.com/courses/packet-tracer" target="_blank" class="resource-card" data-tags="cisco packet tracer network simulation lab">
+                <div class="card-top">
+                    <span class="card-emoji">🔵</span>
+                    <div class="card-info">
+                        <div class="card-title">Cisco Packet Tracer</div>
+                        <div class="card-sub">Cisco NetAcad</div>
+                    </div>
+                </div>
+                <div class="card-desc">Network simulation tool for CCNA 1/2/3 labs. Build virtual networks with routers, switches, PCs.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.proxmox.com/en/downloads" target="_blank" class="resource-card" data-tags="proxmox virtualization hypervisor download iso">
+                <div class="card-top">
+                    <span class="card-emoji">⚙️</span>
+                    <div class="card-info">
+                        <div class="card-title">Proxmox VE ISO</div>
+                        <div class="card-sub">Proxmox Server Solutions</div>
+                    </div>
+                </div>
+                <div class="card-desc">Download the latest Proxmox VE ISO for bare-metal installation. Used in Computer Virtualization course.</div>
+                <span class="card-badge badge-download">Download</span>
+            </a>
+
+            <a href="https://ubuntu.com/download/server" target="_blank" class="resource-card" data-tags="ubuntu server linux download iso">
+                <div class="card-top">
+                    <span class="card-emoji">🐧</span>
+                    <div class="card-info">
+                        <div class="card-title">Ubuntu Server LTS</div>
+                        <div class="card-sub">Canonical</div>
+                    </div>
+                </div>
+                <div class="card-desc">Latest Ubuntu Server LTS ISO. Used for Linux+, Internet/Intranet Server, and Directory Services labs.</div>
+                <span class="card-badge badge-download">Download</span>
+            </a>
+
+            <a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2022" target="_blank" class="resource-card" data-tags="windows server 2022 download iso microsoft active directory">
+                <div class="card-top">
+                    <span class="card-emoji">🪟</span>
+                    <div class="card-info">
+                        <div class="card-title">Windows Server 2022 Eval</div>
+                        <div class="card-sub">Microsoft — 180-day Trial</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free 180-day evaluation ISO. Required for Directory Services (Active Directory) labs.</div>
+                <span class="card-badge badge-download">Free Trial</span>
+            </a>
+
+            <a href="https://www.wireshark.org/download.html" target="_blank" class="resource-card" data-tags="wireshark packet capture network analysis troubleshooting">
+                <div class="card-top">
+                    <span class="card-emoji">🦈</span>
+                    <div class="card-info">
+                        <div class="card-title">Wireshark</div>
+                        <div class="card-sub">Wireshark Foundation</div>
+                    </div>
+                </div>
+                <div class="card-desc">The industry-standard packet analyzer. Capture and inspect network traffic for Network+ and CCNA labs.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://nmap.org/download.html" target="_blank" class="resource-card" data-tags="nmap network scanner port scan security">
+                <div class="card-top">
+                    <span class="card-emoji">🗺️</span>
+                    <div class="card-info">
+                        <div class="card-title">Nmap / Zenmap</div>
+                        <div class="card-sub">nmap.org</div>
+                    </div>
+                </div>
+                <div class="card-desc">Network discovery and security auditing. Port scanning, OS detection, service enumeration. Security+ essential.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.putty.org/" target="_blank" class="resource-card" data-tags="putty ssh telnet terminal remote access windows">
+                <div class="card-top">
+                    <span class="card-emoji">🖥️</span>
+                    <div class="card-info">
+                        <div class="card-title">PuTTY</div>
+                        <div class="card-sub">Simon Tatham</div>
+                    </div>
+                </div>
+                <div class="card-desc">SSH and Telnet client for Windows. Essential for connecting to Cisco devices, Linux servers, and remote systems.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" class="resource-card" data-tags="virtualbox vm virtual machine type 2 hypervisor oracle">
+                <div class="card-top">
+                    <span class="card-emoji">📦</span>
+                    <div class="card-info">
+                        <div class="card-title">VirtualBox</div>
+                        <div class="card-sub">Oracle — Type 2 Hypervisor</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free Type 2 hypervisor for desktop use. Run Linux/Windows VMs on your laptop for home lab practice.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.anaconda.com/download" target="_blank" class="resource-card" data-tags="python anaconda programming jupyter notebook data science">
+                <div class="card-top">
+                    <span class="card-emoji">🐍</span>
+                    <div class="card-info">
+                        <div class="card-title">Anaconda (Python)</div>
+                        <div class="card-sub">Anaconda Inc.</div>
+                    </div>
+                </div>
+                <div class="card-desc">Python distribution with Jupyter Notebook, VS Code integration, and all data science libraries pre-installed.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://code.visualstudio.com/" target="_blank" class="resource-card" data-tags="vs code vscode editor python powershell programming ide">
+                <div class="card-top">
+                    <span class="card-emoji">💙</span>
+                    <div class="card-info">
+                        <div class="card-title">Visual Studio Code</div>
+                        <div class="card-sub">Microsoft</div>
+                    </div>
+                </div>
+                <div class="card-desc">Best free code editor. Python, PowerShell, HTML extensions built-in. Used for Programming Logic & Design.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.malwarebytes.com/mwb-download" target="_blank" class="resource-card" data-tags="malwarebytes antivirus malware removal security scan">
+                <div class="card-top">
+                    <span class="card-emoji">🛡️</span>
+                    <div class="card-info">
+                        <div class="card-title">Malwarebytes Free</div>
+                        <div class="card-sub">Malwarebytes</div>
+                    </div>
+                </div>
+                <div class="card-desc">Industry-standard malware scanner. Essential for Network Troubleshooting malware removal labs.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://angryip.org/download/" target="_blank" class="resource-card" data-tags="angry ip scanner network hosts discovery ping sweep">
+                <div class="card-top">
+                    <span class="card-emoji">😡</span>
+                    <div class="card-info">
+                        <div class="card-title">Angry IP Scanner</div>
+                        <div class="card-sub">angryip.org</div>
+                    </div>
+                </div>
+                <div class="card-desc">Fast cross-platform IP/port scanner. Find all active hosts on a network in seconds. Great for network diagnostics.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://aws.amazon.com/free/" target="_blank" class="resource-card" data-tags="aws amazon free tier cloud ec2 s3 vpc lambda">
+                <div class="card-top">
+                    <span class="card-emoji">☁️</span>
+                    <div class="card-info">
+                        <div class="card-title">AWS Free Tier Account</div>
+                        <div class="card-sub">Amazon Web Services</div>
+                    </div>
+                </div>
+                <div class="card-desc">12 months of free AWS services including EC2, S3, and VPC. Required for Cloud Computing labs.</div>
+                <span class="card-badge badge-free">Free Tier</span>
+            </a>
+
+            <a href="https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell" target="_blank" class="resource-card" data-tags="powershell 7 install download microsoft scripting">
+                <div class="card-top">
+                    <span class="card-emoji">💜</span>
+                    <div class="card-info">
+                        <div class="card-title">PowerShell 7</div>
+                        <div class="card-sub">Microsoft — Cross-platform</div>
+                    </div>
+                </div>
+                <div class="card-desc">Latest PowerShell for Windows, Linux, and macOS. Used in Programming Logic & Design and Directory Services.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.pfsense.org/download/" target="_blank" class="resource-card" data-tags="pfsense firewall router network security open source">
+                <div class="card-top">
+                    <span class="card-emoji">🔥</span>
+                    <div class="card-info">
+                        <div class="card-title">pfSense CE</div>
+                        <div class="card-sub">Netgate — Open Source Firewall</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free open-source firewall/router. Run as a VM in Proxmox for advanced network labs and security practice.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.tftpd64.com/" target="_blank" class="resource-card" data-tags="tftp server cisco ios backup restore windows">
+                <div class="card-top">
+                    <span class="card-emoji">📡</span>
+                    <div class="card-info">
+                        <div class="card-title">Tftpd64</div>
+                        <div class="card-sub">Ph. Jounin</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free TFTP/DHCP server for Windows. Used to backup and restore Cisco IOS configs in CCNA labs.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.balena.io/etcher" target="_blank" class="resource-card" data-tags="etcher usb bootable iso flash drive linux proxmox install">
+                <div class="card-top">
+                    <span class="card-emoji">⚡</span>
+                    <div class="card-info">
+                        <div class="card-title">balenaEtcher</div>
+                        <div class="card-sub">Balena — USB Flasher</div>
+                    </div>
+                </div>
+                <div class="card-desc">Flash ISO images to USB drives for bare-metal OS installations. Works on Windows, Mac, and Linux.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://github.com/notepad-plus-plus/notepad-plus-plus/releases" target="_blank" class="resource-card" data-tags="notepad++ text editor windows config files syntax highlight">
+                <div class="card-top">
+                    <span class="card-emoji">📝</span>
+                    <div class="card-info">
+                        <div class="card-title">Notepad++</div>
+                        <div class="card-sub">Don Ho — Windows Text Editor</div>
+                    </div>
+                </div>
+                <div class="card-desc">Best free text editor for Windows. Syntax highlighting for config files, scripts, HTML. Essential utility.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- ===== SECTION: PORTS & PROTOCOLS ===== -->
+    <div class="section" data-section="ports">
+        <div class="section-header">
+            <span class="section-icon">🔌</span>
+            <span class="section-title">Ports & Protocols Quick Reference</span>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+            <table class="port-table">
+                <tr><th>Port</th><th>Protocol</th><th>Transport</th><th>Description</th><th>Courses</th></tr>
+                <tr><td class="port-num">20</td><td>FTP Data</td><td><span class="proto-tcp">TCP</span></td><td>FTP data transfer channel</td><td>Net+, Server+</td></tr>
+                <tr><td class="port-num">21</td><td>FTP Control</td><td><span class="proto-tcp">TCP</span></td><td>FTP command/control channel</td><td>Net+, Server+</td></tr>
+                <tr><td class="port-num">22</td><td>SSH / SFTP</td><td><span class="proto-tcp">TCP</span></td><td>Secure Shell — encrypted remote access</td><td>Linux+, CCNA, Net+</td></tr>
+                <tr><td class="port-num">23</td><td>Telnet</td><td><span class="proto-tcp">TCP</span></td><td>Unencrypted remote access — avoid!</td><td>Net+, CCNA</td></tr>
+                <tr><td class="port-num">25</td><td>SMTP</td><td><span class="proto-tcp">TCP</span></td><td>Send email between servers</td><td>Net+, Server+</td></tr>
+                <tr><td class="port-num">53</td><td>DNS</td><td><span class="proto-both">TCP/UDP</span></td><td>Domain Name Resolution</td><td>All courses</td></tr>
+                <tr><td class="port-num">67</td><td>DHCP Server</td><td><span class="proto-udp">UDP</span></td><td>DHCP server listens here</td><td>Net+, CCNA, Server+</td></tr>
+                <tr><td class="port-num">68</td><td>DHCP Client</td><td><span class="proto-udp">UDP</span></td><td>DHCP client receives here</td><td>Net+, CCNA</td></tr>
+                <tr><td class="port-num">69</td><td>TFTP</td><td><span class="proto-udp">UDP</span></td><td>Trivial FTP — Cisco config backup</td><td>CCNA</td></tr>
+                <tr><td class="port-num">80</td><td>HTTP</td><td><span class="proto-tcp">TCP</span></td><td>Web traffic — unencrypted</td><td>All courses</td></tr>
+                <tr><td class="port-num">88</td><td>Kerberos</td><td><span class="proto-both">TCP/UDP</span></td><td>Authentication — Active Directory</td><td>Sec+, Dir. Services</td></tr>
+                <tr><td class="port-num">110</td><td>POP3</td><td><span class="proto-tcp">TCP</span></td><td>Retrieve email (downloads to client)</td><td>Net+, Server+</td></tr>
+                <tr><td class="port-num">123</td><td>NTP</td><td><span class="proto-udp">UDP</span></td><td>Network Time Protocol</td><td>CCNA, Dir. Services</td></tr>
+                <tr><td class="port-num">143</td><td>IMAP</td><td><span class="proto-tcp">TCP</span></td><td>Retrieve email (stays on server)</td><td>Net+, Server+</td></tr>
+                <tr><td class="port-num">161</td><td>SNMP</td><td><span class="proto-udp">UDP</span></td><td>Network device monitoring</td><td>Net+, CCNA 3</td></tr>
+                <tr><td class="port-num">389</td><td>LDAP</td><td><span class="proto-tcp">TCP</span></td><td>Directory services — Active Directory</td><td>Sec+, Dir. Services</td></tr>
+                <tr><td class="port-num">443</td><td>HTTPS</td><td><span class="proto-tcp">TCP</span></td><td>Encrypted web traffic — TLS</td><td>All courses</td></tr>
+                <tr><td class="port-num">445</td><td>SMB</td><td><span class="proto-tcp">TCP</span></td><td>Windows file sharing</td><td>A+, Net+, Server+</td></tr>
+                <tr><td class="port-num">514</td><td>Syslog</td><td><span class="proto-udp">UDP</span></td><td>Log messages to central server</td><td>Linux+, CCNA 3</td></tr>
+                <tr><td class="port-num">636</td><td>LDAPS</td><td><span class="proto-tcp">TCP</span></td><td>LDAP over SSL — secure directory</td><td>Sec+, Dir. Services</td></tr>
+                <tr><td class="port-num">3268</td><td>Global Catalog</td><td><span class="proto-tcp">TCP</span></td><td>AD Global Catalog LDAP</td><td>Dir. Services</td></tr>
+                <tr><td class="port-num">3389</td><td>RDP</td><td><span class="proto-tcp">TCP</span></td><td>Windows Remote Desktop</td><td>A+, Net. Troubleshoot</td></tr>
+                <tr><td class="port-num">5900</td><td>VNC</td><td><span class="proto-tcp">TCP</span></td><td>Virtual Network Computing</td><td>Net. Troubleshoot</td></tr>
+                <tr><td class="port-num">8006</td><td>Proxmox UI</td><td><span class="proto-tcp">TCP</span></td><td>Proxmox VE web interface</td><td>Virtualization</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== SECTION: SUBNETTING ===== -->
+    <div class="section" data-section="subnetting">
+        <div class="section-header">
+            <span class="section-icon">🧮</span>
+            <span class="section-title">Subnetting Quick Reference</span>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+            <table class="subnet-table">
+                <tr><th>CIDR</th><th>Subnet Mask</th><th>Wildcard</th><th>Hosts/Subnet</th><th>Usable Hosts</th><th>Subnets from /24</th></tr>
+                <tr><td>/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>65,536</td><td>65,534</td><td>—</td></tr>
+                <tr><td>/17</td><td>255.255.128.0</td><td>0.0.127.255</td><td>32,768</td><td>32,766</td><td>—</td></tr>
+                <tr><td>/18</td><td>255.255.192.0</td><td>0.0.63.255</td><td>16,384</td><td>16,382</td><td>—</td></tr>
+                <tr><td>/19</td><td>255.255.224.0</td><td>0.0.31.255</td><td>8,192</td><td>8,190</td><td>—</td></tr>
+                <tr><td>/20</td><td>255.255.240.0</td><td>0.0.15.255</td><td>4,096</td><td>4,094</td><td>—</td></tr>
+                <tr><td>/21</td><td>255.255.248.0</td><td>0.0.7.255</td><td>2,048</td><td>2,046</td><td>—</td></tr>
+                <tr><td>/22</td><td>255.255.252.0</td><td>0.0.3.255</td><td>1,024</td><td>1,022</td><td>—</td></tr>
+                <tr><td>/23</td><td>255.255.254.0</td><td>0.0.1.255</td><td>512</td><td>510</td><td>—</td></tr>
+                <tr><td>/24</td><td>255.255.255.0</td><td>0.0.0.255</td><td>256</td><td>254</td><td>1</td></tr>
+                <tr><td>/25</td><td>255.255.255.128</td><td>0.0.0.127</td><td>128</td><td>126</td><td>2</td></tr>
+                <tr><td>/26</td><td>255.255.255.192</td><td>0.0.0.63</td><td>64</td><td>62</td><td>4</td></tr>
+                <tr><td>/27</td><td>255.255.255.224</td><td>0.0.0.31</td><td>32</td><td>30</td><td>8</td></tr>
+                <tr><td>/28</td><td>255.255.255.240</td><td>0.0.0.15</td><td>16</td><td>14</td><td>16</td></tr>
+                <tr><td>/29</td><td>255.255.255.248</td><td>0.0.0.7</td><td>8</td><td>6</td><td>32</td></tr>
+                <tr><td>/30</td><td>255.255.255.252</td><td>0.0.0.3</td><td>4</td><td>2</td><td>64</td></tr>
+                <tr><td>/31</td><td>255.255.255.254</td><td>0.0.0.1</td><td>2</td><td>0*</td><td>128</td></tr>
+                <tr><td>/32</td><td>255.255.255.255</td><td>0.0.0.0</td><td>1</td><td>0*</td><td>256</td></tr>
+            </table>
+            <div style="padding:0.75rem 1rem; font-size:0.8rem; color:#64748b; border-top:1px dashed #e2e8f0;">
+                * /31 used for point-to-point links · /32 used as host routes · Formula: Usable hosts = 2ⁿ - 2 (n = host bits)
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION: OSI MODEL ===== -->
+    <div class="section" data-section="osi">
+        <div class="section-header">
+            <span class="section-icon">📶</span>
+            <span class="section-title">OSI Model Reference</span>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+            <table class="osi-table">
+                <tr><th>#</th><th>Layer</th><th>PDU</th><th>Protocols / Technologies</th><th>Mnemonic</th></tr>
+                <tr><td class="osi-num">7</td><td><strong>Application</strong></td><td>Data</td><td>HTTP, HTTPS, FTP, DNS, DHCP, SMTP, SSH, Telnet, SNMP</td><td><strong>A</strong>ll</td></tr>
+                <tr><td class="osi-num">6</td><td><strong>Presentation</strong></td><td>Data</td><td>SSL/TLS, JPEG, GIF, ASCII, encryption, compression</td><td><strong>P</strong>eople</td></tr>
+                <tr><td class="osi-num">5</td><td><strong>Session</strong></td><td>Data</td><td>NetBIOS, RPC, PPTP — establishes/manages sessions</td><td><strong>S</strong>eem</td></tr>
+                <tr><td class="osi-num">4</td><td><strong>Transport</strong></td><td>Segment</td><td>TCP, UDP — ports, segmentation, flow control</td><td><strong>T</strong>o</td></tr>
+                <tr><td class="osi-num">3</td><td><strong>Network</strong></td><td>Packet</td><td>IP, ICMP, ARP — logical addressing, routing, Router</td><td><strong>N</strong>eed</td></tr>
+                <tr><td class="osi-num">2</td><td><strong>Data Link</strong></td><td>Frame</td><td>Ethernet, Wi-Fi, Switch, NIC — MAC addresses, framing</td><td><strong>D</strong>ata</td></tr>
+                <tr><td class="osi-num">1</td><td><strong>Physical</strong></td><td>Bits</td><td>Cables, hubs, repeaters, signals, Wi-Fi radio waves</td><td><strong>P</strong>rocessing</td></tr>
+            </table>
+            <div style="padding:0.75rem 1rem; font-size:0.85rem; color:#475569; border-top:1px dashed #e2e8f0; background:#f8fafc;">
+                <strong>Top→Bottom mnemonic:</strong> "All People Seem To Need Data Processing" &nbsp;|&nbsp;
+                <strong>Bottom→Top:</strong> "Please Do Not Throw Sausage Pizza Away"
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION: CERT ROADMAP ===== -->
+    <div class="section" data-section="roadmap">
+        <div class="section-header">
+            <span class="section-icon">🗺️</span>
+            <span class="section-title">CNS Certification Roadmap</span>
+            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+        <div class="roadmap">
+            <div class="roadmap-track">
+                <div class="track-label">🟢 Start Here — Entry Level</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-entry">CompTIA IT Fundamentals+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-entry">CompTIA A+ Core 1</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-entry">CompTIA A+ Core 2</span>
+                </div>
+            </div>
+            <div class="roadmap-track">
+                <div class="track-label">🔵 Networking Track</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-core">CompTIA Network+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-cisco">Cisco CCNA (200-301)</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">Cisco CCNP</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-expert">Cisco CCIE</span>
+                </div>
+            </div>
+            <div class="roadmap-track">
+                <div class="track-label">🔐 Security Track</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-core">CompTIA Security+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">CompTIA CySA+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">CompTIA CASP+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-expert">CISSP</span>
+                </div>
+            </div>
+            <div class="roadmap-track">
+                <div class="track-label">🐧 Linux / Server Track</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-core">CompTIA Linux+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-core">CompTIA Server+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">RHCSA (Red Hat)</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-expert">RHCE (Red Hat)</span>
+                </div>
+            </div>
+            <div class="roadmap-track">
+                <div class="track-label">☁️ Cloud Track</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-core">CompTIA Cloud+</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">AWS Solutions Architect Associate</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-expert">AWS Solutions Architect Pro</span>
+                </div>
+            </div>
+            <div class="roadmap-track">
+                <div class="track-label">🪟 Microsoft Track</div>
+                <div class="track-certs">
+                    <span class="cert-box cert-core">AZ-900 Azure Fundamentals</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-advanced">AZ-104 Azure Administrator</span>
+                    <span class="cert-arrow">→</span>
+                    <span class="cert-box cert-expert">AZ-305 Azure Architect</span>
+                </div>
+            </div>
+            <div class="roadmap-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#93c5fd;"></div> Entry Level</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#86efac;"></div> Core / Associate</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#fde68a;"></div> Advanced</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#fca5a5;"></div> Expert</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#7dd3fc;"></div> Cisco</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION: ONLINE RESOURCES ===== -->
+    <div class="section" data-section="online">
+        <div class="section-header">
+            <span class="section-icon">🌐</span>
+            <span class="section-title">Online Study Resources</span>
+            <span class="section-count">10 resources</span>
+        </div>
+        <div class="resource-grid">
+
+            <a href="https://www.professormesser.com" target="_blank" class="resource-card" data-tags="professor messer comptia a+ network+ security+ free study videos">
+                <div class="card-top">
+                    <span class="card-emoji">👨‍🏫</span>
+                    <div class="card-info">
+                        <div class="card-title">Professor Messer</div>
+                        <div class="card-sub">Free CompTIA Video Courses</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free video courses for A+, Network+, Security+, and Linux+. The gold standard for CompTIA exam prep.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://www.examcompass.com" target="_blank" class="resource-card" data-tags="exam compass practice tests comptia free quiz questions">
+                <div class="card-top">
+                    <span class="card-emoji">🧭</span>
+                    <div class="card-info">
+                        <div class="card-title">ExamCompass</div>
+                        <div class="card-sub">Free CompTIA Practice Tests</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free practice exams for A+, Network+, Security+. Hundreds of questions with detailed explanations.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://skills.des.com" target="_blank" class="resource-card" data-tags="cisco netacad ccna networking academy free courses">
+                <div class="card-top">
+                    <span class="card-emoji">🔵</span>
+                    <div class="card-info">
+                        <div class="card-title">Cisco Skills for All</div>
+                        <div class="card-sub">Cisco Networking Academy</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free Cisco courses including Networking Basics, Network Technician, and Cybersecurity Essentials.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://tryhackme.com" target="_blank" class="resource-card" data-tags="tryhackme security ctf hacking labs beginner cyber">
+                <div class="card-top">
+                    <span class="card-emoji">🎯</span>
+                    <div class="card-info">
+                        <div class="card-title">TryHackMe</div>
+                        <div class="card-sub">Hands-On Cybersecurity Labs</div>
+                    </div>
+                </div>
+                <div class="card-desc">Browser-based security labs — no setup required. Perfect for Security+ and network troubleshooting practice.</div>
+                <span class="card-badge badge-free">Free Tier</span>
+            </a>
+
+            <a href="https://subnettingpractice.com" target="_blank" class="resource-card" data-tags="subnetting practice calculator cidr network+ ccna ip addressing">
+                <div class="card-top">
+                    <span class="card-emoji">🧮</span>
+                    <div class="card-info">
+                        <div class="card-title">SubnettingPractice.com</div>
+                        <div class="card-sub">Interactive Subnetting Drills</div>
+                    </div>
+                </div>
+                <div class="card-desc">Timed subnetting practice with instant feedback. The fastest way to get fast at subnetting for Network+ and CCNA.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://docs.aws.amazon.com" target="_blank" class="resource-card" data-tags="aws documentation cloud amazon docs services ec2 s3 vpc">
+                <div class="card-top">
+                    <span class="card-emoji">☁️</span>
+                    <div class="card-info">
+                        <div class="card-title">AWS Documentation</div>
+                        <div class="card-sub">Official AWS Docs</div>
+                    </div>
+                </div>
+                <div class="card-desc">Official AWS service documentation. The authoritative reference for all Cloud Computing labs and projects.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://learn.microsoft.com/en-us/training/" target="_blank" class="resource-card" data-tags="microsoft learn training azure windows server active directory free">
+                <div class="card-top">
+                    <span class="card-emoji">🪟</span>
+                    <div class="card-info">
+                        <div class="card-title">Microsoft Learn</div>
+                        <div class="card-sub">Free Microsoft Training</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free official Microsoft training for Azure, Windows Server, Active Directory, and PowerShell.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://linuxcommand.org" target="_blank" class="resource-card" data-tags="linux command line bash terminal beginner learning">
+                <div class="card-top">
+                    <span class="card-emoji">🐧</span>
+                    <div class="card-info">
+                        <div class="card-title">LinuxCommand.org</div>
+                        <div class="card-sub">Learning the Shell</div>
+                    </div>
+                </div>
+                <div class="card-desc">Free guide to the Linux command line — from absolute beginner to shell scripting. Great Linux+ supplement.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://pexpython.com" target="_blank" class="resource-card" data-tags="python programming practice exercises beginner learn coding">
+                <div class="card-top">
+                    <span class="card-emoji">🐍</span>
+                    <div class="card-info">
+                        <div class="card-title">Python Exercises</div>
+                        <div class="card-sub">pexpython.com</div>
+                    </div>
+                </div>
+                <div class="card-desc">Hundreds of Python practice exercises with solutions. Perfect for Programming Logic & Design course practice.</div>
+                <span class="card-badge badge-free">Free</span>
+            </a>
+
+            <a href="https://github.com/Amedrano77/cns-study-guides" target="_blank" class="resource-card" data-tags="github source code cns study guides open source">
+                <div class="card-top">
+                    <span class="card-emoji">💻</span>
+                    <div class="card-info">
+                        <div class="card-title">CNS Study Guides GitHub</div>
+                        <div class="card-sub">Amedrano77 — Source Code</div>
+                    </div>
+                </div>
+                <div class="card-desc">The source code for this entire site. Open source — fork it, contribute, or use it as a learning resource.</div>
+                <span class="card-badge badge-external">GitHub</span>
+            </a>
+
+        </div>
+    </div>
+
+</main>
+
+<script>
+function filterResources() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.resource-card');
+    const sections = document.querySelectorAll('.section');
+    let totalVisible = 0;
+
+    sections.forEach(sec => {
+        let secVisible = 0;
+        const secCards = sec.querySelectorAll('.resource-card');
+        secCards.forEach(card => {
+            const tags = (card.dataset.tags || '').toLowerCase();
+            const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+            const desc = card.querySelector('.card-desc')?.textContent.toLowerCase() || '';
+            const match = !q || tags.includes(q) || title.includes(q) || desc.includes(q);
+            card.style.display = match ? '' : 'none';
+            if (match) secVisible++;
+        });
+
+        // For non-card sections (tables, roadmap), show/hide the whole section
+        const hasTables = sec.querySelector('table');
+        if (hasTables && !sec.querySelector('.resource-card')) {
+            const secText = sec.textContent.toLowerCase();
+            sec.style.display = (!q || secText.includes(q)) ? '' : 'none';
+            if (!q || secText.includes(q)) totalVisible++;
+        } else {
+            sec.style.display = (secVisible > 0 || !q) ? '' : 'none';
+            if (secVisible > 0 || !q) totalVisible++;
+        }
+        totalVisible += secVisible;
+    });
+
+    document.getElementById('noResults').style.display = (q && totalVisible === 0) ? 'block' : 'none';
+}
+</script>
+
+</body>
+</html>
