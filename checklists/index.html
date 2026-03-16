@@ -141,6 +141,7 @@
         }
         .check-item:hover { background: #fafafa; }
         .check-item input[type="checkbox"] { display: none; }
+        .check-item * { pointer-events: none; }
         .check-box {
             width: 20px; height: 20px; border-radius: 6px; border: 2px solid #d1d5db;
             flex-shrink: 0; display: flex; align-items: center; justify-content: center;
@@ -687,19 +688,18 @@ function init() {
 
         // Sections
         const sectionsHtml = cert.sections.map((sec, si) => {
-            const itemsHtml = sec.items.map((item, ii) => {
+                            const itemsHtml = sec.items.map((item, ii) => {
                 const key = `${cert.id}_${si}_${ii}`;
                 const checked = saved[key] ? 'checked' : '';
                 return `
-                    <label class="check-item ${checked}" onclick="toggleItem(this, '${key}', '${cert.id}', ${total})">
-                        <input type="checkbox" ${checked}>
+                    <div class="check-item ${checked}" onclick="toggleItem(this, '${key}', '${cert.id}', ${total})">
                         <div class="check-box"></div>
                         <div class="check-text">
                             <div class="check-title">${item.text}</div>
                             ${item.hint ? `<div class="check-hint">💡 ${item.hint}</div>` : ''}
                         </div>
                         <span class="check-priority priority-${item.priority}">${item.priority}</span>
-                    </label>`;
+                    </div>`;
             }).join('');
 
             const secTotal = sec.items.length;
@@ -766,7 +766,12 @@ function showCert(id) {
 }
 
 function toggleItem(label, key, certId, total) {
-    const isChecked = label.classList.toggle('checked');
+    const isChecked = !label.classList.contains('checked');
+    if (isChecked) {
+        label.classList.add('checked');
+    } else {
+        label.classList.remove('checked');
+    }
     const saved = JSON.parse(localStorage.getItem('cns_checklist') || '{}');
     saved[key] = isChecked;
     localStorage.setItem('cns_checklist', JSON.stringify(saved));
