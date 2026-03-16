@@ -10,8 +10,6 @@
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
             background: #f5f7fa; color: #1e293b; min-height: 100vh;
         }
-
-        /* HEADER */
         header {
             background: #0f2b3d; color: white; padding: 2rem 2rem 1.5rem;
             text-align: center; border-bottom: 6px solid #b91c1c;
@@ -30,8 +28,6 @@
             text-decoration: none; font-size: 0.9rem; font-weight: 600; position: relative;
         }
         .back-link:hover { text-decoration: underline; }
-
-        /* STATS BAR */
         .stats-bar {
             background: #1e3a5f; display: flex; justify-content: center;
             gap: 3rem; padding: 1rem 2rem; flex-wrap: wrap;
@@ -40,10 +36,9 @@
         .stat-num { font-size: 1.6rem; font-weight: 700; color: #facc15; }
         .stat-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        /* LOADING BANNER */
         #loadingBanner {
             background: #1e3a5f; color: #facc15; text-align: center;
-            padding: 0.7rem 1rem; font-size: 0.9rem; font-weight: 600;
+            padding: 0.75rem 1rem; font-size: 0.92rem; font-weight: 600;
             display: flex; align-items: center; justify-content: center; gap: 0.75rem;
         }
         .spinner {
@@ -52,240 +47,184 @@
             animation: spin 0.8s linear infinite; flex-shrink: 0;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        #loadingBanner.ready {
-            background: #166534; color: #bbf7d0;
-        }
+        #loadingBanner.ready { background: #14532d; color: #bbf7d0; }
         #loadingBanner.ready .spinner { display: none; }
+        #loadingBanner.failed { background: #7f1d1d; color: #fecaca; }
+        #loadingBanner.failed .spinner { display: none; }
 
-        /* MAIN LAYOUT */
         main { max-width: 1400px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 1.5rem;
-            margin-top: 1rem;
+        .infobox {
+            background: #fff9e6; border-left: 6px solid #fbbf24;
+            border-radius: 0 16px 16px 0; padding: 1rem 1.25rem;
+            font-size: 0.9rem; color: #78350f; margin-bottom: 1.25rem;
         }
-
-        /* SIDEBAR */
+        .infobox strong { color: #92400e; }
+        .layout {
+            display: grid; grid-template-columns: 270px 1fr;
+            gap: 1.5rem; margin-top: 0;
+        }
         .sidebar { display: flex; flex-direction: column; gap: 1rem; }
-
         .sidebar-card {
             background: white; border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0,20,30,0.08); overflow: hidden;
         }
         .sidebar-card-header {
             background: #0f2b3d; color: white; padding: 0.75rem 1rem;
-            font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
         }
-        .sidebar-card-body { padding: 0.75rem; }
-
-        /* EXERCISES LIST */
+        .sidebar-card-body { padding: 0.6rem; max-height: 70vh; overflow-y: auto; }
+        .topic-group { margin-bottom: 0.2rem; }
+        .topic-label {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #94a3b8; padding: 0.5rem 0.75rem 0.2rem;
+        }
         .exercise-btn {
-            width: 100%; text-align: left; padding: 0.65rem 0.75rem;
-            border-radius: 10px; border: none; background: none; cursor: pointer;
-            font-family: inherit; font-size: 0.85rem; color: #475569;
-            transition: all 0.15s; display: flex; align-items: flex-start; gap: 0.5rem;
-            line-height: 1.3;
+            width: 100%; text-align: left; padding: 0.55rem 0.75rem;
+            border-radius: 8px; border: none; background: none; cursor: pointer;
+            font-family: inherit; font-size: 0.83rem; color: #475569;
+            transition: all 0.15s; display: flex; align-items: center; gap: 0.5rem;
         }
         .exercise-btn:hover { background: #f1f5f9; color: #0f2b3d; }
-        .exercise-btn.active { background: #fee2e2; color: #b91c1c; font-weight: 600; }
-        .ex-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
-        .ex-label { flex: 1; }
+        .exercise-btn.active { background: #fee2e2; color: #b91c1c; font-weight: 700; }
+        .ex-icon { font-size: 0.95rem; flex-shrink: 0; }
+        .ex-label { flex: 1; line-height: 1.3; }
         .ex-diff {
-            font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem;
-            border-radius: 999px; white-space: nowrap; align-self: center;
+            font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem;
+            border-radius: 999px; white-space: nowrap;
         }
         .diff-easy { background: #dcfce7; color: #166534; }
-        .diff-med { background: #fef9c3; color: #a16207; }
+        .diff-med  { background: #fef9c3; color: #a16207; }
         .diff-hard { background: #fee2e2; color: #b91c1c; }
 
-        /* TOPIC GROUPS */
-        .topic-group { margin-bottom: 0.25rem; }
-        .topic-label {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.08em; color: #94a3b8; padding: 0.4rem 0.75rem 0.2rem;
-        }
-
-        /* MAIN EDITOR AREA */
         .editor-area { display: flex; flex-direction: column; gap: 1rem; }
-
-        /* EXERCISE INFO */
         .exercise-info {
             background: white; border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0,20,30,0.08); padding: 1.25rem 1.5rem;
         }
         .exercise-title {
-            font-size: 1.2rem; font-weight: 700; color: #0f2b3d;
+            font-size: 1.15rem; font-weight: 700; color: #0f2b3d;
             display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
         }
-        .exercise-desc { font-size: 0.92rem; color: #475569; margin-top: 0.6rem; line-height: 1.6; }
-        .exercise-hint {
-            margin-top: 0.75rem; padding: 0.75rem 1rem;
-            background: #fff9e6; border-left: 4px solid #fbbf24;
-            border-radius: 0 10px 10px 0; font-size: 0.85rem; color: #78350f;
-            display: none;
-        }
-        .exercise-hint.visible { display: block; }
+        .exercise-desc { font-size: 0.92rem; color: #475569; margin-top: 0.5rem; line-height: 1.6; }
         .hint-btn {
-            margin-top: 0.75rem; background: none; border: 1px solid #e2e8f0;
+            margin-top: 0.65rem; background: none; border: 1px solid #e2e8f0;
             border-radius: 8px; padding: 0.35rem 0.85rem; font-size: 0.8rem;
             font-weight: 600; color: #64748b; cursor: pointer; font-family: inherit;
-            transition: all 0.15s;
+            transition: all 0.15s; display: none;
         }
         .hint-btn:hover { background: #f8fafc; border-color: #b91c1c; color: #b91c1c; }
+        .exercise-hint {
+            margin-top: 0.65rem; padding: 0.75rem 1rem;
+            background: #fff9e6; border-left: 4px solid #fbbf24;
+            border-radius: 0 10px 10px 0; font-size: 0.85rem; color: #78350f; display: none;
+        }
+        .exercise-hint.visible { display: block; }
 
-        /* EDITOR PANEL */
         .editor-panel {
             background: #1e293b; border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,20,30,0.15); overflow: hidden;
         }
         .editor-toolbar {
-            background: #0f2b3d; padding: 0.6rem 1rem;
+            background: #0f2b3d; padding: 0.55rem 1rem;
             display: flex; align-items: center; justify-content: space-between;
             border-bottom: 2px solid #b91c1c;
         }
-        .editor-toolbar-left { display: flex; align-items: center; gap: 0.5rem; }
-        .toolbar-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .toolbar-left { display: flex; align-items: center; gap: 0.4rem; }
+        .dot { width: 11px; height: 11px; border-radius: 50%; }
         .editor-lang {
-            font-size: 0.75rem; font-weight: 700; color: #facc15;
-            text-transform: uppercase; letter-spacing: 0.1em; margin-left: 0.5rem;
+            font-size: 0.72rem; font-weight: 700; color: #facc15;
+            text-transform: uppercase; letter-spacing: 0.1em; margin-left: 0.4rem;
         }
         .toolbar-right { display: flex; gap: 0.5rem; align-items: center; }
-        .toolbar-btn {
-            padding: 0.4rem 1rem; border-radius: 8px; border: none;
-            font-size: 0.82rem; font-weight: 700; cursor: pointer;
+        .tbtn {
+            padding: 0.38rem 0.9rem; border-radius: 8px; border: none;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer;
             font-family: inherit; transition: all 0.15s;
-            display: flex; align-items: center; gap: 0.4rem;
+            display: flex; align-items: center; gap: 0.35rem;
         }
-        .btn-run { background: #b91c1c; color: white; }
-        .btn-run:hover { background: #991b1b; transform: scale(1.03); }
-        .btn-run:disabled { background: #64748b; cursor: not-allowed; transform: none; }
-        .btn-clear { background: rgba(255,255,255,0.1); color: #94a3b8; }
-        .btn-clear:hover { background: rgba(255,255,255,0.18); color: white; }
-        .btn-reset { background: rgba(255,255,255,0.1); color: #94a3b8; }
-        .btn-reset:hover { background: rgba(255,255,255,0.18); color: white; }
+        .tbtn-run  { background: #b91c1c; color: white; }
+        .tbtn-run:hover  { background: #991b1b; }
+        .tbtn-run:disabled { background: #475569; cursor: not-allowed; }
+        .tbtn-sec  { background: rgba(255,255,255,0.1); color: #94a3b8; }
+        .tbtn-sec:hover { background: rgba(255,255,255,0.18); color: white; }
 
-        /* CODE TEXTAREA */
         .code-wrap { position: relative; }
-        #codeEditor {
-            width: 100%; min-height: 280px; padding: 1.25rem 1rem 1.25rem 3.5rem;
-            background: #1e293b; color: #e2e8f0; border: none; outline: none;
-            font-family: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-            font-size: 0.92rem; line-height: 1.7; resize: vertical;
-            tab-size: 4; white-space: pre; overflow-wrap: normal; overflow-x: auto;
-            caret-color: #facc15;
-        }
         .line-numbers {
             position: absolute; left: 0; top: 0; bottom: 0; width: 3rem;
-            background: #0f2b3d; padding: 1.25rem 0;
+            background: #0f172a; padding: 1.1rem 0.5rem 1.1rem 0;
             display: flex; flex-direction: column; align-items: flex-end;
-            padding-right: 0.6rem; pointer-events: none; overflow: hidden;
+            pointer-events: none; overflow: hidden; z-index: 1;
         }
-        .line-num { font-family: monospace; font-size: 0.82rem; color: #475569; line-height: 1.7; }
+        .lnum { font-family: monospace; font-size: 0.82rem; color: #334155; line-height: 1.72; }
+        #codeEditor {
+            width: 100%; min-height: 260px; padding: 1.1rem 1rem 1.1rem 3.5rem;
+            background: #1e293b; color: #e2e8f0; border: none; outline: none;
+            font-family: 'Cascadia Code','JetBrains Mono','Fira Code','Courier New',monospace;
+            font-size: 0.91rem; line-height: 1.72; resize: vertical;
+            tab-size: 4; white-space: pre; overflow-wrap: normal; overflow-x: auto;
+            caret-color: #facc15; display: block;
+        }
 
-        /* OUTPUT */
-        .output-panel {
-            background: #0f2b3d; border-top: 2px solid #1e3a5f;
-        }
+        .output-panel { background: #0f172a; border-top: 2px solid #1e293b; }
         .output-header {
-            padding: 0.5rem 1rem; display: flex; align-items: center;
-            justify-content: space-between; border-bottom: 1px solid #1e3a5f;
+            padding: 0.45rem 1rem; display: flex; align-items: center;
+            justify-content: space-between; border-bottom: 1px solid #1e293b;
         }
         .output-label {
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.08em; color: #64748b;
-            display: flex; align-items: center; gap: 0.4rem;
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #475569;
         }
-        .output-status {
-            font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem;
-            border-radius: 999px;
+        .out-status {
+            font-size: 0.7rem; font-weight: 700; padding: 0.12rem 0.5rem; border-radius: 999px;
         }
-        .status-idle { background: #1e3a5f; color: #64748b; }
-        .status-running { background: #fef9c3; color: #a16207; }
-        .status-ok { background: #dcfce7; color: #166534; }
-        .status-err { background: #fee2e2; color: #b91c1c; }
+        .s-idle    { background: #1e293b; color: #475569; }
+        .s-running { background: #fef9c3; color: #a16207; }
+        .s-ok      { background: #dcfce7; color: #166534; }
+        .s-err     { background: #fee2e2; color: #b91c1c; }
 
         #outputBox {
-            padding: 1rem 1.25rem; min-height: 100px; max-height: 320px;
-            overflow-y: auto; font-family: 'Cascadia Code', 'JetBrains Mono', monospace;
-            font-size: 0.88rem; line-height: 1.7; color: #94a3b8;
+            padding: 0.9rem 1.25rem; min-height: 90px; max-height: 300px; overflow-y: auto;
+            font-family: 'Cascadia Code','JetBrains Mono',monospace;
+            font-size: 0.88rem; line-height: 1.7; color: #64748b;
             white-space: pre-wrap; word-break: break-word;
         }
         #outputBox.has-output { color: #e2e8f0; }
-        #outputBox.has-error { color: #fca5a5; }
-        .output-placeholder { color: #475569; font-style: italic; }
-        .exec-time { font-size: 0.72rem; color: #475569; padding: 0.25rem 1.25rem 0.5rem; }
+        #outputBox.has-error  { color: #fca5a5; }
+        #execTime { font-size: 0.7rem; color: #334155; padding: 0.2rem 1.25rem 0.5rem; }
 
-        /* INPUT AREA (for input() calls) */
-        .input-area {
-            display: none; padding: 0.5rem 1rem; border-top: 1px solid #1e3a5f;
-            align-items: center; gap: 0.5rem;
-        }
-        .input-area.visible { display: flex; }
-        .input-prompt { color: #facc15; font-family: monospace; font-size: 0.88rem; }
-        #stdinInput {
-            flex: 1; background: #1e293b; border: 1px solid #334155;
-            color: #e2e8f0; padding: 0.35rem 0.75rem; border-radius: 6px;
-            font-family: monospace; font-size: 0.88rem; outline: none;
-        }
-        #stdinInput:focus { border-color: #facc15; }
-        .stdin-submit {
-            background: #facc15; color: #0f2b3d; border: none; border-radius: 6px;
-            padding: 0.35rem 0.75rem; font-weight: 700; font-size: 0.82rem;
-            cursor: pointer; font-family: inherit;
-        }
-
-        /* SOLUTION PANEL */
         .solution-panel {
             background: white; border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0,20,30,0.08); overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,20,30,0.08); overflow: hidden; display: none;
         }
-        .solution-header {
-            padding: 0.75rem 1.25rem; background: #f8fafc;
+        .sol-header {
+            padding: 0.7rem 1.25rem; background: #f8fafc;
             border-bottom: 2px solid #e2e8f0;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .solution-title { font-weight: 700; font-size: 0.9rem; color: #0f2b3d; }
-        .show-solution-btn {
+        .sol-title { font-weight: 700; font-size: 0.88rem; color: #0f2b3d; }
+        .sol-btn {
             background: #0f2b3d; color: white; border: none; border-radius: 8px;
-            padding: 0.4rem 1rem; font-size: 0.82rem; font-weight: 600;
+            padding: 0.38rem 1rem; font-size: 0.8rem; font-weight: 600;
             cursor: pointer; font-family: inherit; transition: background 0.15s;
         }
-        .show-solution-btn:hover { background: #1e3a5f; }
-        .solution-body {
-            display: none; padding: 1rem 1.25rem;
-        }
-        .solution-body.visible { display: block; }
-        .solution-code {
+        .sol-btn:hover { background: #1e3a5f; }
+        .sol-body { display: none; padding: 1rem 1.25rem; }
+        .sol-body.visible { display: block; }
+        .sol-code {
             background: #1e293b; color: #e2e8f0; border-radius: 10px;
-            padding: 1rem 1.25rem; font-family: monospace; font-size: 0.88rem;
+            padding: 1rem 1.25rem; font-family: monospace; font-size: 0.87rem;
             line-height: 1.7; white-space: pre; overflow-x: auto;
         }
-        .solution-explain {
-            margin-top: 0.75rem; font-size: 0.88rem; color: #475569; line-height: 1.6;
-        }
+        .sol-explain { margin-top: 0.75rem; font-size: 0.88rem; color: #475569; line-height: 1.6; }
 
-        /* INFOBOX */
-        .infobox {
-            background: #fff9e6; border-left: 6px solid #fbbf24;
-            border-radius: 0 16px 16px 0; padding: 1rem 1.25rem;
-            font-size: 0.9rem; color: #78350f; margin-bottom: 1rem;
-        }
-        .infobox strong { color: #92400e; }
-
-        /* FOOTER */
         footer {
             background: #0f2b3d; color: #94a3b8; text-align: center;
             padding: 2rem; font-size: 0.9rem; border-top: 4px solid #b91c1c;
         }
         footer strong { color: white; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 860px) {
             .layout { grid-template-columns: 1fr; }
-            .sidebar { flex-direction: row; flex-wrap: wrap; }
-            .sidebar-card { flex: 1; min-width: 280px; }
         }
     </style>
 </head>
@@ -300,539 +239,513 @@
 
 <div class="stats-bar">
     <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Exercises</div></div>
-    <div class="stat"><div class="stat-num" id="pyVersion">Loading...</div><div class="stat-label">Python Version</div></div>
+    <div class="stat"><div class="stat-num" id="pyVersion">—</div><div class="stat-label">Python Version</div></div>
     <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Runs in Browser</div></div>
 </div>
 
 <div id="loadingBanner">
     <div class="spinner"></div>
-    <span id="loadingMsg">Loading Python engine — please wait (~5 seconds)...</span>
+    <span id="loadingMsg">Loading Python 3.13 engine — this takes about 5–10 seconds on first load...</span>
 </div>
 
 <main>
     <div class="infobox">
-        <strong>🐍 How to use:</strong> Pick an exercise from the left, read the instructions, write your code in the editor, and click <strong>▶ Run</strong>. Your code runs entirely in the browser — nothing is sent to a server. Use <strong>Hint</strong> if you're stuck, and <strong>Show Solution</strong> when you're ready to check your work.
+        <strong>🐍 How to use:</strong> Pick an exercise from the left panel, read the instructions, write your code, and click <strong>▶ Run</strong> (or press <strong>Ctrl+Enter</strong>). Use <strong>💡 Hint</strong> if you're stuck and <strong>Show Solution</strong> when ready to check your work. Python runs 100% in your browser — nothing is sent to a server.
     </div>
 
     <div class="layout">
-
-        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-card">
                 <div class="sidebar-card-header">🗂️ Exercises</div>
-                <div class="sidebar-card-body" id="exerciseList">
-                    <!-- populated by JS -->
-                </div>
+                <div class="sidebar-card-body" id="exerciseList"></div>
             </div>
         </div>
 
-        <!-- EDITOR AREA -->
         <div class="editor-area">
-
-            <!-- Exercise Info -->
             <div class="exercise-info">
                 <div class="exercise-title" id="exTitle">👈 Select an exercise to begin</div>
-                <div class="exercise-desc" id="exDesc">Choose an exercise from the left panel to load it into the editor.</div>
-                <button class="hint-btn" id="hintBtn" onclick="toggleHint()" style="display:none">💡 Show Hint</button>
+                <div class="exercise-desc" id="exDesc">Choose any exercise from the left panel to load it into the editor below.</div>
+                <button class="hint-btn" id="hintBtn" onclick="toggleHint()">💡 Show Hint</button>
                 <div class="exercise-hint" id="exHint"></div>
             </div>
 
-            <!-- Code Editor -->
             <div class="editor-panel">
                 <div class="editor-toolbar">
-                    <div class="editor-toolbar-left">
-                        <div class="toolbar-dot" style="background:#ef4444"></div>
-                        <div class="toolbar-dot" style="background:#facc15"></div>
-                        <div class="toolbar-dot" style="background:#22c55e"></div>
-                        <span class="editor-lang">🐍 Python</span>
+                    <div class="toolbar-left">
+                        <div class="dot" style="background:#ef4444"></div>
+                        <div class="dot" style="background:#facc15"></div>
+                        <div class="dot" style="background:#22c55e"></div>
+                        <span class="editor-lang">🐍 Python 3.13</span>
                     </div>
                     <div class="toolbar-right">
-                        <button class="toolbar-btn btn-reset" onclick="resetCode()" title="Reset to starter code">↩ Reset</button>
-                        <button class="toolbar-btn btn-clear" onclick="clearOutput()" title="Clear output">🗑 Clear</button>
-                        <button class="toolbar-btn btn-run" id="runBtn" onclick="runCode()" disabled>⏳ Loading...</button>
+                        <button class="tbtn tbtn-sec" onclick="resetCode()">↩ Reset</button>
+                        <button class="tbtn tbtn-sec" onclick="clearOutput()">🗑 Clear</button>
+                        <button class="tbtn tbtn-run" id="runBtn" onclick="runCode()" disabled>⏳ Loading...</button>
                     </div>
                 </div>
                 <div class="code-wrap">
-                    <div class="line-numbers" id="lineNumbers"></div>
+                    <div class="line-numbers" id="lineNums"></div>
                     <textarea id="codeEditor" spellcheck="false" autocorrect="off" autocapitalize="off"
-                        placeholder="# Select an exercise to load starter code, or write your own Python here..."
-                        oninput="updateLineNumbers()"></textarea>
+                        placeholder="# Select an exercise or write your own Python here..."></textarea>
                 </div>
                 <div class="output-panel">
                     <div class="output-header">
                         <span class="output-label">▸ Output</span>
-                        <span class="output-status status-idle" id="outputStatus">Idle</span>
+                        <span class="out-status s-idle" id="outStatus">Idle</span>
                     </div>
-                    <div id="outputBox"><span class="output-placeholder"># Output will appear here when you run your code...</span></div>
-                    <div class="exec-time" id="execTime"></div>
-                    <div class="input-area" id="inputArea">
-                        <span class="input-prompt">▸</span>
-                        <input type="text" id="stdinInput" placeholder="Type your input and press Enter...">
-                        <button class="stdin-submit" onclick="submitInput()">Enter</button>
+                    <div id="outputBox">
+                        <span style="color:#334155;font-style:italic"># Output will appear here when you run your code...</span>
                     </div>
+                    <div id="execTime"></div>
                 </div>
             </div>
 
-            <!-- Solution -->
-            <div class="solution-panel" id="solutionPanel" style="display:none">
-                <div class="solution-header">
-                    <span class="solution-title">✅ Solution &amp; Explanation</span>
-                    <button class="show-solution-btn" id="showSolBtn" onclick="toggleSolution()">Show Solution</button>
+            <div class="solution-panel" id="solPanel">
+                <div class="sol-header">
+                    <span class="sol-title">✅ Solution &amp; Explanation</span>
+                    <button class="sol-btn" id="solBtn" onclick="toggleSolution()">Show Solution</button>
                 </div>
-                <div class="solution-body" id="solutionBody">
-                    <div class="solution-code" id="solutionCode"></div>
-                    <div class="solution-explain" id="solutionExplain"></div>
+                <div class="sol-body" id="solBody">
+                    <div class="sol-code" id="solCode"></div>
+                    <div class="sol-explain" id="solExplain"></div>
                 </div>
             </div>
-
         </div>
     </div>
 </main>
 
 <footer>
     <strong>TSTC · Computer &amp; Networking Systems</strong><br>
-    Python Playground powered by <strong>Pyodide</strong> — Python runs entirely in your browser via WebAssembly.
+    Python Playground powered by <strong>Pyodide v0.29.3</strong> — Python 3.13 runs entirely in your browser via WebAssembly.
 </footer>
 
-<!-- PYODIDE -->
-<script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 <script>
 // ─── EXERCISES ────────────────────────────────────────────────────────────────
 const EXERCISES = [
-  // ── BASICS ──
   { id:'hello', group:'🐣 Basics', icon:'👋', title:'Hello, World!', diff:'easy',
     desc:'Write a program that prints <strong>Hello, World!</strong> to the screen. Then on a second line, print your name.',
     hint:'Use the <code>print()</code> function. You can call it multiple times — each call prints a new line.',
     starter:'# Your first Python program!\n# Print "Hello, World!" and then your name\n\n',
     solution:'print("Hello, World!")\nprint("My name is Adrian")',
-    explain:'<code>print()</code> outputs text to the console. String literals can use single or double quotes. Each <code>print()</code> call adds a newline automatically.' },
+    explain:'<code>print()</code> outputs text to the console. String literals use single or double quotes. Each <code>print()</code> call adds a newline automatically.' },
 
   { id:'variables', group:'🐣 Basics', icon:'📦', title:'Variables & Data Types', diff:'easy',
     desc:'Create four variables: an integer, a float, a string, and a boolean. Print each one along with its <strong>type</strong> using <code>type()</code>.',
-    hint:'Use <code>print(type(variable))</code> to display the data type, or combine it with f-strings: <code>print(f"Value: {x}, Type: {type(x)}")</code>',
-    starter:'# Create variables of different types\n# int, float, str, bool\n\nage = \ncost = \nname = \nis_student = \n\n# Print each with its type\n',
-    solution:'age = 21\ncost = 9.99\nname = "Alice"\nis_student = True\n\nprint(f"age = {age}, type = {type(age)}")\nprint(f"cost = {cost}, type = {type(cost)}")\nprint(f"name = {name}, type = {type(name)}")\nprint(f"is_student = {is_student}, type = {type(is_student)}")',
-    explain:'Python has four core primitive types: <code>int</code> (whole numbers), <code>float</code> (decimals), <code>str</code> (text), and <code>bool</code> (True/False). F-strings (f"...") let you embed variables directly in strings using curly braces.' },
+    hint:'Use f-strings: <code>print(f"Value: {x}, Type: {type(x).__name__}")</code>',
+    starter:'# Create variables of different types\nage = \ncost = \nname = \nis_student = \n\n# Print each with its type\n',
+    solution:'age = 21\ncost = 9.99\nname = "Alice"\nis_student = True\n\nprint(f"age={age}, type={type(age).__name__}")\nprint(f"cost={cost}, type={type(cost).__name__}")\nprint(f"name={name}, type={type(name).__name__}")\nprint(f"is_student={is_student}, type={type(is_student).__name__}")',
+    explain:'Python\'s four core primitives: <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>. F-strings (f"...{var}...") embed variables directly in strings. <code>type(x).__name__</code> gives just the type name as a clean string.' },
 
   { id:'input', group:'🐣 Basics', icon:'⌨️', title:'User Input', diff:'easy',
-    desc:'Ask the user to enter their name and their favorite number. Then print: <code>Hello [name]! Your number doubled is [number * 2].</code>',
-    hint:'<code>input()</code> always returns a string. You must convert the number with <code>int()</code> before doing math: <code>num = int(input("Enter a number: "))</code>',
+    desc:'Ask the user to enter their name and their favorite number. Print: <code>Hello [name]! Your number doubled is [number * 2].</code>',
+    hint:'<code>input()</code> always returns a string. Convert to number with <code>int()</code>: <code>num = int(input("Enter a number: "))</code>',
     starter:'# Get input from the user\nname = input("Enter your name: ")\nfav_num = \n\n# Print the greeting\n',
-    solution:'name = input("Enter your name: ")\nfav_num = int(input("Enter your favorite number: "))\n\nprint(f"Hello {name}! Your number doubled is {fav_num * 2}.")',
-    explain:'<code>input()</code> pauses and waits for the user to type something. It always returns a <code>str</code>, so use <code>int()</code> or <code>float()</code> to convert it for math operations.' },
+    solution:'name = input("Enter your name: ")\nfav_num = int(input("Enter your favorite number: "))\nprint(f"Hello {name}! Your number doubled is {fav_num * 2}.")',
+    explain:'<code>input()</code> always returns a <code>str</code>, so use <code>int()</code> or <code>float()</code> to convert it for math. The prompt string shown to the user is optional but helpful.' },
 
-  // ── CONTROL FLOW ──
   { id:'ifelse', group:'🔀 Control Flow', icon:'🔀', title:'If / Elif / Else', diff:'easy',
-    desc:'Ask the user to enter a number. Print whether the number is <strong>positive</strong>, <strong>negative</strong>, or <strong>zero</strong>.',
-    hint:'Use <code>if num > 0:</code>, <code>elif num < 0:</code>, and <code>else:</code>. Remember to convert the input to an int or float first!',
-    starter:'num = float(input("Enter a number: "))\n\n# Check if positive, negative, or zero\n',
+    desc:'Ask the user to enter a number. Print whether it is <strong>positive</strong>, <strong>negative</strong>, or <strong>zero</strong>.',
+    hint:'Use <code>if num > 0:</code>, <code>elif num < 0:</code>, and <code>else:</code>. Convert input to float first!',
+    starter:'num = float(input("Enter a number: "))\n\n# Check positive, negative, or zero\n',
     solution:'num = float(input("Enter a number: "))\n\nif num > 0:\n    print(f"{num} is positive")\nelif num < 0:\n    print(f"{num} is negative")\nelse:\n    print("The number is zero")',
-    explain:'The <code>if/elif/else</code> chain evaluates conditions top to bottom and runs the first block that is True. The <code>else</code> block runs if none of the conditions matched. Python uses indentation (4 spaces) instead of curly braces.' },
+    explain:'<code>if/elif/else</code> evaluates conditions top-to-bottom and runs the first True block. Python uses indentation (4 spaces) instead of curly braces to define code blocks.' },
 
   { id:'forloop', group:'🔀 Control Flow', icon:'🔁', title:'For Loops', diff:'easy',
-    desc:'Use a <code>for</code> loop to print the multiplication table for the number 7 (from 7×1 through 7×10).',
-    hint:'<code>range(1, 11)</code> generates numbers 1 through 10. Inside the loop, multiply 7 by the loop variable.',
-    starter:'# Print the 7 times table\n# Expected: 7 x 1 = 7, 7 x 2 = 14, ...\n\n',
+    desc:'Use a <code>for</code> loop to print the multiplication table for the number 7 (7×1 through 7×10).',
+    hint:'<code>range(1, 11)</code> generates numbers 1–10. Multiply 7 by the loop variable inside the loop.',
+    starter:'# Print the 7 times table\n\n',
     solution:'for i in range(1, 11):\n    print(f"7 x {i} = {7 * i}")',
-    explain:'<code>range(start, stop)</code> generates integers from start up to (but not including) stop. The loop variable <code>i</code> takes each value in sequence. F-strings make formatting the output clean and readable.' },
+    explain:'<code>range(start, stop)</code> generates integers from start up to (not including) stop. The loop variable takes each value in sequence.' },
 
   { id:'whileloop', group:'🔀 Control Flow', icon:'🔄', title:'While Loops', diff:'med',
-    desc:'Write a number guessing game. Pick a secret number (hardcode it). Keep asking the user to guess until they get it right. Tell them if their guess is too high or too low.',
-    hint:'Use <code>while guess != secret:</code> as your loop condition. Initialize <code>guess</code> to something that isn\'t the secret before the loop starts.',
-    starter:'secret = 42\nguess = None\nattempts = 0\n\n# Keep looping until the user guesses correctly\n',
-    solution:'secret = 42\nguess = None\nattempts = 0\n\nwhile guess != secret:\n    guess = int(input("Guess the number (1-100): "))\n    attempts += 1\n    if guess < secret:\n        print("Too low! Try again.")\n    elif guess > secret:\n        print("Too high! Try again.")\n    else:\n        print(f"🎉 Correct! You got it in {attempts} attempts!")',
-    explain:'The <code>while</code> loop continues as long as its condition is True. Initializing <code>guess = None</code> ensures the loop runs at least once. The <code>+=</code> operator increments the counter.' },
+    desc:'Write a number guessing game. Hardcode a secret number. Keep asking the user to guess until correct — tell them too high or too low each time.',
+    hint:'<code>while guess != secret:</code> keeps looping. Initialize <code>guess = None</code> before the loop so it runs at least once.',
+    starter:'secret = 42\nguess = None\nattempts = 0\n\n# Keep asking until correct\n',
+    solution:'secret = 42\nguess = None\nattempts = 0\n\nwhile guess != secret:\n    guess = int(input("Guess the number (1-100): "))\n    attempts += 1\n    if guess < secret:\n        print("Too low! Try again.")\n    elif guess > secret:\n        print("Too high! Try again.")\n    else:\n        print(f"Correct! You got it in {attempts} attempts!")',
+    explain:'<code>while</code> loops continue as long as their condition is True. Setting <code>guess = None</code> ensures the loop body runs at least once. <code>+=</code> increments a counter.' },
 
   { id:'listcomp', group:'🔀 Control Flow', icon:'⚡', title:'List Comprehensions', diff:'med',
-    desc:'Use a list comprehension to create a list of all even numbers from 1 to 50. Then print the list and print how many items it contains.',
-    hint:'Syntax: <code>[expression for item in iterable if condition]</code>. Check if a number is even with <code>x % 2 == 0</code>.',
-    starter:'# Create a list of even numbers from 1 to 50\n# using a list comprehension\n\nevens = \n\nprint(evens)\nprint(f"Count: {len(evens)}")',
-    solution:'evens = [x for x in range(1, 51) if x % 2 == 0]\n\nprint(evens)\nprint(f"Count: {len(evens)}")',
-    explain:'List comprehensions are a concise way to build lists. <code>x % 2 == 0</code> uses the modulo operator — if the remainder when dividing by 2 is 0, the number is even. <code>len()</code> returns the number of items in a list.' },
+    desc:'Use a list comprehension to create a list of all even numbers from 1 to 50. Print the list and its length.',
+    hint:'Syntax: <code>[expression for item in iterable if condition]</code>. Even check: <code>x % 2 == 0</code>',
+    starter:'# Create a list of even numbers 1-50 using a list comprehension\nevens = \n\nprint(evens)\nprint(f"Count: {len(evens)}")',
+    solution:'evens = [x for x in range(1, 51) if x % 2 == 0]\nprint(evens)\nprint(f"Count: {len(evens)}")',
+    explain:'List comprehensions are a concise way to build lists. <code>x % 2 == 0</code> uses modulo — remainder 0 means even. <code>len()</code> returns the item count.' },
 
-  // ── FUNCTIONS ──
   { id:'functions', group:'🔧 Functions', icon:'🔧', title:'Defining Functions', diff:'easy',
-    desc:'Write a function called <code>greet(name, course)</code> that returns the string <code>"Welcome to [course], [name]!"</code>. Call it at least 3 times with different arguments.',
-    hint:'Define with <code>def greet(name, course):</code>. Use a <code>return</code> statement to send back the value. Call it like: <code>print(greet("Alice", "Network+"))</code>',
-    starter:'# Define the greet function\ndef greet(name, course):\n    \n\n# Call it 3 times with different names and courses\n',
+    desc:'Write a function <code>greet(name, course)</code> that returns <code>"Welcome to [course], [name]!"</code>. Call it at least 3 times.',
+    hint:'<code>def greet(name, course):</code> then <code>return f"Welcome to {course}, {name}!"</code>',
+    starter:'def greet(name, course):\n    \n\n# Call it 3 times\n',
     solution:'def greet(name, course):\n    return f"Welcome to {course}, {name}!"\n\nprint(greet("Alice", "Network+"))\nprint(greet("Bob", "Security+"))\nprint(greet("Carlos", "Linux+"))',
-    explain:'Functions are defined with <code>def</code>. Parameters are variables listed in the parentheses. <code>return</code> sends a value back to wherever the function was called. This avoids repeating the same string logic three times.' },
+    explain:'Functions are defined with <code>def</code>. Parameters are variables in the parentheses. <code>return</code> sends a value back to the caller, avoiding repeated logic.' },
 
   { id:'recursion', group:'🔧 Functions', icon:'🌀', title:'Recursion — Factorial', diff:'med',
-    desc:'Write a recursive function <code>factorial(n)</code> that calculates n! (n factorial). Then print the factorial for numbers 0 through 8.',
-    hint:'Base case: <code>if n == 0: return 1</code>. Recursive case: <code>return n * factorial(n - 1)</code>. A function calls itself with a smaller value until it hits the base case.',
-    starter:'def factorial(n):\n    # Base case: 0! = 1\n    \n    # Recursive case\n    \n\n# Print factorial for 0 through 8\n',
+    desc:'Write a recursive function <code>factorial(n)</code> that calculates n!. Print factorial for 0 through 8.',
+    hint:'Base case: <code>if n == 0: return 1</code>. Recursive case: <code>return n * factorial(n - 1)</code>',
+    starter:'def factorial(n):\n    # Base case\n    \n    # Recursive case\n    \n\nfor i in range(9):\n    print(f"{i}! = {factorial(i)}")',
     solution:'def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nfor i in range(9):\n    print(f"{i}! = {factorial(i)}")',
-    explain:'Recursion is when a function calls itself. Every recursive function needs a <strong>base case</strong> (stopping condition) and a <strong>recursive case</strong>. factorial(5) = 5 × factorial(4) = 5 × 4 × 3 × 2 × 1 = 120.' },
+    explain:'Recursion = a function calling itself. Every recursive function needs a <strong>base case</strong> (stops the recursion) and a <strong>recursive case</strong> (calls itself with a smaller value). factorial(5) = 5×4×3×2×1 = 120.' },
 
   { id:'lambda', group:'🔧 Functions', icon:'λ', title:'Lambda Functions', diff:'med',
-    desc:'Create a list of dictionaries representing 5 network devices (name, ip, type). Use a <code>lambda</code> with <code>sorted()</code> to sort them by IP address, then print the sorted list.',
-    hint:'<code>sorted(list, key=lambda x: x[\'field\'])</code> sorts by a specific dictionary key. For IP sorting you can sort by the string value which will work for same-subnet IPs.',
-    starter:'devices = [\n    {"name": "router1", "ip": "192.168.1.1", "type": "router"},\n    {"name": "switch2", "ip": "192.168.1.3", "type": "switch"},\n    {"name": "pc1",     "ip": "192.168.1.10","type": "host"},\n    {"name": "switch1", "ip": "192.168.1.2", "type": "switch"},\n    {"name": "server1", "ip": "192.168.1.5", "type": "server"},\n]\n\n# Sort by IP address using a lambda\nsorted_devices = \n\nfor d in sorted_devices:\n    print(f"{d[\'ip\']:15} {d[\'name\']:10} ({d[\'type\']})")',
-    solution:'devices = [\n    {"name": "router1", "ip": "192.168.1.1", "type": "router"},\n    {"name": "switch2", "ip": "192.168.1.3", "type": "switch"},\n    {"name": "pc1",     "ip": "192.168.1.10","type": "host"},\n    {"name": "switch1", "ip": "192.168.1.2", "type": "switch"},\n    {"name": "server1", "ip": "192.168.1.5", "type": "server"},\n]\n\nsorted_devices = sorted(devices, key=lambda x: [int(p) for p in x["ip"].split(".")])\n\nfor d in sorted_devices:\n    print(f"{d[\'ip\']:15} {d[\'name\']:10} ({d[\'type\\']})")',
-    explain:'Lambda functions are anonymous one-line functions. <code>lambda x: expression</code> takes x and returns the expression. Splitting the IP and converting to integers sorts numerically instead of alphabetically (so .10 comes after .5).' },
+    desc:'Sort a list of 5 network device dictionaries by IP address using a <code>lambda</code> with <code>sorted()</code>.',
+    hint:'<code>sorted(list, key=lambda x: [int(p) for p in x["ip"].split(".")])</code> sorts IPs numerically.',
+    starter:'devices = [\n    {"name": "router1",  "ip": "192.168.1.1",  "type": "router"},\n    {"name": "switch2",  "ip": "192.168.1.3",  "type": "switch"},\n    {"name": "pc1",      "ip": "192.168.1.10", "type": "host"},\n    {"name": "switch1",  "ip": "192.168.1.2",  "type": "switch"},\n    {"name": "server1",  "ip": "192.168.1.5",  "type": "server"},\n]\n\n# Sort by IP using a lambda\nsorted_devices = \n\nfor d in sorted_devices:\n    print(f"{d[\'ip\']:16} {d[\'name\']:10} ({d[\'type\']})")',
+    solution:'devices = [\n    {"name": "router1",  "ip": "192.168.1.1",  "type": "router"},\n    {"name": "switch2",  "ip": "192.168.1.3",  "type": "switch"},\n    {"name": "pc1",      "ip": "192.168.1.10", "type": "host"},\n    {"name": "switch1",  "ip": "192.168.1.2",  "type": "switch"},\n    {"name": "server1",  "ip": "192.168.1.5",  "type": "server"},\n]\n\nsorted_devices = sorted(devices, key=lambda x: [int(p) for p in x["ip"].split(".")])\n\nfor d in sorted_devices:\n    print(f"{d[\'ip\']:16} {d[\'name\']:10} ({d[\'type\']})")',
+    explain:'Lambda = anonymous one-line function. Splitting the IP and converting each octet to int sorts numerically (.10 comes after .5) instead of alphabetically.' },
 
-  // ── DATA STRUCTURES ──
   { id:'lists', group:'📚 Data Structures', icon:'📋', title:'Lists & Methods', diff:'easy',
-    desc:'Create a list of 5 port numbers. Then: sort it, append port 443, remove port 23, and check if port 80 is in the list. Print the result after each operation.',
-    hint:'List methods: <code>.sort()</code>, <code>.append(item)</code>, <code>.remove(item)</code>. Use <code>in</code> operator to check membership: <code>80 in ports</code>',
-    starter:'ports = [22, 23, 80, 443, 3389]\n\n# 1. Sort the list\n\n# 2. Append port 8080\n\n# 3. Remove port 23\n\n# 4. Check if port 80 is in the list\n\n# 5. Print the final list\n',
-    solution:'ports = [22, 23, 80, 443, 3389]\n\nports.sort()\nprint(f"Sorted: {ports}")\n\nports.append(8080)\nprint(f"After append: {ports}")\n\nports.remove(23)\nprint(f"After remove: {ports}")\n\nprint(f"Port 80 in list: {80 in ports}")\nprint(f"Final list: {ports}")',
-    explain:'Lists are ordered and mutable. <code>.sort()</code> modifies the list in place. <code>.append()</code> adds to the end. <code>.remove()</code> removes the first matching value. The <code>in</code> operator returns True/False.' },
+    desc:'Start with a list of 5 port numbers. Sort it, append port 8080, remove port 23, check if port 80 is present, then print after each operation.',
+    hint:'<code>.sort()</code>, <code>.append(x)</code>, <code>.remove(x)</code>, <code>x in list</code>',
+    starter:'ports = [22, 23, 80, 443, 3389]\n\n# 1. Sort\n# 2. Append 8080\n# 3. Remove 23\n# 4. Check if 80 is in the list\n# 5. Print final list\n',
+    solution:'ports = [22, 23, 80, 443, 3389]\n\nports.sort()\nprint(f"Sorted:        {ports}")\n\nports.append(8080)\nprint(f"After append:  {ports}")\n\nports.remove(23)\nprint(f"After remove:  {ports}")\n\nprint(f"80 in list:    {80 in ports}")\nprint(f"Final list:    {ports}")',
+    explain:'Lists are ordered and mutable. <code>.sort()</code> modifies in-place. <code>.append()</code> adds to the end. <code>.remove()</code> deletes the first match. <code>in</code> returns True/False.' },
 
   { id:'dicts', group:'📚 Data Structures', icon:'🗃️', title:'Dictionaries', diff:'easy',
-    desc:'Create a dictionary of 5 common ports (port number as key, protocol name as value). Then write a loop that prints each entry formatted as: <code>Port 22 → SSH</code>.',
-    hint:'Define like: <code>ports = {22: "SSH", 80: "HTTP"}</code>. Loop with <code>for port, protocol in ports.items():</code>',
-    starter:'# Create a ports dictionary\nports = {\n    \n}\n\n# Loop through and print each entry\n',
-    solution:'ports = {\n    22: "SSH",\n    80: "HTTP",\n    443: "HTTPS",\n    53: "DNS",\n    3389: "RDP"\n}\n\nfor port, protocol in ports.items():\n    print(f"Port {port} → {protocol}")',
-    explain:'Dictionaries store key-value pairs. <code>.items()</code> returns pairs you can unpack into two variables in a for loop. Dictionary keys must be unique and immutable (strings, numbers, tuples).' },
+    desc:'Create a dictionary of 5 common ports (number → protocol name). Loop through it and print each as: <code>Port 22 → SSH</code>.',
+    hint:'<code>ports = {22: "SSH", 80: "HTTP"}</code>. Loop: <code>for port, protocol in ports.items():</code>',
+    starter:'# Create ports dictionary\nports = {\n    \n}\n\n# Loop and print each entry\n',
+    solution:'ports = {\n    22:   "SSH",\n    80:   "HTTP",\n    443:  "HTTPS",\n    53:   "DNS",\n    3389: "RDP"\n}\n\nfor port, protocol in ports.items():\n    print(f"Port {port} → {protocol}")',
+    explain:'Dictionaries store key-value pairs. <code>.items()</code> returns both key and value for each entry. Keys must be unique and immutable.' },
 
   { id:'tuples_sets', group:'📚 Data Structures', icon:'🔢', title:'Tuples & Sets', diff:'med',
-    desc:'Create a tuple of TCP ports and a tuple of UDP ports (with some overlap). Convert both to sets and find: the <strong>union</strong>, <strong>intersection</strong>, and ports that are <strong>TCP only</strong>.',
-    hint:'Convert with <code>set(tuple)</code>. Set operators: <code>|</code> (union), <code>&</code> (intersection), <code>-</code> (difference).',
-    starter:'tcp_ports = (22, 80, 443, 53, 25, 110)\nudp_ports = (53, 67, 68, 123, 161)\n\n# Convert to sets\ntcp = \nudp = \n\n# Find union (all ports)\n# Find intersection (both TCP and UDP)\n# Find TCP only (in tcp but not udp)\n',
-    solution:'tcp_ports = (22, 80, 443, 53, 25, 110)\nudp_ports = (53, 67, 68, 123, 161)\n\ntcp = set(tcp_ports)\nudp = set(udp_ports)\n\nprint(f"All ports (union):       {sorted(tcp | udp)}")\nprint(f"Both TCP & UDP:          {sorted(tcp & udp)}")\nprint(f"TCP only:                {sorted(tcp - udp)}")',
-    explain:'Tuples are immutable lists — good for fixed data. Sets are unordered collections of unique values. Set math: <code>|</code> union (everything), <code>&</code> intersection (in both), <code>-</code> difference (in first but not second).' },
+    desc:'Create TCP and UDP port tuples (with some overlap). Convert to sets and find: union, intersection, and TCP-only ports.',
+    hint:'Set operators: <code>|</code> union, <code>&</code> intersection, <code>-</code> difference.',
+    starter:'tcp_ports = (22, 80, 443, 53, 25, 110)\nudp_ports = (53, 67, 68, 123, 161)\n\n# Convert to sets, then find union, intersection, TCP-only\n',
+    solution:'tcp_ports = (22, 80, 443, 53, 25, 110)\nudp_ports = (53, 67, 68, 123, 161)\n\ntcp = set(tcp_ports)\nudp = set(udp_ports)\n\nprint(f"All ports (union):    {sorted(tcp | udp)}")\nprint(f"Both TCP & UDP:       {sorted(tcp & udp)}")\nprint(f"TCP only:             {sorted(tcp - udp)}")',
+    explain:'Tuples are immutable lists. Sets are unordered unique-value collections. Set math: <code>|</code> = everything, <code>&</code> = in both, <code>-</code> = in first but not second.' },
 
-  // ── OOP ──
   { id:'classes', group:'🏗️ OOP', icon:'🏗️', title:'Classes & Objects', diff:'med',
-    desc:'Create a <code>NetworkDevice</code> class with attributes: <code>name</code>, <code>ip</code>, <code>device_type</code>. Add a method <code>info()</code> that returns a formatted summary string. Create 3 device objects and print their info.',
-    hint:'<code>def __init__(self, name, ip, device_type):</code> is the constructor. Use <code>self.name = name</code> to set attributes. Define methods with <code>def method_name(self):</code>',
-    starter:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        \n    \n    def info(self):\n        \n\n# Create 3 devices and print their info\n',
-    solution:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\nr1 = NetworkDevice("Router1", "192.168.1.1", "router")\nsw1 = NetworkDevice("Switch1", "192.168.1.2", "switch")\nsrv = NetworkDevice("WebServer", "192.168.1.10", "server")\n\nprint(r1.info())\nprint(sw1.info())\nprint(srv.info())',
-    explain:'A class is a blueprint. <code>__init__</code> is called automatically when you create an object with <code>ClassName(args)</code>. <code>self</code> refers to the specific object instance. Methods are functions that belong to a class.' },
+    desc:'Create a <code>NetworkDevice</code> class with <code>name</code>, <code>ip</code>, <code>device_type</code> attributes and an <code>info()</code> method. Create 3 objects and print their info.',
+    hint:'Constructor: <code>def __init__(self, name, ip, device_type):</code>. Set attributes with <code>self.name = name</code>.',
+    starter:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        \n\n    def info(self):\n        \n\n# Create 3 devices\n',
+    solution:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\nr1  = NetworkDevice("Router1",    "192.168.1.1",  "router")\nsw1 = NetworkDevice("Switch1",    "192.168.1.2",  "switch")\nsrv = NetworkDevice("WebServer",  "192.168.1.10", "server")\n\nprint(r1.info())\nprint(sw1.info())\nprint(srv.info())',
+    explain:'A class is a blueprint for objects. <code>__init__</code> runs automatically when you create an object. <code>self</code> refers to the specific instance. Methods are functions defined inside a class.' },
 
   { id:'inheritance', group:'🏗️ OOP', icon:'👨‍👧', title:'Inheritance', diff:'hard',
-    desc:'Extend the <code>NetworkDevice</code> class: create a <code>Router</code> subclass that adds a <code>routing_protocol</code> attribute and a <code>route_summary()</code> method. Create a <code>Switch</code> subclass with a <code>vlan_count</code> attribute.',
-    hint:'<code>class Router(NetworkDevice):</code> inherits from NetworkDevice. Call the parent constructor with <code>super().__init__(name, ip, "router")</code>',
-    starter:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\n# Create Router subclass\nclass Router(NetworkDevice):\n    \n\n# Create Switch subclass\nclass Switch(NetworkDevice):\n    \n\n# Test your classes\n',
-    solution:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\nclass Router(NetworkDevice):\n    def __init__(self, name, ip, routing_protocol):\n        super().__init__(name, ip, "router")\n        self.routing_protocol = routing_protocol\n    def route_summary(self):\n        return f"{self.name} runs {self.routing_protocol}"\n\nclass Switch(NetworkDevice):\n    def __init__(self, name, ip, vlan_count):\n        super().__init__(name, ip, "switch")\n        self.vlan_count = vlan_count\n    def info(self):\n        base = super().info()\n        return f"{base} | VLANs: {self.vlan_count}"\n\nr1 = Router("Core-R1", "10.0.0.1", "OSPF")\nsw1 = Switch("Access-SW1", "10.0.0.2", 12)\n\nprint(r1.info())\nprint(r1.route_summary())\nprint(sw1.info())',
-    explain:'Inheritance lets a child class reuse parent code. <code>super().__init__()</code> calls the parent constructor. Child classes can <strong>override</strong> methods (like <code>info()</code> in Switch) or add new ones. This models real-world IS-A relationships.' },
+    desc:'Extend <code>NetworkDevice</code>: create a <code>Router</code> subclass (adds <code>routing_protocol</code> + <code>route_summary()</code>) and a <code>Switch</code> subclass (adds <code>vlan_count</code>).',
+    hint:'<code>class Router(NetworkDevice):</code>. Call parent constructor with <code>super().__init__(name, ip, "router")</code>.',
+    starter:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\nclass Router(NetworkDevice):\n    \n\nclass Switch(NetworkDevice):\n    \n\n# Test your subclasses\n',
+    solution:'class NetworkDevice:\n    def __init__(self, name, ip, device_type):\n        self.name = name\n        self.ip = ip\n        self.device_type = device_type\n    def info(self):\n        return f"[{self.device_type.upper()}] {self.name} — {self.ip}"\n\nclass Router(NetworkDevice):\n    def __init__(self, name, ip, routing_protocol):\n        super().__init__(name, ip, "router")\n        self.routing_protocol = routing_protocol\n    def route_summary(self):\n        return f"{self.name} runs {self.routing_protocol}"\n\nclass Switch(NetworkDevice):\n    def __init__(self, name, ip, vlan_count):\n        super().__init__(name, ip, "switch")\n        self.vlan_count = vlan_count\n    def info(self):\n        return f"{super().info()} | VLANs: {self.vlan_count}"\n\nr1  = Router("Core-R1",    "10.0.0.1", "OSPF")\nsw1 = Switch("Access-SW1", "10.0.0.2", 12)\n\nprint(r1.info())\nprint(r1.route_summary())\nprint(sw1.info())',
+    explain:'Inheritance lets a child class reuse parent code. <code>super().__init__()</code> calls the parent constructor. Child classes can override methods or add new ones. This models real IS-A relationships.' },
 
-  // ── NETWORKING PYTHON ──
   { id:'subnet_calc', group:'🌐 Networking', icon:'🧮', title:'Subnet Calculator', diff:'med',
-    desc:'Write a function that takes an IP address and CIDR prefix (like "192.168.1.0", 24) and calculates: network address, broadcast address, first host, last host, and number of usable hosts.',
-    hint:'Host bits = 32 - prefix. Total hosts = 2^host_bits. Usable = total - 2. Convert IP to integer with: <code>int.from_bytes(map(int, ip.split(".")), big)</code> or work with each octet.',
-    starter:'def subnet_info(ip, prefix):\n    """Calculate subnet info from IP and CIDR prefix"""\n    host_bits = 32 - prefix\n    total_hosts = 2 ** host_bits\n    usable = total_hosts - 2\n    \n    # Convert IP to integer\n    octets = list(map(int, ip.split(".")))\n    ip_int = (octets[0]<<24) + (octets[1]<<16) + (octets[2]<<8) + octets[3]\n    \n    # Calculate mask, network, broadcast\n    # (your code here)\n    \n    # Convert integer back to IP string\n    def int_to_ip(n):\n        return f"{(n>>24)&255}.{(n>>16)&255}.{(n>>8)&255}.{n&255}"\n    \n    print(f"Network:        ")\n    print(f"Subnet Mask:    ")\n    print(f"First Host:     ")\n    print(f"Last Host:      ")\n    print(f"Broadcast:      ")\n    print(f"Usable Hosts:   {usable}")\n\nsubnet_info("192.168.10.0", 24)\nprint()\nsubnet_info("10.0.0.0", 8)',
-    solution:'def subnet_info(ip, prefix):\n    host_bits = 32 - prefix\n    total_hosts = 2 ** host_bits\n    usable = max(0, total_hosts - 2)\n\n    octets = list(map(int, ip.split(".")))\n    ip_int = (octets[0]<<24)+(octets[1]<<16)+(octets[2]<<8)+octets[3]\n\n    mask_int = (0xFFFFFFFF << host_bits) & 0xFFFFFFFF\n    network_int = ip_int & mask_int\n    broadcast_int = network_int | (~mask_int & 0xFFFFFFFF)\n    first_host = network_int + 1\n    last_host = broadcast_int - 1\n\n    def int_to_ip(n):\n        return f"{(n>>24)&255}.{(n>>16)&255}.{(n>>8)&255}.{n&255}"\n\n    print(f"IP / CIDR:      {ip}/{prefix}")\n    print(f"Subnet Mask:    {int_to_ip(mask_int)}")\n    print(f"Network:        {int_to_ip(network_int)}")\n    print(f"First Host:     {int_to_ip(first_host)}")\n    print(f"Last Host:      {int_to_ip(last_host)}")\n    print(f"Broadcast:      {int_to_ip(broadcast_int)}")\n    print(f"Usable Hosts:   {usable:,}")\n    print("-" * 32)\n\nsubnet_info("192.168.10.0", 24)\nsubnet_info("10.0.0.0", 8)\nsubnet_info("172.16.0.0", 20)',
-    explain:'IPs are just 32-bit integers. Bitwise AND with the mask gives the network address. Bitwise OR with the inverted mask gives the broadcast. Shifting with <code>&lt;&lt;</code> and <code>&gt;&gt;</code> moves bits left/right. This is exactly how routers calculate subnets.' },
+    desc:'Write a function that takes an IP and CIDR prefix and calculates: network address, broadcast, first host, last host, subnet mask, and usable hosts.',
+    hint:'Host bits = 32 - prefix. Mask = 0xFFFFFFFF << host_bits. Network = ip_int & mask. Broadcast = network | ~mask.',
+    starter:'def subnet_info(ip, prefix):\n    host_bits = 32 - prefix\n    total_hosts = 2 ** host_bits\n    usable = max(0, total_hosts - 2)\n\n    # Convert IP string to integer\n    octets = list(map(int, ip.split(".")))\n    ip_int = (octets[0]<<24)+(octets[1]<<16)+(octets[2]<<8)+octets[3]\n\n    # Calculate mask, network, broadcast (fill in)\n    mask_int      = \n    network_int   = \n    broadcast_int = \n\n    def int_to_ip(n):\n        return f"{(n>>24)&255}.{(n>>16)&255}.{(n>>8)&255}.{n&255}"\n\n    print(f"IP/CIDR:      {ip}/{prefix}")\n    # print the rest...\n\nsubnet_info("192.168.10.0", 24)\nsubnet_info("10.0.0.0", 8)',
+    solution:'def subnet_info(ip, prefix):\n    host_bits = 32 - prefix\n    usable = max(0, 2**host_bits - 2)\n\n    octets = list(map(int, ip.split(".")))\n    ip_int = (octets[0]<<24)+(octets[1]<<16)+(octets[2]<<8)+octets[3]\n\n    mask_int      = (0xFFFFFFFF << host_bits) & 0xFFFFFFFF\n    network_int   = ip_int & mask_int\n    broadcast_int = network_int | (~mask_int & 0xFFFFFFFF)\n\n    def int_to_ip(n):\n        return f"{(n>>24)&255}.{(n>>16)&255}.{(n>>8)&255}.{n&255}"\n\n    print(f"IP/CIDR:      {ip}/{prefix}")\n    print(f"Subnet Mask:  {int_to_ip(mask_int)}")\n    print(f"Network:      {int_to_ip(network_int)}")\n    print(f"First Host:   {int_to_ip(network_int + 1)}")\n    print(f"Last Host:    {int_to_ip(broadcast_int - 1)}")\n    print(f"Broadcast:    {int_to_ip(broadcast_int)}")\n    print(f"Usable Hosts: {usable:,}")\n    print("-" * 30)\n\nsubnet_info("192.168.10.0", 24)\nsubnet_info("10.0.0.0", 8)\nsubnet_info("172.16.0.0", 20)',
+    explain:'IPs are 32-bit integers. Bitwise AND with the mask isolates the network bits. Bitwise OR with the inverted mask fills in all host bits to get the broadcast. This is literally how routers subnet.' },
 
-  { id:'port_scanner', group:'🌐 Networking', icon:'🔍', title:'Port List Analyzer', diff:'med',
-    desc:'Write a program that defines a dictionary of well-known ports and their services, then lets the user enter port numbers to look them up. Keep asking until they type "quit".',
-    hint:'Use a dictionary for the port lookup. Use a <code>while True:</code> loop with a <code>break</code> when input is "quit". Handle unknown ports with <code>dict.get(port, "Unknown")</code>',
-    starter:'# Well-known ports dictionary\nWELL_KNOWN_PORTS = {\n    20: "FTP Data", 21: "FTP Control", 22: "SSH",\n    23: "Telnet",   25: "SMTP",       53: "DNS",\n    67: "DHCP Server", 68: "DHCP Client", 80: "HTTP",\n    110: "POP3",   143: "IMAP",      443: "HTTPS",\n    445: "SMB",    3389: "RDP",      8080: "HTTP Alt"\n}\n\nprint("Port Lookup Tool (type \'quit\' to exit)")\nprint("-" * 40)\n\n# Write the lookup loop here\n',
-    solution:'WELL_KNOWN_PORTS = {\n    20: "FTP Data", 21: "FTP Control", 22: "SSH",\n    23: "Telnet",   25: "SMTP",       53: "DNS",\n    67: "DHCP Server", 68: "DHCP Client", 80: "HTTP",\n    110: "POP3",   143: "IMAP",      443: "HTTPS",\n    445: "SMB",    3389: "RDP",      8080: "HTTP Alt"\n}\n\nprint("Port Lookup Tool (type \'quit\' to exit)")\nprint("-" * 40)\n\nwhile True:\n    user_input = input("Enter a port number: ").strip()\n    if user_input.lower() == "quit":\n        print("Goodbye!")\n        break\n    try:\n        port = int(user_input)\n        service = WELL_KNOWN_PORTS.get(port, "Unknown / Not in database")\n        print(f"  Port {port:5} → {service}")\n    except ValueError:\n        print("  Please enter a valid port number or \'quit\'")',
-    explain:'<code>dict.get(key, default)</code> returns the default instead of raising an error if the key is missing. <code>try/except ValueError</code> handles non-numeric input gracefully. <code>.strip()</code> removes extra whitespace from user input.' },
+  { id:'port_lookup', group:'🌐 Networking', icon:'🔍', title:'Port Lookup Tool', diff:'med',
+    desc:'Build an interactive port lookup tool. Keep asking the user to enter port numbers and display the protocol name. Exit when they type "quit".',
+    hint:'<code>dict.get(key, "default")</code> returns a default if key is missing. Use <code>try/except ValueError</code> for non-numeric input.',
+    starter:'PORTS = {\n    20:"FTP Data", 21:"FTP Control", 22:"SSH", 23:"Telnet",\n    25:"SMTP", 53:"DNS", 67:"DHCP Server", 68:"DHCP Client",\n    80:"HTTP", 110:"POP3", 143:"IMAP", 443:"HTTPS",\n    445:"SMB", 3389:"RDP", 8080:"HTTP Alternate"\n}\n\nprint("Port Lookup Tool — type \'quit\' to exit")\nprint("-" * 40)\n\n# Write the loop here\n',
+    solution:'PORTS = {\n    20:"FTP Data", 21:"FTP Control", 22:"SSH", 23:"Telnet",\n    25:"SMTP", 53:"DNS", 67:"DHCP Server", 68:"DHCP Client",\n    80:"HTTP", 110:"POP3", 143:"IMAP", 443:"HTTPS",\n    445:"SMB", 3389:"RDP", 8080:"HTTP Alternate"\n}\n\nprint("Port Lookup Tool — type \'quit\' to exit")\nprint("-" * 40)\n\nwhile True:\n    user_input = input("Enter a port number: ").strip()\n    if user_input.lower() == "quit":\n        print("Goodbye!")\n        break\n    try:\n        port = int(user_input)\n        service = PORTS.get(port, "Unknown / Not in database")\n        print(f"  Port {port:5} → {service}")\n    except ValueError:\n        print("  Please enter a valid number or \'quit\'")',
+    explain:'<code>dict.get(key, default)</code> is safer than <code>dict[key]</code> — no KeyError on missing keys. <code>try/except ValueError</code> handles non-numeric input gracefully.' },
 
   { id:'log_parser', group:'🌐 Networking', icon:'📄', title:'Log File Parser', diff:'hard',
-    desc:'Parse a simulated server log string. Extract all entries, count how many are INFO vs ERROR, find the most recent ERROR, and print a summary report.',
-    hint:'Use <code>str.split("\\n")</code> to split into lines. Use <code>if "ERROR" in line:</code> to filter. Use <code>str.split()</code> to break each line into parts.',
-    starter:'log_data = """2024-01-15 08:01:12 INFO  Server started on port 80\n2024-01-15 08:01:15 INFO  Database connected\n2024-01-15 08:03:44 ERROR Failed to read config file\n2024-01-15 08:05:01 INFO  User admin logged in\n2024-01-15 08:12:33 ERROR Connection timeout: 192.168.1.55\n2024-01-15 08:15:22 INFO  Backup completed successfully\n2024-01-15 08:22:10 ERROR Disk usage above 90%\n2024-01-15 08:30:00 INFO  Scheduled task ran"""\n\nlines = log_data.strip().split("\\n")\n\n# Count INFO and ERROR entries\n# Find all ERROR lines\n# Print a summary\n',
-    solution:'log_data = """2024-01-15 08:01:12 INFO  Server started on port 80\n2024-01-15 08:01:15 INFO  Database connected\n2024-01-15 08:03:44 ERROR Failed to read config file\n2024-01-15 08:05:01 INFO  User admin logged in\n2024-01-15 08:12:33 ERROR Connection timeout: 192.168.1.55\n2024-01-15 08:15:22 INFO  Backup completed successfully\n2024-01-15 08:22:10 ERROR Disk usage above 90%\n2024-01-15 08:30:00 INFO  Scheduled task ran"""\n\nlines = log_data.strip().split("\\n")\n\ninfo_lines = [l for l in lines if "INFO" in l]\nerror_lines = [l for l in lines if "ERROR" in l]\n\nprint("=" * 45)\nprint("       SERVER LOG SUMMARY REPORT")\nprint("=" * 45)\nprint(f"Total entries : {len(lines)}")\nprint(f"INFO  entries : {len(info_lines)}")\nprint(f"ERROR entries : {len(error_lines)}")\nprint()\nif error_lines:\n    print("ERRORS FOUND:")\n    for err in error_lines:\n        parts = err.split()\n        time = parts[1]\n        msg = " ".join(parts[3:])\n        print(f"  [{time}] {msg}")\n    print(f"\\nMost recent error: {error_lines[-1]}")',
-    explain:'String methods like <code>.split()</code>, <code>.strip()</code>, and <code>in</code> are essential for text parsing. List comprehensions with conditions filter data in one line. Log parsing is a real sysadmin skill used in Linux+, Server+, and CCNA 3.' },
+    desc:'Parse a simulated server log. Count INFO vs ERROR entries, list all errors with timestamps, and print a summary report.',
+    hint:'Split into lines with <code>.split("\\n")</code>. Filter with list comprehensions: <code>[l for l in lines if "ERROR" in l]</code>',
+    starter:'log_data = """2024-01-15 08:01:12 INFO  Server started on port 80\n2024-01-15 08:01:15 INFO  Database connected\n2024-01-15 08:03:44 ERROR Failed to read config file\n2024-01-15 08:05:01 INFO  User admin logged in\n2024-01-15 08:12:33 ERROR Connection timeout: 192.168.1.55\n2024-01-15 08:15:22 INFO  Backup completed\n2024-01-15 08:22:10 ERROR Disk usage above 90%\n2024-01-15 08:30:00 INFO  Scheduled task ran"""\n\nlines = log_data.strip().split("\\n")\n\n# Count INFO and ERROR entries, print summary\n',
+    solution:'log_data = """2024-01-15 08:01:12 INFO  Server started on port 80\n2024-01-15 08:01:15 INFO  Database connected\n2024-01-15 08:03:44 ERROR Failed to read config file\n2024-01-15 08:05:01 INFO  User admin logged in\n2024-01-15 08:12:33 ERROR Connection timeout: 192.168.1.55\n2024-01-15 08:15:22 INFO  Backup completed\n2024-01-15 08:22:10 ERROR Disk usage above 90%\n2024-01-15 08:30:00 INFO  Scheduled task ran"""\n\nlines = log_data.strip().split("\\n")\ninfo_lines  = [l for l in lines if "INFO"  in l]\nerror_lines = [l for l in lines if "ERROR" in l]\n\nprint("=" * 44)\nprint("       SERVER LOG SUMMARY REPORT")\nprint("=" * 44)\nprint(f"Total entries : {len(lines)}")\nprint(f"INFO  entries : {len(info_lines)}")\nprint(f"ERROR entries : {len(error_lines)}")\nif error_lines:\n    print("\\nERRORS FOUND:")\n    for err in error_lines:\n        parts = err.split()\n        print(f"  [{parts[1]}] {\" \".join(parts[3:])}")',
+    explain:'String methods like <code>.split()</code> and the <code>in</code> operator are core tools for log parsing. List comprehensions with conditions filter data in one line. Log parsing is a real skill used in Linux+, Server+, and CCNA 3.' },
 
-  // ── FILE I/O ──
   { id:'fileio', group:'📁 File I/O', icon:'💾', title:'Read & Write Files', diff:'med',
-    desc:'Write a program that: (1) creates a text file with 5 lines of network device info, (2) reads it back, (3) counts the lines, and (4) prints the contents.',
-    hint:'Use <code>with open("filename.txt", "w") as f:</code> to write. Use <code>with open("filename.txt", "r") as f:</code> to read. The <code>with</code> statement auto-closes the file.',
-    starter:'# Step 1: Write device info to a file\ndevices = [\n    "Router1, 192.168.1.1, Cisco 2900",\n    "Switch1, 192.168.1.2, Cisco 2960",\n    "Switch2, 192.168.1.3, Cisco 2960",\n    "Server1, 192.168.1.10, Ubuntu 22.04",\n    "PC1,     192.168.1.20, Windows 11"\n]\n\n# Write to file\n\n# Read from file and display\n',
-    solution:'devices = [\n    "Router1, 192.168.1.1, Cisco 2900",\n    "Switch1, 192.168.1.2, Cisco 2960",\n    "Switch2, 192.168.1.3, Cisco 2960",\n    "Server1, 192.168.1.10, Ubuntu 22.04",\n    "PC1,     192.168.1.20, Windows 11"\n]\n\n# Write to file\nwith open("devices.txt", "w") as f:\n    for device in devices:\n        f.write(device + "\\n")\nprint("File written successfully.")\n\n# Read from file\nwith open("devices.txt", "r") as f:\n    contents = f.readlines()\n\nprint(f"\\nFile contains {len(contents)} lines:")\nprint("-" * 40)\nfor line in contents:\n    print(line.strip())',
-    explain:'The <code>with</code> statement is the recommended way to work with files — it automatically closes the file even if an error occurs. <code>"w"</code> creates/overwrites, <code>"r"</code> reads, <code>"a"</code> appends. <code>.readlines()</code> returns a list where each item is one line.' },
+    desc:'Write 5 network device records to a file, then read it back and print the contents with a line count.',
+    hint:'<code>with open("file.txt", "w") as f:</code> writes. <code>with open("file.txt", "r") as f:</code> reads. Always use <code>with</code>.',
+    starter:'devices = [\n    "Router1,  192.168.1.1,  Cisco 2900",\n    "Switch1,  192.168.1.2,  Cisco 2960",\n    "Switch2,  192.168.1.3,  Cisco 2960",\n    "Server1,  192.168.1.10, Ubuntu 22.04",\n    "PC1,      192.168.1.20, Windows 11"\n]\n\n# Write to file, then read back and display\n',
+    solution:'devices = [\n    "Router1,  192.168.1.1,  Cisco 2900",\n    "Switch1,  192.168.1.2,  Cisco 2960",\n    "Switch2,  192.168.1.3,  Cisco 2960",\n    "Server1,  192.168.1.10, Ubuntu 22.04",\n    "PC1,      192.168.1.20, Windows 11"\n]\n\nwith open("devices.txt", "w") as f:\n    for d in devices:\n        f.write(d + "\\n")\nprint("File written successfully.")\n\nwith open("devices.txt", "r") as f:\n    contents = f.readlines()\n\nprint(f"\\nFile has {len(contents)} lines:")\nprint("-" * 38)\nfor line in contents:\n    print(line.strip())',
+    explain:'The <code>with</code> statement auto-closes files even if an error occurs. Modes: <code>"w"</code> creates/overwrites, <code>"r"</code> reads, <code>"a"</code> appends. <code>.readlines()</code> returns a list of lines.' },
 
-  // ── ERROR HANDLING ──
-  { id:'exceptions', group:'⚠️ Error Handling', icon:'🛡️', title:'Try / Except / Finally', diff:'med',
-    desc:'Write a function <code>safe_divide(a, b)</code> that handles: division by zero, non-numeric input, and any other unexpected error. Use <code>try/except/else/finally</code>.',
-    hint:'Catch specific exceptions: <code>except ZeroDivisionError:</code>, <code>except TypeError:</code>, <code>except Exception as e:</code>. The <code>finally</code> block always runs.',
-    starter:'def safe_divide(a, b):\n    try:\n        # attempt the division\n        pass\n    except ZeroDivisionError:\n        pass\n    except TypeError:\n        pass\n    except Exception as e:\n        pass\n    else:\n        # runs only if no exception\n        pass\n    finally:\n        # always runs\n        pass\n\n# Test all cases\nsafe_divide(10, 2)\nsafe_divide(10, 0)\nsafe_divide("ten", 2)\nsafe_divide(7, 3)',
-    solution:'def safe_divide(a, b):\n    try:\n        result = a / b\n    except ZeroDivisionError:\n        print(f"  ERROR: Cannot divide {a} by zero!")\n    except TypeError:\n        print(f"  ERROR: Both values must be numbers, got {type(a).__name__} and {type(b).__name__}")\n    except Exception as e:\n        print(f"  ERROR: Unexpected error — {e}")\n    else:\n        print(f"  {a} / {b} = {result:.4f}")\n    finally:\n        print(f"  [Division attempt with {a} and {b} complete]")\n        print()\n\nsafe_divide(10, 2)\nsafe_divide(10, 0)\nsafe_divide("ten", 2)\nsafe_divide(7, 3)',
-    explain:'<code>try</code> runs code that might fail. <code>except ExceptionType</code> catches specific errors. <code>else</code> runs only if no exception occurred. <code>finally</code> always runs — useful for cleanup. Always catch specific exceptions before generic ones.' },
+  { id:'exceptions', group:'⚠️ Errors', icon:'🛡️', title:'Try / Except / Finally', diff:'med',
+    desc:'Write <code>safe_divide(a, b)</code> that handles: division by zero, non-numeric input, and any unexpected error using <code>try/except/else/finally</code>.',
+    hint:'Catch specific exceptions first: <code>ZeroDivisionError</code>, <code>TypeError</code>, then <code>Exception as e</code> for anything else.',
+    starter:'def safe_divide(a, b):\n    try:\n        pass  # attempt division\n    except ZeroDivisionError:\n        pass\n    except TypeError:\n        pass\n    except Exception as e:\n        pass\n    else:\n        pass  # runs only if no exception\n    finally:\n        pass  # always runs\n\nsafe_divide(10, 2)\nsafe_divide(10, 0)\nsafe_divide("ten", 2)',
+    solution:'def safe_divide(a, b):\n    try:\n        result = a / b\n    except ZeroDivisionError:\n        print(f"  ERROR: Cannot divide {a} by zero!")\n    except TypeError:\n        print(f"  ERROR: Both must be numbers (got {type(a).__name__} and {type(b).__name__})")\n    except Exception as e:\n        print(f"  ERROR: Unexpected — {e}")\n    else:\n        print(f"  {a} / {b} = {result:.4f}")\n    finally:\n        print(f"  [Attempt with {a} and {b} done]\\n")\n\nsafe_divide(10, 2)\nsafe_divide(10, 0)\nsafe_divide("ten", 2)\nsafe_divide(7, 3)',
+    explain:'<code>try</code> runs risky code. <code>except Type</code> catches specific errors — always go specific-to-general. <code>else</code> runs only if no exception. <code>finally</code> always runs — great for cleanup.' },
 
-  // ── FREE PLAY ──
-  { id:'freeplay', group:'🎮 Free Play', icon:'🎮', title:'Free Play — Blank Canvas', diff:'easy',
-    desc:'No instructions — this is your sandbox! Write any Python code you want. Try things you\'ve learned, experiment, or work on your own projects.',
-    hint:'Some ideas: try printing a pattern with nested loops, write a simple calculator, implement a list of student grades, or recreate a networking concept in Python.',
-    starter:'# 🎮 Free Play — Write anything you want!\n# Python 3.11 is running in your browser via Pyodide\n\n# Some ideas to try:\n# - A simple calculator\n# - FizzBuzz (print 1-30, replace multiples of 3 with Fizz, 5 with Buzz)\n# - A Caesar cipher (shift letters by N positions)\n# - Count vowels in a string\n\nprint("Python is ready — start coding!")\n',
-    solution:'# FizzBuzz — a classic programming exercise\nfor i in range(1, 31):\n    if i % 15 == 0:\n        print("FizzBuzz")\n    elif i % 3 == 0:\n        print("Fizz")\n    elif i % 5 == 0:\n        print("Buzz")\n    else:\n        print(i)',
-    explain:'FizzBuzz tests conditional logic and the modulo operator. Check for 15 first (divisible by both 3 AND 5), then 3, then 5. Order matters here — checking 3 first would print "Fizz" for 15 when you want "FizzBuzz".' },
+  { id:'freeplay', group:'🎮 Free Play', icon:'🎮', title:'Free Play — Sandbox', diff:'easy',
+    desc:'No instructions — write anything you want! Experiment, practice, or build your own project. Python 3.13 is ready.',
+    hint:'Ideas: FizzBuzz, a Caesar cipher, a calculator, a grade averager, or recreate a networking concept in Python.',
+    starter:'# Free Play — write anything!\n# Python 3.13 is running in your browser via Pyodide\n\nprint("Python is ready — start coding!")\n',
+    solution:'# FizzBuzz — a classic!\nfor i in range(1, 31):\n    if i % 15 == 0:\n        print("FizzBuzz")\n    elif i % 3 == 0:\n        print("Fizz")\n    elif i % 5 == 0:\n        print("Buzz")\n    else:\n        print(i)',
+    explain:'FizzBuzz tests conditionals and modulo. Check 15 first (divisible by both 3 and 5), then 3, then 5. Order matters — checking 3 first would print "Fizz" for 15 when you want "FizzBuzz".' },
 ];
 
-// ─── PYODIDE SETUP ────────────────────────────────────────────────────────────
+// ─── STATE ────────────────────────────────────────────────────────────────────
 let pyodide = null;
-let currentExercise = null;
-let inputQueue = [];
-let inputResolve = null;
+let currentEx = null;
 
-async function loadPyodide_() {
+// ─── INIT — wait for DOM then build list and load first exercise ──────────────
+document.addEventListener('DOMContentLoaded', () => {
+    buildExerciseList();
+    loadExercise('hello');
+    updateLineNumbers();
+    initEditor();
+    loadPyodideEngine();
+});
+
+// ─── LOAD PYODIDE ─────────────────────────────────────────────────────────────
+async function loadPyodideEngine() {
     try {
         pyodide = await loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/"
+            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.29.3/full/"
         });
 
-        // Redirect stdout/stderr
+        // Set up output capture
         pyodide.runPython(`
-import sys, io
-class OutputCapture:
-    def __init__(self):
-        self.data = []
-    def write(self, s):
-        self.data.append(s)
-    def flush(self): pass
-    def getvalue(self):
-        return ''.join(self.data)
-    def clear(self):
-        self.data = []
+import sys
 
-_stdout = OutputCapture()
-_stderr = OutputCapture()
-sys.stdout = _stdout
-sys.stderr = _stderr
+class _Capture:
+    def __init__(self): self.buf = []
+    def write(self, s): self.buf.append(str(s))
+    def flush(self): pass
+    def getvalue(self): return ''.join(self.buf)
+    def clear(self): self.buf.clear()
+
+_out = _Capture()
+_err = _Capture()
+sys.stdout = _out
+sys.stderr = _err
 `);
 
-        const version = pyodide.runPython('import sys; sys.version.split()[0]');
-        document.getElementById('pyVersion').textContent = version;
-        document.getElementById('loadingBanner').classList.add('ready');
-        document.getElementById('loadingMsg').textContent = `✅ Python ${version} ready — select an exercise and click Run!`;
-        const runBtn = document.getElementById('runBtn');
-        runBtn.disabled = false;
-        runBtn.textContent = '▶ Run';
+        const ver = pyodide.runPython('import sys; sys.version.split()[0]');
+        document.getElementById('pyVersion').textContent = ver;
+
+        const banner = document.getElementById('loadingBanner');
+        banner.classList.add('ready');
+        document.getElementById('loadingMsg').textContent = `✅ Python ${ver} ready! Select an exercise and click ▶ Run.`;
+
+        const btn = document.getElementById('runBtn');
+        btn.disabled = false;
+        btn.textContent = '▶ Run';
+
     } catch(e) {
-        document.getElementById('loadingMsg').textContent = '❌ Failed to load Python. Check your internet connection and refresh.';
+        const banner = document.getElementById('loadingBanner');
+        banner.classList.add('failed');
+        document.getElementById('loadingMsg').textContent =
+            '❌ Failed to load Python engine. Check your internet connection and refresh the page.';
+        console.error('Pyodide load error:', e);
     }
 }
-loadPyodide_();
 
-// ─── BUILD EXERCISE LIST ──────────────────────────────────────────────────────
+// ─── BUILD SIDEBAR ────────────────────────────────────────────────────────────
 function buildExerciseList() {
     const container = document.getElementById('exerciseList');
+    container.innerHTML = '';
     const groups = {};
     EXERCISES.forEach(ex => {
         if (!groups[ex.group]) groups[ex.group] = [];
         groups[ex.group].push(ex);
     });
-
     for (const [group, exs] of Object.entries(groups)) {
-        const div = document.createElement('div');
-        div.className = 'topic-group';
-        div.innerHTML = `<div class="topic-label">${group}</div>`;
+        const wrap = document.createElement('div');
+        wrap.className = 'topic-group';
+        wrap.innerHTML = `<div class="topic-label">${group}</div>`;
         exs.forEach(ex => {
             const btn = document.createElement('button');
             btn.className = 'exercise-btn';
-            btn.id = `ex-btn-${ex.id}`;
+            btn.id = `exbtn-${ex.id}`;
             btn.innerHTML = `<span class="ex-icon">${ex.icon}</span><span class="ex-label">${ex.title}</span><span class="ex-diff diff-${ex.diff}">${ex.diff}</span>`;
-            btn.onclick = () => loadExercise(ex.id);
-            div.appendChild(btn);
+            btn.addEventListener('click', () => loadExercise(ex.id));
+            wrap.appendChild(btn);
         });
-        container.appendChild(div);
+        container.appendChild(wrap);
     }
 }
-buildExerciseList();
 
 // ─── LOAD EXERCISE ────────────────────────────────────────────────────────────
 function loadExercise(id) {
     const ex = EXERCISES.find(e => e.id === id);
     if (!ex) return;
-    currentExercise = ex;
+    currentEx = ex;
 
-    // Highlight active
     document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`ex-btn-${id}`)?.classList.add('active');
+    const activeBtn = document.getElementById(`exbtn-${id}`);
+    if (activeBtn) activeBtn.classList.add('active');
 
-    // Update info
-    const diffLabels = {easy:'🟢 Easy', med:'🟡 Medium', hard:'🔴 Hard'};
-    document.getElementById('exTitle').innerHTML = `${ex.icon} ${ex.title} <span class="ex-diff diff-${ex.diff}" style="font-size:0.75rem">${diffLabels[ex.diff]}</span>`;
+    const labels = { easy:'🟢 Easy', med:'🟡 Medium', hard:'🔴 Hard' };
+    document.getElementById('exTitle').innerHTML =
+        `${ex.icon} ${ex.title} <span class="ex-diff diff-${ex.diff}" style="font-size:0.72rem;vertical-align:middle">${labels[ex.diff]}</span>`;
     document.getElementById('exDesc').innerHTML = ex.desc;
-    document.getElementById('exHint').textContent = ex.hint;
-    document.getElementById('exHint').classList.remove('visible');
-    document.getElementById('hintBtn').style.display = 'inline-block';
-    document.getElementById('hintBtn').textContent = '💡 Show Hint';
 
-    // Load starter code
+    const hintEl = document.getElementById('exHint');
+    hintEl.textContent = ex.hint;
+    hintEl.classList.remove('visible');
+    const hintBtn = document.getElementById('hintBtn');
+    hintBtn.style.display = 'inline-block';
+    hintBtn.textContent = '💡 Show Hint';
+
     document.getElementById('codeEditor').value = ex.starter;
     updateLineNumbers();
     clearOutput();
 
-    // Solution panel
-    document.getElementById('solutionPanel').style.display = 'block';
-    document.getElementById('solutionCode').textContent = ex.solution;
-    document.getElementById('solutionExplain').innerHTML = ex.explain;
-    document.getElementById('solutionBody').classList.remove('visible');
-    document.getElementById('showSolBtn').textContent = 'Show Solution';
+    document.getElementById('solPanel').style.display = 'block';
+    document.getElementById('solCode').textContent = ex.solution;
+    document.getElementById('solExplain').innerHTML = ex.explain;
+    document.getElementById('solBody').classList.remove('visible');
+    document.getElementById('solBtn').textContent = 'Show Solution';
 }
-
-// Load first exercise by default
-loadExercise('hello');
 
 // ─── RUN CODE ─────────────────────────────────────────────────────────────────
 async function runCode() {
-    if (!pyodide) return;
-    const code = document.getElementById('codeEditor').value;
-    if (!code.trim()) return;
+    if (!pyodide) {
+        alert('Python engine is still loading. Please wait a moment and try again.');
+        return;
+    }
+    const code = document.getElementById('codeEditor').value.trim();
+    if (!code) return;
 
-    const runBtn = document.getElementById('runBtn');
-    const outputBox = document.getElementById('outputBox');
-    const statusEl = document.getElementById('outputStatus');
-    const execTimeEl = document.getElementById('execTime');
+    const runBtn   = document.getElementById('runBtn');
+    const outBox   = document.getElementById('outputBox');
+    const statusEl = document.getElementById('outStatus');
+    const timeEl   = document.getElementById('execTime');
 
     runBtn.disabled = true;
     runBtn.textContent = '⏳ Running...';
-    statusEl.className = 'output-status status-running';
-    statusEl.textContent = 'Running';
-    outputBox.className = '';
-    outputBox.textContent = '';
-    execTimeEl.textContent = '';
+    setStatus('running', 'Running...');
+    outBox.className = '';
+    outBox.textContent = '';
+    timeEl.textContent = '';
 
-    const start = performance.now();
+    const t0 = performance.now();
 
     try {
-        // Clear captures
-        pyodide.runPython('_stdout.clear(); _stderr.clear()');
+        pyodide.runPython('_out.clear(); _err.clear()');
 
-        // Handle input() by intercepting it
-        const inputCalls = (code.match(/input\s*\(/g) || []).length;
-        if (inputCalls > 0) {
-            // Collect inputs first
-            const inputs = await collectInputs(code, inputCalls);
-            if (inputs === null) {
-                runBtn.disabled = false;
-                runBtn.textContent = '▶ Run';
-                statusEl.className = 'output-status status-idle';
-                statusEl.textContent = 'Cancelled';
-                return;
+        // Handle input() calls — collect via window.prompt before running
+        const inputMatches = code.match(/\binput\s*\(/g) || [];
+        if (inputMatches.length > 0) {
+            const prompts = [];
+            const re = /\binput\s*\(\s*(?:f?["'`]([^"'`]*?)["'`])?\s*\)/g;
+            let m;
+            while ((m = re.exec(code)) !== null) {
+                prompts.push(m[1] ? m[1].replace(/\{[^}]*\}/g,'...') : `Input ${prompts.length + 1}:`);
             }
-            // Patch input() to use our collected values
-            const inputList = JSON.stringify(inputs);
+            const vals = [];
+            for (let i = 0; i < inputMatches.length; i++) {
+                const v = window.prompt(`🐍 Python input() needed:\n\n${prompts[i] || 'Enter value:'}`);
+                if (v === null) {
+                    runBtn.disabled = false; runBtn.textContent = '▶ Run';
+                    setStatus('idle', 'Cancelled');
+                    return;
+                }
+                vals.push(v);
+            }
+            // Inject custom input() that uses our collected values
+            const safeVals = JSON.stringify(vals);
             pyodide.runPython(`
-_input_values = ${inputList}
-_input_idx = [0]
-def input(prompt=''):
-    sys.stdout.write(prompt)
-    if _input_idx[0] < len(_input_values):
-        val = _input_values[_input_idx[0]]
-        _input_idx[0] += 1
-        sys.stdout.write(val + '\\n')
-        return val
-    return ''
-import builtins
-builtins.input = input
+import builtins as _b
+_iv = ${safeVals}
+_ii = [0]
+def _input(prompt=''):
+    import sys
+    sys.stdout.write(str(prompt))
+    v = _iv[_ii[0]] if _ii[0] < len(_iv) else ''
+    _ii[0] += 1
+    sys.stdout.write(v + '\\n')
+    return v
+_b.input = _input
 `);
         }
 
         await pyodide.runPythonAsync(code);
 
-        const stdout = pyodide.runPython('_stdout.getvalue()');
-        const stderr = pyodide.runPython('_stderr.getvalue()');
-        const elapsed = ((performance.now() - start) / 1000).toFixed(3);
+        const stdout = pyodide.runPython('_out.getvalue()');
+        const stderr = pyodide.runPython('_err.getvalue()');
+        const elapsed = ((performance.now() - t0)/1000).toFixed(3);
 
         if (stderr && !stdout) {
-            outputBox.className = 'has-error';
-            outputBox.textContent = stderr;
-            statusEl.className = 'output-status status-err';
-            statusEl.textContent = 'Error';
+            outBox.className = 'has-error';
+            outBox.textContent = stderr;
+            setStatus('err', 'Error');
         } else {
-            outputBox.className = 'has-output';
-            outputBox.textContent = stdout || '(No output)';
-            if (stderr) outputBox.textContent += '\n\n⚠️ Warnings:\n' + stderr;
-            statusEl.className = 'output-status status-ok';
-            statusEl.textContent = 'Success';
+            outBox.className = 'has-output';
+            outBox.textContent = stdout || '(no output)';
+            if (stderr) outBox.textContent += '\n\n⚠️ stderr:\n' + stderr;
+            setStatus('ok', 'Success ✓');
         }
-        execTimeEl.textContent = `Executed in ${elapsed}s`;
+        timeEl.textContent = `Ran in ${elapsed}s`;
 
     } catch(err) {
-        const elapsed = ((performance.now() - start) / 1000).toFixed(3);
-        outputBox.className = 'has-error';
-        // Clean up the error message
-        let msg = err.message || String(err);
-        msg = msg.replace(/File "<exec>", /g, '').replace(/\n\s+\^+/g, '');
-        outputBox.textContent = '❌ ' + msg;
-        statusEl.className = 'output-status status-err';
-        statusEl.textContent = 'Error';
-        execTimeEl.textContent = `Failed after ${elapsed}s`;
+        const elapsed = ((performance.now() - t0)/1000).toFixed(3);
+        outBox.className = 'has-error';
+        let msg = (err.message || String(err))
+            .replace(/File "<exec>",?\s*/g, '')
+            .replace(/\n\s+\^+/g, '');
+        outBox.textContent = '❌ ' + msg;
+        setStatus('err', 'Error');
+        timeEl.textContent = `Failed after ${elapsed}s`;
     }
 
     runBtn.disabled = false;
     runBtn.textContent = '▶ Run';
 }
 
-// Collect input() values via prompts
-async function collectInputs(code, count) {
-    // Extract prompt strings from input() calls
-    const prompts = [];
-    const regex = /input\s*\(\s*(?:["'`]([^"'`]*?)["'`])?\s*\)/g;
-    let match;
-    while ((match = regex.exec(code)) !== null) {
-        prompts.push(match[1] || 'Enter value:');
-    }
-
-    const values = [];
-    for (let i = 0; i < count; i++) {
-        const prompt = prompts[i] || `Input ${i+1}:`;
-        const val = window.prompt(`🐍 Python needs input:\n\n${prompt}`);
-        if (val === null) return null; // user cancelled
-        values.push(val);
-    }
-    return values;
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function setStatus(type, text) {
+    const el = document.getElementById('outStatus');
+    el.className = 'out-status';
+    el.classList.add({ running:'s-running', ok:'s-ok', err:'s-err', idle:'s-idle' }[type] || 's-idle');
+    el.textContent = text;
 }
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 function clearOutput() {
     const ob = document.getElementById('outputBox');
     ob.className = '';
-    ob.innerHTML = '<span class="output-placeholder"># Output will appear here when you run your code...</span>';
-    document.getElementById('outputStatus').className = 'output-status status-idle';
-    document.getElementById('outputStatus').textContent = 'Idle';
+    ob.innerHTML = '<span style="color:#334155;font-style:italic"># Output will appear here when you run your code...</span>';
+    setStatus('idle', 'Idle');
     document.getElementById('execTime').textContent = '';
 }
 
 function resetCode() {
-    if (currentExercise) {
-        document.getElementById('codeEditor').value = currentExercise.starter;
-        updateLineNumbers();
-        clearOutput();
-    }
+    if (!currentEx) return;
+    document.getElementById('codeEditor').value = currentEx.starter;
+    updateLineNumbers();
+    clearOutput();
 }
 
 function toggleHint() {
-    const hint = document.getElementById('exHint');
-    const btn = document.getElementById('hintBtn');
-    hint.classList.toggle('visible');
-    btn.textContent = hint.classList.contains('visible') ? '🙈 Hide Hint' : '💡 Show Hint';
+    const h = document.getElementById('exHint');
+    const b = document.getElementById('hintBtn');
+    h.classList.toggle('visible');
+    b.textContent = h.classList.contains('visible') ? '🙈 Hide Hint' : '💡 Show Hint';
 }
 
 function toggleSolution() {
-    const body = document.getElementById('solutionBody');
-    const btn = document.getElementById('showSolBtn');
-    body.classList.toggle('visible');
-    btn.textContent = body.classList.contains('visible') ? 'Hide Solution' : 'Show Solution';
+    const b = document.getElementById('solBody');
+    const btn = document.getElementById('solBtn');
+    b.classList.toggle('visible');
+    btn.textContent = b.classList.contains('visible') ? 'Hide Solution' : 'Show Solution';
 }
 
 function updateLineNumbers() {
     const ta = document.getElementById('codeEditor');
+    if (!ta) return;
     const lines = ta.value.split('\n').length;
-    const container = document.getElementById('lineNumbers');
-    container.innerHTML = Array.from({length: lines}, (_, i) =>
-        `<span class="line-num">${i+1}</span>`).join('');
-    ta.style.minHeight = Math.max(280, lines * 24 + 40) + 'px';
+    const container = document.getElementById('lineNums');
+    if (!container) return;
+    container.innerHTML = Array.from({length: lines}, (_,i) =>
+        `<span class="lnum">${i+1}</span>`).join('');
 }
-updateLineNumbers();
 
-// Tab key support in editor
-document.getElementById('codeEditor').addEventListener('keydown', e => {
-    if (e.key === 'Tab') {
-        e.preventDefault();
-        const ta = e.target;
-        const start = ta.selectionStart;
-        const end = ta.selectionEnd;
-        ta.value = ta.value.substring(0, start) + '    ' + ta.value.substring(end);
-        ta.selectionStart = ta.selectionEnd = start + 4;
-        updateLineNumbers();
-    }
-    if (e.key === 'Enter') { setTimeout(updateLineNumbers, 0); }
-    // Ctrl+Enter or Cmd+Enter to run
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        runCode();
-    }
-});
+function initEditor() {
+    const ta = document.getElementById('codeEditor');
+    if (!ta) return;
+    ta.addEventListener('keydown', e => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const s = ta.selectionStart, end = ta.selectionEnd;
+            ta.value = ta.value.substring(0,s) + '    ' + ta.value.substring(end);
+            ta.selectionStart = ta.selectionEnd = s + 4;
+            updateLineNumbers();
+        }
+        if (e.key === 'Enter') setTimeout(updateLineNumbers, 0);
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault(); runCode();
+        }
+    });
+    ta.addEventListener('input', updateLineNumbers);
+}
 </script>
 </body>
 </html>
