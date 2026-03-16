@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Labs · TSTC CNS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; min-height: 100vh;
+        }
+        header {
+            background: #0f2b3d; color: white; padding: 2rem 2rem 1.5rem;
+            text-align: center; border-bottom: 6px solid #b91c1c;
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 40px,
+                rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px);
+        }
+        header .logo { font-size: 2.5rem; margin-bottom: 0.4rem; position: relative; }
+        header h1 { font-size: 2.2rem; font-weight: 700; position: relative; }
+        header p { color: #94a3b8; margin-top: 0.3rem; position: relative; }
+        .back-link {
+            display: inline-block; margin-top: 0.75rem; color: #facc15;
+            text-decoration: none; font-size: 0.9rem; font-weight: 600; position: relative;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* COURSE SELECTOR */
+        main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+        .course-selector {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem; margin-bottom: 2.5rem;
+        }
+        .course-btn {
+            padding: 0.75rem 0.5rem; border-radius: 14px; border: 2px solid #e2e8f0;
+            background: white; cursor: pointer; text-align: center; font-family: inherit;
+            transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,20,30,0.06);
+        }
+        .course-btn:hover { border-color: #b91c1c; transform: translateY(-2px); }
+        .course-btn.active { border-color: #b91c1c; background: #fff5f5; }
+        .course-btn .ci { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+        .course-btn .cn { font-size: 0.8rem; font-weight: 700; color: #0f2b3d; display: block; }
+        .course-btn .cc { font-size: 0.7rem; color: #64748b; display: block; margin-top: 0.1rem; }
+        .course-btn .cp { margin-top: 0.5rem; height: 4px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+        .course-btn .cpf { height: 100%; background: #b91c1c; border-radius: 999px; transition: width 0.3s; }
+
+        /* COURSE PANEL */
+        .course-panel { display: none; }
+        .course-panel.active { display: block; }
+
+        /* PANEL HEADER */
+        .panel-header {
+            background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.08);
+            padding: 1.5rem 2rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+        }
+        .panel-title { font-size: 1.5rem; font-weight: 700; color: #0f2b3d; flex: 1; }
+        .panel-stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .pstat {
+            text-align: center; background: #f8fafc; border-radius: 10px;
+            padding: 0.5rem 1rem; min-width: 80px;
+        }
+        .pstat-num { font-size: 1.3rem; font-weight: 700; color: #b91c1c; }
+        .pstat-label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; }
+
+        /* FILTER BAR */
+        .filter-bar {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+        }
+        .filter-btn {
+            padding: 0.4rem 0.9rem; border-radius: 999px; border: 2px solid #e2e8f0;
+            background: white; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+            font-weight: 600; color: #64748b; transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: #b91c1c; color: #b91c1c; }
+        .filter-btn.active { background: #b91c1c; border-color: #b91c1c; color: white; }
+
+        /* LAB CARDS */
+        .labs-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.25rem;
+        }
+        .lab-card {
+            background: white; border-radius: 18px;
+            box-shadow: 0 3px 14px rgba(0,20,30,0.08);
+            overflow: hidden; display: flex; flex-direction: column;
+            border: 2px solid transparent; transition: all 0.2s;
+        }
+        .lab-card:hover { border-color: #b91c1c; transform: translateY(-2px); }
+        .lab-card.completed { border-color: #16a34a; }
+
+        .lab-card-header {
+            padding: 1.1rem 1.25rem 0.75rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        .lab-top { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.6rem; }
+        .lab-num {
+            background: #0f2b3d; color: #facc15; font-size: 0.75rem; font-weight: 700;
+            padding: 0.2rem 0.5rem; border-radius: 6px; flex-shrink: 0; margin-top: 2px;
+        }
+        .lab-title { font-size: 1rem; font-weight: 700; color: #0f2b3d; line-height: 1.3; flex: 1; }
+        .lab-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .badge {
+            font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.5rem;
+            border-radius: 999px; text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .diff-beginner { background: #dcfce7; color: #15803d; }
+        .diff-intermediate { background: #fef9c3; color: #a16207; }
+        .diff-advanced { background: #fee2e2; color: #b91c1c; }
+        .tool-pt { background: #dbeafe; color: #1d4ed8; }
+        .tool-vm { background: #ede9fe; color: #6d28d9; }
+        .tool-win { background: #e0f2fe; color: #0369a1; }
+        .tool-aws { background: #fff7ed; color: #c2410c; }
+        .tool-py { background: #fef9c3; color: #854d0e; }
+        .tool-linux { background: #dcfce7; color: #166534; }
+        .tool-proxmox { background: #fdf4ff; color: #7e22ce; }
+        .time-badge { background: #f1f5f9; color: #475569; }
+
+        .lab-card-body { padding: 0.75rem 1.25rem; flex: 1; }
+        .lab-desc { font-size: 0.88rem; color: #475569; line-height: 1.5; margin-bottom: 0.75rem; }
+
+        .lab-objectives { list-style: none; margin: 0; }
+        .lab-objectives li {
+            font-size: 0.82rem; color: #64748b; padding: 0.2rem 0;
+            border-bottom: 1px dashed #f1f5f9; display: flex; align-items: flex-start; gap: 0.4rem;
+        }
+        .lab-objectives li:last-child { border-bottom: none; }
+        .lab-objectives li::before { content: "▸"; color: #b91c1c; font-weight: bold; flex-shrink: 0; }
+
+        /* LAB STEPS (expandable) */
+        .lab-steps-toggle {
+            width: 100%; padding: 0.6rem 1.25rem; background: #f8fafc; border: none;
+            border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+            text-align: left; font-family: inherit; font-size: 0.83rem; font-weight: 600;
+            color: #1e3a5f; cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center;
+        }
+        .lab-steps-toggle:hover { background: #f1f5f9; }
+        .steps-arrow { transition: transform 0.2s; font-size: 0.75rem; }
+        .steps-arrow.open { transform: rotate(90deg); }
+
+        .lab-steps-body {
+            display: none; padding: 0.75rem 1.25rem;
+            background: #0f172a; border-bottom: 1px solid #1e293b;
+        }
+        .step {
+            display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start;
+        }
+        .step:last-child { margin-bottom: 0; }
+        .step-num {
+            background: #b91c1c; color: white; font-size: 0.72rem; font-weight: 700;
+            width: 20px; height: 20px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+        }
+        .step-text { font-size: 0.83rem; color: #e2e8f0; line-height: 1.5; flex: 1; }
+        .step-text code {
+            background: #1e293b; color: #facc15; padding: 0.1rem 0.4rem;
+            border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+        }
+
+        .lab-card-footer { padding: 0.75rem 1.25rem; }
+        .btn-complete {
+            width: 100%; padding: 0.65rem; border-radius: 10px; border: none;
+            font-family: inherit; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            background: #0f2b3d; color: white;
+        }
+        .btn-complete:hover { background: #1e3a5f; }
+        .btn-complete.done { background: #16a34a; color: white; }
+        .btn-complete.done:hover { background: #15803d; }
+
+        .no-labs { text-align: center; padding: 3rem; color: #94a3b8; display: none; }
+
+        @media (max-width: 700px) {
+            .labs-grid { grid-template-columns: 1fr; }
+            .course-selector { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🧪</div>
+    <h1>Practice Labs</h1>
+    <p>Hands-On Labs · Packet Tracer · Virtual Machines · AWS · Python · TSTC CNS</p>
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+</header>
+
+<main>
+    <div class="course-selector" id="courseSelector"></div>
+    <div id="coursePanels"></div>
+</main>
+
+<script>
+const courses = [
+  {
+    id: "aplus", icon: "💻", name: "A+", code: "220-1101/1102",
+    labs: [
+      { title: "Identify Internal PC Components", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Open a PC case (or use a virtual teardown guide) and identify every major component.",
+        objectives: ["Identify CPU, RAM, GPU, PSU, motherboard, and storage devices", "Determine RAM type and generation from the label", "Document each component's make, model, and specs"],
+        steps: [
+          { text: "Open <code>msinfo32</code> on your Windows PC and document: CPU model, installed RAM, and Windows version." },
+          { text: "Open Device Manager (<code>devmgmt.msc</code>) and expand each category. Screenshot or write down what you find." },
+          { text: "Open Task Manager → Performance tab. Record baseline CPU%, RAM used, and disk usage." },
+          { text: "Use CPU-Z (free download) to identify your exact CPU socket, cache levels, and RAM speed/timings." },
+          { text: "Open Disk Management (<code>diskmgmt.msc</code>). Identify your disk type (HDD vs SSD), partition scheme (MBR vs GPT), and free space." },
+          { text: "Document your findings in a table: Component | Make/Model | Spec | Notes." }
+        ]
+      },
+      { title: "Windows System Configuration & Startup", diff: "beginner", tool: "win", time: "20 min",
+        desc: "Use built-in Windows tools to control startup programs and understand the boot process.",
+        objectives: ["Disable unnecessary startup programs", "Understand msconfig boot options", "Use Event Viewer to view startup events"],
+        steps: [
+          { text: "Open <code>msconfig</code>. Explore each tab — General, Boot, Services, Startup, Tools. Note what each does." },
+          { text: "In Task Manager → Startup tab, identify and disable at least one non-essential startup program." },
+          { text: "Open <code>eventvwr.msc</code>. Navigate to Windows Logs → System. Filter by Event Level = Warning or Error." },
+          { text: "Find Event ID 6005 (Event Log started = boot) and calculate how long your last boot took by looking at timestamps." },
+          { text: "Open <code>services.msc</code>. Find Windows Update and check its startup type. Practice stopping and starting it." }
+        ]
+      },
+      { title: "File System & NTFS Permissions", diff: "beginner", tool: "win", time: "25 min",
+        desc: "Create users and apply NTFS permissions to folders, then verify access is enforced.",
+        objectives: ["Create local user accounts", "Apply NTFS permissions to folders", "Verify permission enforcement by switching users"],
+        steps: [
+          { text: "Open <code>lusrmgr.msc</code>. Create two new local users: <code>TestUser1</code> and <code>TestUser2</code> with a simple password." },
+          { text: "Create a folder at <code>C:\\LabFiles</code>. Right-click → Properties → Security tab." },
+          { text: "Add TestUser1 with Read permission only. Add TestUser2 with Full Control." },
+          { text: "Create a test file inside <code>C:\\LabFiles</code>." },
+          { text: "Switch to TestUser1 account. Try to delete the file — it should be denied. Try to read it — should succeed." },
+          { text: "Switch to TestUser2. Delete and recreate the file — should succeed." },
+          { text: "Document the difference between Read, Modify, and Full Control permissions." }
+        ]
+      },
+      { title: "Windows Network Troubleshooting", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Run the full network connectivity test sequence and practice interpreting results.",
+        objectives: ["Run the 6-step connectivity test", "Flush and verify DNS", "Interpret ipconfig and netstat output"],
+        steps: [
+          { text: "Open Command Prompt as Administrator. Run <code>ping 127.0.0.1</code> — document the result." },
+          { text: "Run <code>ipconfig /all</code>. Screenshot and identify: IP, subnet, gateway, DNS server, MAC address, lease info." },
+          { text: "Run <code>ping [your default gateway]</code>. If it fails, what does that tell you?" },
+          { text: "Run <code>ping 8.8.8.8</code> then <code>ping google.com</code>. What's the difference in what each tests?" },
+          { text: "Run <code>tracert google.com</code>. How many hops? Where does latency spike?" },
+          { text: "Run <code>ipconfig /flushdns</code> then <code>nslookup google.com</code>. What IP does it return?" },
+          { text: "Run <code>netstat -an</code>. Identify: established connections, listening ports, and foreign addresses." }
+        ]
+      },
+      { title: "Malware Scanning & Removal Lab", diff: "intermediate", tool: "win", time: "45 min",
+        desc: "Practice the full malware removal process using Windows Defender and Malwarebytes.",
+        objectives: ["Run a full Windows Defender scan", "Use Malwarebytes for secondary scan", "Practice the 9-step removal process"],
+        steps: [
+          { text: "Download and install Malwarebytes Free from malwarebytes.com." },
+          { text: "Run a full Windows Defender scan: Settings → Windows Security → Virus & threat protection → Scan options → Full scan." },
+          { text: "While that runs, open Task Manager and identify any processes with unknown names. Research any suspicious ones." },
+          { text: "After Defender completes, run Malwarebytes full scan." },
+          { text: "Open <code>msconfig</code> → Services tab → check 'Hide all Microsoft services'. Review what third-party services are running." },
+          { text: "Open Event Viewer → Windows Logs → Security. Look for unusual logon events (Event ID 4624/4625)." },
+          { text: "Document your findings: What was found? What was cleaned? What would you do differently on an infected machine?" }
+        ]
+      },
+      { title: "System Backup & Restore Point", diff: "beginner", tool: "win", time: "20 min",
+        desc: "Create a Windows restore point and practice the backup and recovery workflow.",
+        objectives: ["Create a system restore point", "Configure File History backup", "Understand recovery options"],
+        steps: [
+          { text: "Search 'Create a restore point' in Windows search. Open System Properties → System Protection tab." },
+          { text: "Click 'Create' and name the restore point <code>Lab-Baseline</code>." },
+          { text: "Make a visible change to your system (change wallpaper, create a desktop file)." },
+          { text: "Navigate to: Settings → System → Recovery → Advanced startup. Explore (but don't click) the recovery options available." },
+          { text: "Open Control Panel → File History. Configure it to back up to a USB drive or network location if available." },
+          { text: "Document: What does System Restore protect? What doesn't it protect? When would you use it?" }
+        ]
+      },
+      { title: "Windows Command Line Essentials", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Build fluency with essential Windows CMD commands used in IT support.",
+        objectives: ["Navigate filesystem via CMD", "Run system repair commands", "Manage users from command line"],
+        steps: [
+          { text: "Open CMD as Administrator. Practice navigation: <code>cd C:\\Windows\\System32</code>, <code>dir /w</code>, <code>cd ..</code>" },
+          { text: "Run <code>systeminfo</code>. Identify OS version, install date, hotfixes installed, and memory." },
+          { text: "Run <code>sfc /scannow</code>. Document the result — did it find any corrupt files?" },
+          { text: "Run <code>net user</code> to list all accounts. Run <code>net user [username] /active:no</code> to disable TestUser1." },
+          { text: "Run <code>gpresult /r</code>. What Group Policies are applied to your machine?" },
+          { text: "Create a batch file (.bat) that runs ipconfig /all, writes it to a file, and opens it in notepad automatically." }
+        ]
+      },
+      { title: "Printer Installation & Troubleshooting", diff: "beginner", tool: "win", time: "20 min",
+        desc: "Install a virtual or network printer and troubleshoot common print issues.",
+        objectives: ["Add a network printer via IP", "Clear print queue from CMD", "Understand print spooler service"],
+        steps: [
+          { text: "Go to Settings → Devices → Printers & scanners → Add a printer or scanner." },
+          { text: "If no network printer is available, add 'Microsoft Print to PDF' and configure its properties." },
+          { text: "Open <code>services.msc</code> and find the Print Spooler service. Stop it, then start it again." },
+          { text: "Open CMD as admin and run: <code>net stop spooler</code>, then <code>del /Q /F /S %systemroot%\\System32\\spool\\PRINTERS\\*.*</code>, then <code>net start spooler</code>. This clears a stuck print queue." },
+          { text: "Document: What are the most common printer issues and their fixes?" }
+        ]
+      },
+      { title: "Hardware Diagnostics with Free Tools", diff: "intermediate", tool: "win", time: "45 min",
+        desc: "Use free diagnostic tools to assess system health and performance baselines.",
+        objectives: ["Run memory diagnostics", "Benchmark disk and CPU", "Create a system health report"],
+        steps: [
+          { text: "Run Windows Memory Diagnostic: search <code>mdsched</code> → restart and run. Review results after reboot in Event Viewer." },
+          { text: "Download CrystalDiskInfo (free). Run it and document your drive health status and temperature." },
+          { text: "Open Performance Monitor (<code>perfmon</code>). Create a new Data Collector Set to record CPU and RAM for 5 minutes." },
+          { text: "Run <code>winsat formal</code> in CMD as admin to run Windows System Assessment." },
+          { text: "Download and run Speccy (free). Export a full system report to a text file." },
+          { text: "Based on your results, identify any components that appear to be underperforming or showing warnings." }
+        ]
+      },
+      { title: "Remote Desktop Configuration Lab", diff: "intermediate", tool: "win", time: "30 min",
+        desc: "Configure and connect to Remote Desktop between two machines or VMs.",
+        objectives: ["Enable and secure RDP", "Connect via Remote Desktop client", "Configure RDP firewall rules"],
+        steps: [
+          { text: "On the host machine: Settings → System → Remote Desktop → Enable. Note the PC name shown." },
+          { text: "Run <code>SystemPropertiesRemote</code> in Run dialog. Verify 'Allow connections only from computers running Remote Desktop with NLA' is checked." },
+          { text: "Open Windows Firewall → Allow an app → ensure Remote Desktop is allowed on Private networks only." },
+          { text: "From another machine (or VM), open Remote Desktop Connection (<code>mstsc</code>) and connect using the host IP or name." },
+          { text: "Test connecting as a standard user — what happens? Test as an admin. What is the difference?" },
+          { text: "After connecting, run <code>query session</code> on the host. What sessions do you see?" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "netplus", icon: "🌐", name: "Network+", code: "N10-009",
+    labs: [
+      { title: "Build a Home Network Diagram", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Document your own home or lab network — devices, IPs, and topology.",
+        objectives: ["Identify all devices on your network", "Document IP addresses and MAC addresses", "Draw a physical and logical topology"],
+        steps: [
+          { text: "On your Windows machine, run <code>arp -a</code> to see all devices your computer knows about on the network." },
+          { text: "Run <code>ipconfig /all</code> and document: your IP, subnet, gateway, DNS, DHCP server, and MAC address." },
+          { text: "Log into your home router (usually 192.168.1.1 or 192.168.0.1). Find the DHCP client list — document all connected devices." },
+          { text: "Download and run Angry IP Scanner. Scan your subnet (e.g., 192.168.1.0/24). Document all live hosts." },
+          { text: "Draw a topology diagram (on paper or in draw.io — free online). Show: ISP → Modem → Router → Switch → Devices." },
+          { text: "Label each device with hostname, IP, and MAC. Identify which are wired vs wireless." }
+        ]
+      },
+      { title: "Subnetting Practice Lab", diff: "beginner", tool: "win", time: "45 min",
+        desc: "Practice subnetting a network and verify your answers with actual IP configuration.",
+        objectives: ["Subnet a /24 into 4 equal subnets", "Calculate network, broadcast, and host ranges", "Assign IPs from correct subnet"],
+        steps: [
+          { text: "On paper (no calculator): Subnet 192.168.10.0/24 into 4 equal subnets. List: network address, first host, last host, broadcast for each." },
+          { text: "Verify your answer: /26 mask = 255.255.255.192. Block size = 64. Subnets start at .0, .64, .128, .192." },
+          { text: "Now subnet 10.0.0.0/8 into subnets that support at least 500 hosts each. What prefix length do you need?" },
+          { text: "Open a VM or your main machine. Manually set a static IP from Subnet 2 of your first exercise. Verify with <code>ipconfig /all</code>." },
+          { text: "Ping the network gateway. Does it work? Why or why not?" },
+          { text: "Go to subnettingpractice.com and complete 20 timed subnetting problems. Record your score." }
+        ]
+      },
+      { title: "Wireshark Packet Capture Lab", diff: "intermediate", tool: "win", time: "45 min",
+        desc: "Capture real network traffic and analyze what protocols are being used.",
+        objectives: ["Capture live traffic on a network interface", "Identify DNS, HTTP, TCP, and ARP packets", "Apply display filters in Wireshark"],
+        steps: [
+          { text: "Download and install Wireshark from wireshark.org. Run it as Administrator." },
+          { text: "Select your active network interface and start a capture." },
+          { text: "Open a browser and navigate to http://neverssl.com (intentional HTTP site). Stop the capture after 30 seconds." },
+          { text: "In the filter bar, type <code>dns</code> and press Enter. Find the DNS query for the site you visited. What IP was returned?" },
+          { text: "Filter for <code>http</code>. Find the GET request. What headers do you see? Can you read the data in plaintext?" },
+          { text: "Filter for <code>arp</code>. Identify who is asking and who is responding." },
+          { text: "Filter for <code>tcp.flags.syn == 1</code>. Observe the three-way handshake. Document SYN → SYN-ACK → ACK." }
+        ]
+      },
+      { title: "DNS Configuration & Testing", diff: "intermediate", tool: "win", time: "30 min",
+        desc: "Manually configure DNS settings and test resolution with multiple query tools.",
+        objectives: ["Change DNS server settings manually", "Use nslookup to query different record types", "Test DNS resolution speed differences"],
+        steps: [
+          { text: "Open Network Settings → Change adapter options → Right-click active adapter → Properties → IPv4 → Properties." },
+          { text: "Set DNS to 8.8.8.8 (Primary) and 1.1.1.1 (Secondary). Click OK." },
+          { text: "Run <code>ipconfig /flushdns</code> then <code>nslookup google.com</code>. Note which server responded." },
+          { text: "Run <code>nslookup -type=MX tstc.edu</code>. What mail server handles TSTC email?" },
+          { text: "Run <code>nslookup -type=NS google.com</code>. List Google's nameservers." },
+          { text: "Use <code>Resolve-DnsName google.com -Type A</code> in PowerShell. Compare output to nslookup." },
+          { text: "Change DNS to 9.9.9.9 (Quad9). Test again. Compare resolution time using <code>Measure-Command { Resolve-DnsName google.com }</code> in PowerShell." }
+        ]
+      },
+      { title: "Network Performance Baseline", diff: "intermediate", tool: "win", time: "40 min",
+        desc: "Measure your actual network performance and create a documented baseline.",
+        objectives: ["Test upload and download speeds", "Measure latency and packet loss", "Document network performance baseline"],
+        steps: [
+          { text: "Run <code>ping -n 100 8.8.8.8</code>. Document average, min, max latency, and packet loss %." },
+          { text: "Run <code>pathping google.com</code>. This takes ~5 minutes. Document every hop's latency and loss." },
+          { text: "Go to speedtest.net and run 3 tests at different times. Record download, upload, and ping for each." },
+          { text: "Run <code>netstat -e</code> in CMD. Document the error and discard counts. High numbers = NIC or cable issues." },
+          { text: "Open Resource Monitor → Network tab. Identify which processes are using the most bandwidth right now." },
+          { text: "Create a simple baseline document: Date, Time, Download, Upload, Latency, Packet Loss, Active Connections." }
+        ]
+      },
+      { title: "Firewall Rules Lab", diff: "intermediate", tool: "win", time: "35 min",
+        desc: "Create, test, and remove Windows Firewall rules to understand how host-based firewalls work.",
+        objectives: ["Create inbound and outbound firewall rules", "Test rule enforcement with ping", "Understand stateful firewall behavior"],
+        steps: [
+          { text: "Open Windows Defender Firewall with Advanced Security (<code>wf.msc</code>)." },
+          { text: "Create an Inbound rule: block ICMP (ping) requests. Test by having another device ping your IP — it should fail." },
+          { text: "Notice your machine can still ping out — that's stateful: outbound traffic and its return is tracked." },
+          { text: "Create an Outbound rule blocking TCP port 80. Open a browser — HTTP sites should fail, HTTPS should work." },
+          { text: "Verify with <code>netstat -an</code> — you should see no established connections on port 80." },
+          { text: "Delete both rules you created. Verify normal operation is restored." },
+          { text: "Document: What is the difference between stateful and stateless firewalls based on what you observed?" }
+        ]
+      },
+      { title: "VPN Setup & Traffic Analysis", diff: "advanced", tool: "win", time: "45 min",
+        desc: "Install a free VPN, observe traffic routing, and understand VPN tunnel behavior.",
+        objectives: ["Configure a free VPN client", "Verify IP change and traffic routing", "Observe encrypted traffic in Wireshark"],
+        steps: [
+          { text: "Download ProtonVPN free tier (protonvpn.com). Create a free account and install the client." },
+          { text: "Before connecting: document your public IP via whatismyip.com and run <code>ipconfig /all</code>." },
+          { text: "Connect to a VPN server. Run <code>ipconfig /all</code> again — notice the new virtual adapter (TUN/TAP)." },
+          { text: "Verify your IP changed at whatismyip.com. Run <code>tracert google.com</code> — how has the path changed?" },
+          { text: "Open Wireshark while connected to VPN. Capture traffic and browse a website. Can you read the HTTP content now? What do you see instead?" },
+          { text: "Run <code>route print</code> while VPN is connected vs disconnected. What routes are added when VPN connects?" }
+        ]
+      },
+      { title: "Nmap Network Discovery Lab", diff: "advanced", tool: "win", time: "40 min",
+        desc: "Use Nmap to discover and document your home lab network. ONLY on networks you own.",
+        objectives: ["Perform a ping sweep to find live hosts", "Scan for open ports on a target", "Identify running services and OS"],
+        steps: [
+          { text: "⚠️ IMPORTANT: Only scan networks and devices you own or have explicit permission to scan. Unauthorized scanning is illegal." },
+          { text: "Download and install Nmap with Zenmap GUI from nmap.org." },
+          { text: "Run a ping sweep: <code>nmap -sn 192.168.1.0/24</code>. Document all live hosts found." },
+          { text: "Run a port scan on your own machine: <code>nmap -sV [your IP]</code>. What services are listed?" },
+          { text: "Run OS detection: <code>nmap -O [your IP]</code>. Is the OS detection accurate?" },
+          { text: "Run a scan on your router's IP. What ports are open? What does each one tell you about the router?" },
+          { text: "Document your findings in a table: IP | Hostname | Open Ports | Services | OS" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "secplus", icon: "🔐", name: "Security+", code: "SY0-701",
+    labs: [
+      { title: "Password Security Audit", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Audit your own password habits and configure Windows password policies.",
+        objectives: ["Audit local password policy", "Configure account lockout policy", "Understand password strength requirements"],
+        steps: [
+          { text: "Open CMD as admin. Run <code>net accounts</code>. Document current password policy: min length, max age, lockout threshold." },
+          { text: "Run <code>secedit /export /cfg C:\\secpolicy.cfg</code> then open the file in Notepad. Review all security settings." },
+          { text: "Open <code>gpedit.msc</code> (Pro/Enterprise only). Navigate to Computer Config → Windows Settings → Security Settings → Account Policies." },
+          { text: "Configure: Minimum password length = 12, Max password age = 90 days, Account lockout threshold = 5 attempts." },
+          { text: "Test lockout: try logging into a test account with wrong password 5+ times. Verify it locks out." },
+          { text: "Unlock with: <code>net user [username] /active:yes</code> in admin CMD." },
+          { text: "Document: What is the difference between password complexity and password length in terms of security?" }
+        ]
+      },
+      { title: "Windows Event Log Security Audit", diff: "intermediate", tool: "win", time: "35 min",
+        desc: "Enable and analyze Windows security event logs for authentication and access events.",
+        objectives: ["Enable advanced audit policies", "Analyze logon/logoff events", "Identify failed login attempts"],
+        steps: [
+          { text: "Open <code>gpedit.msc</code> → Computer Config → Windows Settings → Security Settings → Advanced Audit Policy Configuration." },
+          { text: "Enable: Logon/Logoff → Audit Logon (Success and Failure). Also enable Account Logon → Audit Credential Validation." },
+          { text: "Generate events: log in and out of a test account. Also try failing a login 3 times." },
+          { text: "Open Event Viewer → Windows Logs → Security. Filter for Event ID 4624 (successful logon) and 4625 (failed logon)." },
+          { text: "Click a 4624 event. Document: Logon Type, Account Name, Source IP, Logon Process." },
+          { text: "Logon Type 2 = interactive, Type 3 = network, Type 10 = remote interactive (RDP). What types do you see?" },
+          { text: "Export the Security log to a .evtx file for documentation: right-click Security → Save All Events As." }
+        ]
+      },
+      { title: "Encryption Lab — Files & BitLocker", diff: "intermediate", tool: "win", time: "40 min",
+        desc: "Encrypt files using EFS and configure BitLocker to understand data protection.",
+        objectives: ["Encrypt a file using EFS", "Enable BitLocker on a drive", "Understand encryption key management"],
+        steps: [
+          { text: "Create a folder <code>C:\\SensitiveData</code> and add a text file with sample data." },
+          { text: "Right-click the folder → Properties → Advanced → Check 'Encrypt contents to secure data'. Click OK and apply to all files." },
+          { text: "Notice the folder name turns green — EFS encrypted. Try accessing it from another user account." },
+          { text: "Export your EFS certificate: certmgr.msc → Personal → Certificates → right-click your EFS cert → All Tasks → Export." },
+          { text: "On a USB drive or second partition: right-click in File Explorer → Turn on BitLocker. Step through the wizard." },
+          { text: "IMPORTANT: Save the BitLocker recovery key to a safe location before enabling." },
+          { text: "Document: What is the difference between EFS (file-level) and BitLocker (volume-level) encryption?" }
+        ]
+      },
+      { title: "Network Vulnerability Scan with Nmap", diff: "intermediate", tool: "win", time: "40 min",
+        desc: "Use Nmap scripting to identify potential vulnerabilities on your own lab network.",
+        objectives: ["Run vulnerability scripts against your own devices", "Interpret CVE findings", "Document and prioritize findings"],
+        steps: [
+          { text: "⚠️ Only scan your own devices. Unauthorized scanning is illegal." },
+          { text: "Install Nmap. Run: <code>nmap --script vuln [your IP]</code>. This runs vulnerability detection scripts." },
+          { text: "Run: <code>nmap -sV --script=banner [your IP]</code>. This grabs service banners — version info useful for vuln matching." },
+          { text: "Run: <code>nmap -p 445 --script smb-security-mode [your IP]</code>. Is SMB signing enabled?" },
+          { text: "Look up any CVE numbers found at nvd.nist.gov. Read the description and CVSS score." },
+          { text: "Create a simple vulnerability report: Vulnerability | CVSS Score | Affected Service | Remediation." }
+        ]
+      },
+      { title: "Social Engineering Awareness Lab", diff: "beginner", tool: "win", time: "30 min",
+        desc: "Analyze real phishing indicators and practice identifying social engineering attempts.",
+        objectives: ["Identify phishing email indicators", "Analyze suspicious URLs", "Document social engineering red flags"],
+        steps: [
+          { text: "Go to phishtank.com (free). Browse their verified phishing list. Open 3-5 reported phishing URLs in a safe browser sandbox." },
+          { text: "For each: identify the red flags — misspelled domain, urgency, fake login page, suspicious sender, etc." },
+          { text: "Use urlscan.io to analyze a suspicious URL without visiting it. Document what it reveals." },
+          { text: "Go to haveibeenpwned.com. Enter your (or a test) email address. Has it appeared in any data breaches?" },
+          { text: "Document a phishing awareness guide for a non-technical user: 5 things to check before clicking any link." },
+          { text: "Research one real-world phishing/social engineering case study (Google 'famous phishing attacks'). Summarize it." }
+        ]
+      },
+      { title: "TryHackMe — Intro to Security Rooms", diff: "beginner", tool: "win", time: "60 min",
+        desc: "Complete beginner security rooms on TryHackMe to build foundational security skills.",
+        objectives: ["Complete TryHackMe 'Pre-Security' pathway introduction", "Understand basic offensive and defensive concepts", "Earn your first TryHackMe badges"],
+        steps: [
+          { text: "Create a free account at tryhackme.com." },
+          { text: "Start the 'Pre-Security' learning path. Complete 'Intro to Cybersecurity' room." },
+          { text: "Complete 'Network Fundamentals' module within the path." },
+          { text: "Try the 'Linux Fundamentals Part 1' room — it runs a real Linux terminal in your browser." },
+          { text: "Complete at least one 'Beginner' CTF room of your choice." },
+          { text: "Screenshot your completed rooms and document: What was the most interesting thing you learned?" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "linuxplus", icon: "🐧", name: "Linux+", code: "XK0-005",
+    labs: [
+      { title: "Linux VM Setup & First Commands", diff: "beginner", tool: "vm", time: "45 min",
+        desc: "Set up an Ubuntu Server VM and get comfortable with basic Linux navigation.",
+        objectives: ["Install Ubuntu Server in VirtualBox or Proxmox", "Navigate the filesystem using CLI only", "Create files, directories, and symlinks"],
+        steps: [
+          { text: "Download Ubuntu Server LTS ISO from ubuntu.com/download/server. Install it in VirtualBox (free) or Proxmox." },
+          { text: "During installation: set hostname to <code>linux-lab</code>, create user <code>labuser</code> with a strong password." },
+          { text: "After boot, practice navigation: <code>pwd</code>, <code>ls -la</code>, <code>cd /etc</code>, <code>cd ~</code>, <code>cd -</code>." },
+          { text: "Explore the filesystem: <code>ls /</code>, <code>ls /var/log</code>, <code>cat /etc/os-release</code>, <code>uname -a</code>." },
+          { text: "Create structure: <code>mkdir -p ~/labs/lab1</code>, create files with <code>touch</code>, create a symlink with <code>ln -s</code>." },
+          { text: "Use <code>find /etc -name '*.conf' 2>/dev/null</code> to find all config files. Use <code>grep -r 'nameserver' /etc</code> to search inside files." }
+        ]
+      },
+      { title: "User & Group Management", diff: "beginner", tool: "linux", time: "35 min",
+        desc: "Create users, groups, and configure permissions — the core of Linux access control.",
+        objectives: ["Create and configure user accounts", "Create groups and assign members", "Configure sudo access"],
+        steps: [
+          { text: "Create users: <code>sudo useradd -m -s /bin/bash alice</code> and <code>sudo useradd -m -s /bin/bash bob</code>." },
+          { text: "Set passwords: <code>sudo passwd alice</code> and <code>sudo passwd bob</code>." },
+          { text: "Create a group: <code>sudo groupadd developers</code>. Add both users: <code>sudo usermod -aG developers alice</code>." },
+          { text: "Verify: <code>id alice</code>, <code>cat /etc/group | grep developers</code>." },
+          { text: "Create a shared directory: <code>sudo mkdir /shared</code>, <code>sudo chgrp developers /shared</code>, <code>sudo chmod 2770 /shared</code>." },
+          { text: "Test: switch to alice (<code>su - alice</code>), create a file in /shared. Switch to bob. Can he read and modify it?" },
+          { text: "Grant alice sudo access: <code>sudo usermod -aG sudo alice</code>. Test: <code>sudo ls /root</code> as alice." }
+        ]
+      },
+      { title: "File Permissions Deep Dive", diff: "beginner", tool: "linux", time: "30 min",
+        desc: "Master Linux permission notation — both numeric and symbolic — and special bits.",
+        objectives: ["Set permissions using numeric and symbolic notation", "Configure SUID, SGID, and sticky bit", "Understand umask and default permissions"],
+        steps: [
+          { text: "Create test files: <code>touch file1 file2 file3</code>. Run <code>ls -la</code> to see default permissions." },
+          { text: "Practice chmod numerically: <code>chmod 755 file1</code>, <code>chmod 644 file2</code>, <code>chmod 600 file3</code>. Verify each." },
+          { text: "Practice chmod symbolically: <code>chmod u+x file1</code>, <code>chmod go-w file2</code>, <code>chmod a=r file3</code>." },
+          { text: "Check your umask: <code>umask</code>. Change it: <code>umask 027</code>. Create a new file — what permissions does it get?" },
+          { text: "Set sticky bit on /tmp simulation: <code>mkdir /tmp/stickytest</code>, <code>chmod +t /tmp/stickytest</code>. Create files as two different users. Can one delete the other's file?" },
+          { text: "Run <code>find / -perm -4000 2>/dev/null</code> to find all SUID files on the system. List what you find and why SUID is a security concern." }
+        ]
+      },
+      { title: "Package Management & Software", diff: "beginner", tool: "linux", time: "30 min",
+        desc: "Install, update, remove, and search for packages using apt.",
+        objectives: ["Update the system completely", "Install and remove packages", "Search and inspect packages"],
+        steps: [
+          { text: "Update package index: <code>sudo apt update</code>. Note how many packages can be upgraded." },
+          { text: "Upgrade all packages: <code>sudo apt upgrade -y</code>. Watch the output — what's being upgraded?" },
+          { text: "Install packages: <code>sudo apt install htop curl wget tree -y</code>." },
+          { text: "Inspect a package: <code>apt show htop</code>. What version? What does it depend on? Where are its files?" },
+          { text: "Search for packages: <code>apt search web server</code>. Find nginx and install it: <code>sudo apt install nginx -y</code>." },
+          { text: "Verify nginx is running: <code>systemctl status nginx</code>. From another machine, visit http://[your-VM-IP] in a browser." },
+          { text: "Remove a package completely: <code>sudo apt purge nginx -y && sudo apt autoremove -y</code>. Verify it's gone." }
+        ]
+      },
+      { title: "Systemd Service Management", diff: "intermediate", tool: "linux", time: "35 min",
+        desc: "Control services with systemctl, analyze logs with journalctl, and create a custom service.",
+        objectives: ["Start, stop, enable, and disable services", "Analyze logs with journalctl filters", "Create a simple custom systemd service"],
+        steps: [
+          { text: "Install nginx: <code>sudo apt install nginx -y</code>. Practice: <code>sudo systemctl stop nginx</code>, <code>start</code>, <code>restart</code>, <code>reload</code>." },
+          { text: "Check status: <code>systemctl status nginx</code>. Understand each line of the output." },
+          { text: "View logs: <code>journalctl -u nginx</code>, <code>journalctl -u nginx --since '5 min ago'</code>, <code>journalctl -u nginx -n 20</code>." },
+          { text: "List all services: <code>systemctl list-units --type=service</code>. Filter running: add <code>--state=running</code>." },
+          { text: "Create a simple service: <code>sudo nano /etc/systemd/system/hello.service</code>. Add a unit that runs <code>echo Hello World</code> on start." },
+          { text: "Enable and start your service: <code>sudo systemctl daemon-reload</code>, <code>sudo systemctl enable --now hello.service</code>." }
+        ]
+      },
+      { title: "Bash Scripting Fundamentals", diff: "intermediate", tool: "linux", time: "45 min",
+        desc: "Write practical bash scripts for automation — variables, loops, conditionals, and functions.",
+        objectives: ["Write a script with variables and user input", "Use if/else and for loops", "Create a system info script"],
+        steps: [
+          { text: "Create <code>nano ~/scripts/sysinfo.sh</code>. Add shebang: <code>#!/bin/bash</code>. Make executable: <code>chmod +x sysinfo.sh</code>." },
+          { text: "Add variables: <code>HOSTNAME=$(hostname)</code>, <code>IP=$(hostname -I | awk '{print $1}')</code>, <code>UPTIME=$(uptime -p)</code>." },
+          { text: "Add output with formatting: <code>echo \"=== System Info ===\"</code>, print each variable with a label." },
+          { text: "Add a loop: iterate over the files in /etc and print only .conf files: <code>for f in /etc/*.conf; do echo $f; done</code>." },
+          { text: "Add an if statement: check if nginx is running. If yes, print 'nginx is UP'. If no, print 'nginx is DOWN' and start it." },
+          { text: "Add a function: create a function called <code>check_disk()</code> that warns if disk usage exceeds 80%." },
+          { text: "Add the script to cron to run every hour: <code>crontab -e</code> → <code>0 * * * * /home/labuser/scripts/sysinfo.sh >> /var/log/sysinfo.log</code>." }
+        ]
+      },
+      { title: "SSH Hardening Lab", diff: "intermediate", tool: "linux", time: "40 min",
+        desc: "Configure SSH for key-based authentication and harden the SSH daemon config.",
+        objectives: ["Generate SSH key pair", "Configure key-based authentication", "Harden sshd_config"],
+        steps: [
+          { text: "On your client machine (or another VM), generate a key pair: <code>ssh-keygen -t ed25519 -C 'lab-key'</code>." },
+          { text: "Copy the public key to the server: <code>ssh-copy-id labuser@[server-IP]</code>. Test passwordless login." },
+          { text: "On the server, open SSH config: <code>sudo nano /etc/ssh/sshd_config</code>." },
+          { text: "Make these changes: <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code>, <code>MaxAuthTries 3</code>, <code>LoginGraceTime 30</code>." },
+          { text: "Restart SSH: <code>sudo systemctl restart sshd</code>. Test that you can still log in with your key." },
+          { text: "Try to log in with a password — it should be denied. Try as root — also denied." },
+          { text: "Install fail2ban: <code>sudo apt install fail2ban -y</code>. Configure it to ban after 3 failed attempts: edit <code>/etc/fail2ban/jail.local</code>." }
+        ]
+      },
+      { title: "Linux Firewall with UFW", diff: "intermediate", tool: "linux", time: "30 min",
+        desc: "Configure a host-based firewall on Ubuntu using UFW.",
+        objectives: ["Configure default deny policy", "Allow specific services", "Test firewall rules"],
+        steps: [
+          { text: "Check UFW status: <code>sudo ufw status verbose</code>. If inactive, enable after setting rules." },
+          { text: "Set defaults: <code>sudo ufw default deny incoming</code>, <code>sudo ufw default allow outgoing</code>." },
+          { text: "Allow SSH (important — do this BEFORE enabling or you'll lock yourself out!): <code>sudo ufw allow 22/tcp</code>." },
+          { text: "Allow HTTP and HTTPS: <code>sudo ufw allow 80/tcp</code>, <code>sudo ufw allow 443/tcp</code>." },
+          { text: "Enable UFW: <code>sudo ufw enable</code>. Confirm when prompted." },
+          { text: "List rules: <code>sudo ufw status numbered</code>. Delete a rule: <code>sudo ufw delete [number]</code>." },
+          { text: "Test: try to connect to a port that should be blocked. Verify it times out. Then try a port you've allowed — it should connect." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ccna", icon: "🔵", name: "CCNA", code: "200-301",
+    labs: [
+      { title: "Basic Router & Switch Config", diff: "beginner", tool: "pt", time: "45 min",
+        desc: "Configure a router and switch from scratch in Packet Tracer — the foundation of all CCNA labs.",
+        objectives: ["Configure hostname, passwords, and banners", "Assign IP addresses to interfaces", "Save and verify configuration"],
+        steps: [
+          { text: "Open Packet Tracer. Build topology: PC → Switch → Router. Connect with straight-through cables." },
+          { text: "Configure the switch: <code>enable</code> → <code>conf t</code> → <code>hostname SW1</code> → <code>enable secret cisco</code> → <code>service password-encryption</code>." },
+          { text: "Configure console and VTY lines with passwords. Add a banner MOTD." },
+          { text: "Configure the router interface: <code>interface gi0/0</code> → <code>ip address 192.168.1.1 255.255.255.0</code> → <code>no shutdown</code>." },
+          { text: "Configure the PC with IP: 192.168.1.10, mask: 255.255.255.0, gateway: 192.168.1.1." },
+          { text: "Test: ping from PC to router. It should succeed. Run <code>show ip interface brief</code> on the router." },
+          { text: "Save config: <code>copy running-config startup-config</code>. Run <code>show startup-config</code> to verify it saved." }
+        ]
+      },
+      { title: "VLAN Configuration Lab", diff: "beginner", tool: "pt", time: "45 min",
+        desc: "Create VLANs, assign ports, configure trunks, and verify traffic isolation.",
+        objectives: ["Create and name VLANs", "Assign access ports to VLANs", "Configure and verify trunk ports"],
+        steps: [
+          { text: "Build topology in PT: 4 PCs, 2 Switches. Connect switches with a trunk link, 2 PCs per switch." },
+          { text: "On both switches, create VLANs: <code>vlan 10</code> → <code>name FACULTY</code>; <code>vlan 20</code> → <code>name STUDENTS</code>." },
+          { text: "Assign access ports: PC1 and PC3 → VLAN 10. PC2 and PC4 → VLAN 20." },
+          { text: "Configure trunk between switches: <code>interface gi0/1</code> → <code>switchport mode trunk</code> → <code>switchport trunk allowed vlan 10,20</code>." },
+          { text: "Assign IPs to PCs: VLAN 10 = 192.168.10.x/24, VLAN 20 = 192.168.20.x/24." },
+          { text: "Test: PC1 should ping PC3 (same VLAN, different switch). PC1 should NOT ping PC2 (different VLAN). Document results." },
+          { text: "Verify: <code>show vlan brief</code> and <code>show interfaces trunk</code> on both switches." }
+        ]
+      },
+      { title: "Inter-VLAN Routing (Router-on-a-Stick)", diff: "intermediate", tool: "pt", time: "50 min",
+        desc: "Configure subinterfaces on a router to route between VLANs using 802.1Q trunking.",
+        objectives: ["Configure router subinterfaces with dot1Q encapsulation", "Enable inter-VLAN routing", "Verify routing between VLANs"],
+        steps: [
+          { text: "Build on your VLAN lab. Add a router. Connect router to SW1 with a trunk link." },
+          { text: "On the switch, configure the router port as trunk: <code>switchport mode trunk</code>." },
+          { text: "On the router, configure subinterfaces: <code>interface gi0/0.10</code> → <code>encapsulation dot1Q 10</code> → <code>ip address 192.168.10.1 255.255.255.0</code>." },
+          { text: "Repeat for VLAN 20: <code>interface gi0/0.20</code> → <code>encapsulation dot1Q 20</code> → <code>ip address 192.168.20.1 255.255.255.0</code>." },
+          { text: "Enable the physical interface: <code>interface gi0/0</code> → <code>no shutdown</code>." },
+          { text: "Update PC default gateways: VLAN 10 PCs use 192.168.10.1, VLAN 20 PCs use 192.168.20.1." },
+          { text: "Test: PC1 (VLAN 10) should now ping PC2 (VLAN 20). Run <code>show ip route</code> on router to see both networks." }
+        ]
+      },
+      { title: "OSPFv2 Single Area Configuration", diff: "intermediate", tool: "pt", time: "55 min",
+        desc: "Configure OSPF on multiple routers, verify neighbor adjacency, and examine the routing table.",
+        objectives: ["Configure OSPFv2 on multiple routers", "Verify OSPF neighbor adjacency", "Examine LSDB and routing table"],
+        steps: [
+          { text: "Build topology in PT: 3 routers in a triangle. R1-R2, R2-R3, R1-R3. Each router also has a LAN network." },
+          { text: "Configure IP addresses on all interfaces. Use /30 subnets for router-to-router links." },
+          { text: "On each router: <code>router ospf 1</code> → <code>router-id [X.X.X.X]</code> → set reference bandwidth: <code>auto-cost reference-bandwidth 10000</code>." },
+          { text: "Advertise networks: <code>network [net] [wildcard] area 0</code> for each interface." },
+          { text: "Set passive interfaces on LAN-facing ports: <code>passive-interface gi0/0</code>." },
+          { text: "Verify neighbors: <code>show ip ospf neighbor</code> — all should show FULL state." },
+          { text: "Verify routing: <code>show ip route ospf</code>. Each router should know about all other networks. Test with ping." }
+        ]
+      },
+      { title: "ACL Configuration Lab", diff: "intermediate", tool: "pt", time: "45 min",
+        desc: "Create standard and extended ACLs to filter traffic and protect network resources.",
+        objectives: ["Create a standard ACL to restrict access", "Create an extended ACL to filter by port", "Verify ACL filtering with ping and telnet tests"],
+        steps: [
+          { text: "Build topology: Two networks connected by a router. Network A: 192.168.1.0/24, Network B: 192.168.2.0/24." },
+          { text: "Create a standard ACL to deny PC at 192.168.1.100 from reaching Network B: <code>access-list 10 deny host 192.168.1.100</code> → <code>access-list 10 permit any</code>." },
+          { text: "Apply close to destination: <code>interface gi0/1</code> → <code>ip access-group 10 out</code>." },
+          { text: "Test: 192.168.1.100 should NOT ping Network B. Other hosts SHOULD ping Network B." },
+          { text: "Create extended ACL to deny Telnet (port 23) but allow all other traffic: <code>ip access-list extended NO-TELNET</code> → <code>deny tcp any any eq 23</code> → <code>permit ip any any</code>." },
+          { text: "Apply close to source. Test with Telnet — should fail. Ping — should succeed." },
+          { text: "Run <code>show access-lists</code> to view hit counts. Which statements matched traffic?" }
+        ]
+      },
+      { title: "NAT/PAT Configuration Lab", diff: "intermediate", tool: "pt", time: "40 min",
+        desc: "Configure PAT (NAT Overload) so a private network can access the internet through one public IP.",
+        objectives: ["Configure PAT with overload keyword", "Mark inside and outside interfaces", "Verify NAT translations"],
+        steps: [
+          { text: "Build topology: Private LAN (192.168.1.0/24) → Router → ISP Router → Web Server (8.8.8.8 simulated)." },
+          { text: "Configure the LAN interface as <code>ip nat inside</code> and WAN interface as <code>ip nat outside</code>." },
+          { text: "Create ACL to identify inside traffic: <code>access-list 1 permit 192.168.1.0 0.0.0.255</code>." },
+          { text: "Configure PAT: <code>ip nat inside source list 1 interface gi0/1 overload</code>." },
+          { text: "Configure default route pointing to ISP: <code>ip route 0.0.0.0 0.0.0.0 [ISP-IP]</code>." },
+          { text: "Test: LAN PCs ping the web server. Run <code>show ip nat translations</code> on the router — you should see mappings." },
+          { text: "Notice: inside local (192.168.x.x) → inside global (router's public IP + port). This is PAT." }
+        ]
+      },
+      { title: "EtherChannel LACP Lab", diff: "intermediate", tool: "pt", time: "40 min",
+        desc: "Bundle two physical links between switches into one logical EtherChannel using LACP.",
+        objectives: ["Configure LACP EtherChannel", "Verify bundle is active", "Test failover when one link goes down"],
+        steps: [
+          { text: "Build topology: Two switches connected by TWO parallel links (to simulate redundancy)." },
+          { text: "Without EtherChannel, STP will block one link. Run <code>show spanning-tree</code> to confirm." },
+          { text: "On both switches, configure the two links as EtherChannel: <code>interface range gi0/1 - 2</code> → <code>channel-group 1 mode active</code>." },
+          { text: "Configure the Port-Channel as a trunk: <code>interface port-channel 1</code> → <code>switchport mode trunk</code>." },
+          { text: "Verify: <code>show etherchannel summary</code> — look for 'P' (bundled) next to each interface." },
+          { text: "Run <code>show spanning-tree</code> again — EtherChannel appears as a single port now." },
+          { text: "Simulate failure: shut down one physical link. Verify traffic still flows through the remaining link." }
+        ]
+      },
+      { title: "STP Root Bridge Election Lab", diff: "intermediate", tool: "pt", time: "35 min",
+        desc: "Observe and control Spanning Tree Protocol root bridge election.",
+        objectives: ["Observe default root bridge election", "Manually configure root bridge", "Enable PortFast and BPDU Guard"],
+        steps: [
+          { text: "Build topology: 3 switches in a triangle (all interconnected). Add one PC per switch." },
+          { text: "Run <code>show spanning-tree</code> on each switch. Which switch became root bridge and why? (Lowest Bridge ID)" },
+          { text: "Force SW1 to be root bridge: <code>spanning-tree vlan 1 root primary</code>. Verify it worked." },
+          { text: "Set SW2 as secondary root: <code>spanning-tree vlan 1 root secondary</code>." },
+          { text: "Simulate root failure: shut down SW1. Verify SW2 takes over. How long does convergence take?" },
+          { text: "Enable RSTP: <code>spanning-tree mode rapid-pvst</code> on all switches. Repeat the failover test. Is convergence faster?" },
+          { text: "Enable PortFast on PC-facing ports: <code>spanning-tree portfast</code>. Enable BPDU Guard: <code>spanning-tree bpduguard enable</code>." }
+        ]
+      },
+      { title: "IPv6 Configuration Lab", diff: "advanced", tool: "pt", time: "45 min",
+        desc: "Configure IPv6 addressing on routers and hosts, and enable OSPFv3 routing.",
+        objectives: ["Configure global unicast addresses", "Enable SLAAC on hosts", "Configure OSPFv3 between routers"],
+        steps: [
+          { text: "Build topology: 2 routers, 2 switches, 4 PCs. Each router has a LAN and WAN interface." },
+          { text: "Enable IPv6 routing: <code>ipv6 unicast-routing</code> on both routers." },
+          { text: "Configure GUA on router interfaces: <code>ipv6 address 2001:DB8:ACAD:1::1/64</code>." },
+          { text: "Configure link-local manually for clarity: <code>ipv6 address FE80::1 link-local</code>." },
+          { text: "Enable SLAAC on PCs — they should auto-configure using the router's RA prefix." },
+          { text: "Configure OSPFv3: <code>ipv6 router ospf 1</code> → <code>router-id 1.1.1.1</code>. Enable on interfaces: <code>ipv6 ospf 1 area 0</code>." },
+          { text: "Verify: <code>show ipv6 route</code>, <code>show ipv6 ospf neighbor</code>. Ping between hosts using IPv6 addresses." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "cloud", icon: "☁️", name: "Cloud+", code: "CV0-004",
+    labs: [
+      { title: "AWS Account Setup & IAM Basics", diff: "beginner", tool: "aws", time: "45 min",
+        desc: "Set up an AWS Free Tier account securely and configure basic IAM users and policies.",
+        objectives: ["Create AWS account with MFA on root", "Create an IAM admin user", "Configure password policy"],
+        steps: [
+          { text: "Go to aws.amazon.com. Create a free account. Use a strong, unique password and a dedicated email." },
+          { text: "IMMEDIATELY after login: Enable MFA on the root account. Go to IAM → Security recommendations → Enable MFA." },
+          { text: "Create an IAM admin user: IAM → Users → Add users. Name it 'admin'. Attach AdministratorAccess policy." },
+          { text: "Enable console access for the user. Download or note the credentials." },
+          { text: "Set account password policy: IAM → Account settings → Change password policy. Set min 12 chars, require complexity." },
+          { text: "Log OUT of root account. Log in as your IAM admin user from now on — never use root for daily tasks." },
+          { text: "Enable billing alerts: Billing Dashboard → Billing Preferences → check 'Receive Free Tier Usage Alerts'." }
+        ]
+      },
+      { title: "Launch & Connect to an EC2 Instance", diff: "beginner", tool: "aws", time: "45 min",
+        desc: "Launch a free-tier EC2 instance and connect to it via SSH.",
+        objectives: ["Launch a t2.micro EC2 instance", "Configure security group", "Connect via SSH"],
+        steps: [
+          { text: "Go to EC2 → Launch Instance. Name: 'lab-server'. Select Amazon Linux 2 (free tier eligible)." },
+          { text: "Instance type: t2.micro (free tier). Create a new key pair — name it 'lab-key'. Download the .pem file. SAVE IT — you can't re-download." },
+          { text: "Security Group: Create new. Allow SSH (port 22) from YOUR IP only (not 0.0.0.0/0)." },
+          { text: "Launch the instance. Wait for Status Check to show '2/2 checks passed'." },
+          { text: "Connect: EC2 → select instance → Connect → SSH client tab. Follow the instructions." },
+          { text: "From terminal: <code>chmod 400 lab-key.pem</code> then <code>ssh -i 'lab-key.pem' ec2-user@[public-IP]</code>." },
+          { text: "Once connected: <code>sudo yum update -y</code>, install nginx: <code>sudo yum install nginx -y && sudo systemctl start nginx</code>. Update SG to allow port 80 and visit the public IP in browser." }
+        ]
+      },
+      { title: "S3 Bucket & Static Website", diff: "beginner", tool: "aws", time: "40 min",
+        desc: "Create an S3 bucket, upload files, and host a static website.",
+        objectives: ["Create and configure an S3 bucket", "Upload files and set permissions", "Enable static website hosting"],
+        steps: [
+          { text: "Go to S3 → Create bucket. Name must be globally unique. Region: us-east-1. Uncheck 'Block all public access' for this lab." },
+          { text: "Upload your CNS study guide HTML file (or any HTML file) to the bucket." },
+          { text: "Set the file to public: select file → Actions → Make public using ACL." },
+          { text: "Enable static website hosting: bucket → Properties → Static website hosting → Enable. Set index.html as the index document." },
+          { text: "Copy the bucket website endpoint URL. Open it in a browser — your HTML page should appear." },
+          { text: "Configure a bucket policy to allow all reads: paste the standard read policy in Permissions → Bucket Policy." },
+          { text: "Configure lifecycle rule: Bucket → Management → Lifecycle rules. Add rule to delete objects older than 30 days." }
+        ]
+      },
+      { title: "VPC & Subnet Architecture", diff: "intermediate", tool: "aws", time: "50 min",
+        desc: "Build a custom VPC with public and private subnets, internet gateway, and route tables.",
+        objectives: ["Create a custom VPC", "Build public and private subnets", "Configure internet gateway and route tables"],
+        steps: [
+          { text: "Go to VPC → Create VPC. Name: 'lab-vpc'. IPv4 CIDR: 10.0.0.0/16." },
+          { text: "Create two subnets in the VPC: Public (10.0.1.0/24, us-east-1a) and Private (10.0.2.0/24, us-east-1b)." },
+          { text: "Create Internet Gateway: VPC → Internet Gateways → Create. Attach it to lab-vpc." },
+          { text: "Create a public route table: route tables → Create. Add route 0.0.0.0/0 → Internet Gateway. Associate with public subnet." },
+          { text: "Verify the private subnet has NO route to the internet gateway — it's truly private." },
+          { text: "Launch an EC2 instance in the public subnet with a public IP. Launch another in the private subnet (no public IP)." },
+          { text: "Test: You can SSH to the public instance. From the public instance, try to reach the private instance by its private IP — it should work because they're in the same VPC." }
+        ]
+      },
+      { title: "Auto Scaling & Load Balancer", diff: "intermediate", tool: "aws", time: "60 min",
+        desc: "Configure an Auto Scaling group behind an Application Load Balancer.",
+        objectives: ["Create a launch template", "Configure Auto Scaling group", "Set up an Application Load Balancer"],
+        steps: [
+          { text: "Create a Launch Template: EC2 → Launch Templates → Create. Use Amazon Linux 2, t2.micro. Add user data script to install and start nginx automatically." },
+          { text: "Create a Target Group: EC2 → Target Groups → Create. Type: Instances, Protocol: HTTP, Port 80. Health check path: /." },
+          { text: "Create Application Load Balancer: EC2 → Load Balancers → Create ALB. Internet-facing, select all AZs, attach to target group." },
+          { text: "Create Auto Scaling Group: EC2 → Auto Scaling Groups → Create. Use your launch template, target group, and ALB." },
+          { text: "Set scaling: min=1, desired=2, max=4. Add scaling policy: scale out when CPU > 70%." },
+          { text: "Wait for instances to launch and pass health checks. Visit the ALB DNS name in browser — nginx should appear." },
+          { text: "Terminate one instance manually. Watch Auto Scaling launch a replacement. This demonstrates self-healing." }
+        ]
+      },
+      { title: "IAM Roles & Security Policies", diff: "intermediate", tool: "aws", time: "35 min",
+        desc: "Create IAM roles, attach policies, and understand the principle of least privilege in AWS.",
+        objectives: ["Create a custom IAM policy", "Attach a role to an EC2 instance", "Test permission boundaries"],
+        steps: [
+          { text: "Go to IAM → Policies → Create policy. Use JSON editor. Create a policy that allows ONLY S3 read access: <code>s3:GetObject</code> and <code>s3:ListBucket</code>." },
+          { text: "Create an IAM Role: IAM → Roles → Create. Trusted entity: AWS Service → EC2. Attach your S3 read-only policy." },
+          { text: "Attach the role to your EC2 instance: EC2 → select instance → Actions → Security → Modify IAM role." },
+          { text: "SSH into the EC2 instance. Run <code>aws s3 ls</code> — it should list your S3 buckets (no credentials needed — role provides them)." },
+          { text: "Try <code>aws s3 cp s3://[your-bucket]/file.txt .</code> — should work. Try to DELETE a file — should be denied." },
+          { text: "Document: Why is using IAM roles (instead of access keys) the best practice for EC2 instances?" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "dirsvcs", icon: "🗂️", name: "Directory Services", code: "Active Directory",
+    labs: [
+      { title: "Install Active Directory Domain Services", diff: "beginner", tool: "vm", time: "60 min",
+        desc: "Install Windows Server, promote it to a Domain Controller, and verify AD is working.",
+        objectives: ["Install Windows Server 2022 in a VM", "Install AD DS role", "Promote to Domain Controller"],
+        steps: [
+          { text: "Download Windows Server 2022 Evaluation ISO from Microsoft. Create a VM in VirtualBox/Proxmox: 2 vCPU, 4GB RAM, 60GB disk." },
+          { text: "Install Windows Server. Set a strong Administrator password. Set a static IP: 192.168.1.10/24, gateway 192.168.1.1, DNS: 127.0.0.1." },
+          { text: "In Server Manager → Add Roles → Active Directory Domain Services. Accept all dependencies." },
+          { text: "After install, click the flag notification → Promote this server to a domain controller." },
+          { text: "Select 'Add a new forest'. Domain name: <code>lab.local</code>. Set DSRM password (write it down!)." },
+          { text: "Accept defaults for all other options. Install. Server will reboot automatically." },
+          { text: "After reboot, log in as <code>LAB\\Administrator</code>. Open Active Directory Users and Computers — verify the domain structure." }
+        ]
+      },
+      { title: "Create OU Structure & User Accounts", diff: "beginner", tool: "vm", time: "40 min",
+        desc: "Build a realistic OU structure and populate it with user accounts via PowerShell.",
+        objectives: ["Create a logical OU hierarchy", "Create multiple users via PowerShell", "Organize users into correct OUs"],
+        steps: [
+          { text: "Open Active Directory Users and Computers (ADUC). Right-click the domain → New → Organizational Unit." },
+          { text: "Create this OU structure: Staff → Faculty, Staff → Administrative; Students → CNS, Students → IT; Computers → Labs, Computers → Faculty." },
+          { text: "Open PowerShell as admin. Create users in bulk:" },
+          { text: "<code>New-ADUser -Name 'John Smith' -SamAccountName 'jsmith' -UserPrincipalName 'jsmith@lab.local' -Path 'OU=Faculty,OU=Staff,DC=lab,DC=local' -AccountPassword (ConvertTo-SecureString 'P@ssw0rd!' -AsPlainText -Force) -Enabled $true</code>" },
+          { text: "Create 3 more users in different OUs. Verify they appear in ADUC in the correct OU." },
+          { text: "Enable the AD Recycle Bin: <code>Enable-ADOptionalFeature 'Recycle Bin Feature' -Scope ForestOrConfigurationSet -Target 'lab.local' -Confirm:$false</code>" }
+        ]
+      },
+      { title: "Group Policy Configuration Lab", diff: "intermediate", tool: "vm", time: "45 min",
+        desc: "Create GPOs that apply desktop restrictions and security settings to specific OUs.",
+        objectives: ["Create and link a GPO", "Configure password policy", "Apply desktop restrictions to students OU"],
+        steps: [
+          { text: "Open Group Policy Management (GPMC). Right-click the domain → Create a GPO and link it: name it 'Domain Security Policy'." },
+          { text: "Edit the GPO → Computer Config → Policies → Windows Settings → Security Settings → Account Policies → Password Policy." },
+          { text: "Set: Min password length = 12, Max age = 90 days, History = 24, Complexity = Enabled." },
+          { text: "Create another GPO linked to the Students OU: 'Student Restrictions'. Edit → User Config → Policies → Administrative Templates → Control Panel → Prohibit access to Control Panel." },
+          { text: "Also in the GPO: System → Prevent access to registry editing tools = Enabled." },
+          { text: "On a domain-joined client (or the server using runas): run <code>gpupdate /force</code>." },
+          { text: "Verify: log in as a student user — Control Panel should be inaccessible. Log in as faculty — Control Panel should work." }
+        ]
+      },
+      { title: "Join a Windows 10/11 VM to the Domain", diff: "beginner", tool: "vm", time: "30 min",
+        desc: "Join a Windows client VM to your Active Directory domain and verify domain authentication.",
+        objectives: ["Configure DNS to point to DC", "Join computer to domain", "Log in with domain credentials"],
+        steps: [
+          { text: "Create a Windows 10/11 VM. Set static IP: 192.168.1.20/24. Set DNS to your DC's IP: 192.168.1.10." },
+          { text: "Verify connectivity: ping 192.168.1.10 (DC). Ping lab.local — it should resolve." },
+          { text: "Right-click This PC → Properties → Rename this PC (Advanced) → Change → Member of Domain: <code>lab.local</code>." },
+          { text: "Enter domain admin credentials when prompted. Restart the VM." },
+          { text: "After reboot, log in as <code>lab\\jsmith</code> (a domain user you created). Verify it works." },
+          { text: "On the DC, check ADUC — the computer account should appear in the Computers OU." },
+          { text: "Move the computer to the correct OU (Labs) and run <code>gpupdate /force</code> on the client. Verify GPO policies apply." }
+        ]
+      },
+      { title: "Active Directory Backup & Recovery", diff: "advanced", tool: "vm", time: "45 min",
+        desc: "Back up AD, accidentally delete an OU, then restore it using the AD Recycle Bin.",
+        objectives: ["Perform a system state backup", "Delete and recover an OU using Recycle Bin", "Understand DSRM and authoritative restore"],
+        steps: [
+          { text: "Install Windows Server Backup: Server Manager → Add Features → Windows Server Backup." },
+          { text: "Run a system state backup: <code>wbadmin start systemstatebackup -backuptarget:D: -quiet</code>. This captures AD database." },
+          { text: "In ADUC, accidentally 'delete' the Faculty OU (right-click → Delete — confirm the students are recoverable)." },
+          { text: "Recover using Recycle Bin: <code>Get-ADObject -Filter {DisplayName -like 'Faculty*'} -IncludeDeletedObjects | Restore-ADObject</code>." },
+          { text: "Verify the OU and its users reappear in ADUC." },
+          { text: "Document: What is the difference between Recycle Bin recovery and an authoritative restore? When would you need each?" },
+          { text: "Review DSRM: understand that for authoritative restore, you'd boot into DSRM and use ntdsutil." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "virtlab", icon: "⚙️", name: "Virtualization", code: "Proxmox VE",
+    labs: [
+      { title: "Proxmox VE Installation", diff: "beginner", tool: "proxmox", time: "60 min",
+        desc: "Install Proxmox VE on a physical or virtual machine and access the web interface.",
+        objectives: ["Create bootable Proxmox USB", "Install Proxmox VE", "Configure network and access web UI"],
+        steps: [
+          { text: "Download Proxmox VE ISO from proxmox.com/downloads. Flash to USB using balenaEtcher." },
+          { text: "Boot from USB. Select 'Install Proxmox VE (Graphical)'. Accept EULA." },
+          { text: "Select target disk — ALL DATA WILL BE ERASED. For a nested lab, create a VM first (8GB RAM, 100GB disk, VT-x enabled)." },
+          { text: "Set: Country, timezone, keyboard. Set root password and email." },
+          { text: "Network config: set hostname (pve.lab.local), IP (192.168.1.5/24), gateway (192.168.1.1), DNS (192.168.1.10 or 8.8.8.8)." },
+          { text: "Install completes. Remove USB. System reboots." },
+          { text: "From another machine, browse to https://192.168.1.5:8006. Accept self-signed cert warning. Log in as root. Dismiss subscription notice." }
+        ]
+      },
+      { title: "Create Your First VM in Proxmox", diff: "beginner", tool: "proxmox", time: "45 min",
+        desc: "Upload an ISO and create a fully functional virtual machine in Proxmox VE.",
+        objectives: ["Upload ISO to Proxmox storage", "Create VM with correct settings", "Install OS and QEMU guest agent"],
+        steps: [
+          { text: "In Proxmox web UI: node → local storage → ISO Images → Upload. Upload Ubuntu Server ISO." },
+          { text: "Click 'Create VM'. General: VMID=100, Name=ubuntu-server." },
+          { text: "OS: select your ISO, Guest OS: Linux. System: enable Qemu Agent. Disks: local-lvm, 20GB, VirtIO SCSI." },
+          { text: "CPU: 2 cores, type: host. Memory: 2048MB. Network: vmbr0, VirtIO model." },
+          { text: "Click Finish. Select the VM → click Start. Open Console tab." },
+          { text: "Install Ubuntu Server. After install, SSH in and run: <code>sudo apt install qemu-guest-agent -y && sudo systemctl enable --now qemu-guest-agent</code>." },
+          { text: "In Proxmox, the VM Summary tab should now show the IP address from the guest agent." }
+        ]
+      },
+      { title: "Snapshots, Clones & Templates", diff: "intermediate", tool: "proxmox", time: "40 min",
+        desc: "Use Proxmox snapshots for quick rollback, and create a template for rapid VM deployment.",
+        objectives: ["Take and restore VM snapshots", "Convert a VM to a template", "Deploy clones from template"],
+        steps: [
+          { text: "On your Ubuntu VM, install some software: <code>sudo apt install nginx -y</code>." },
+          { text: "Take a snapshot: select VM → Snapshots → Take Snapshot. Name: 'nginx-installed'. Description matters — use it." },
+          { text: "Make a destructive change: delete nginx (<code>sudo apt purge nginx -y</code>) or remove important config." },
+          { text: "Rollback: VM → Snapshots → select snap → Rollback. Verify nginx is back." },
+          { text: "Prepare VM for template: inside VM run <code>sudo cloud-init clean && sudo truncate -s 0 /etc/machine-id && sudo poweroff</code>." },
+          { text: "In Proxmox: right-click VM → Convert to Template. It turns gold/italic in the tree." },
+          { text: "Clone from template: right-click template → Clone. Mode: Full Clone. Name: student-vm-01. Deploy and start it — it should be a fresh, independent copy." }
+        ]
+      },
+      { title: "Virtual Networking in Proxmox", diff: "intermediate", tool: "proxmox", time: "45 min",
+        desc: "Create multiple virtual network bridges for isolated lab networks.",
+        objectives: ["Create additional Linux bridges", "Deploy VMs on different network segments", "Test network isolation between bridges"],
+        steps: [
+          { text: "In Proxmox web UI: node → System → Network. Note existing vmbr0 (management + VM bridge)." },
+          { text: "Create new bridge: Add → Linux Bridge. Name: vmbr1. No IP, no physical port → this creates an ISOLATED internal network." },
+          { text: "Create another: vmbr2 — also isolated." },
+          { text: "Deploy two VMs. VM1: two NICs — one on vmbr0 (gets internet), one on vmbr1. VM2: one NIC on vmbr1 only." },
+          { text: "On VM1, configure the vmbr1 NIC with static IP 10.0.1.1/24. On VM2, set 10.0.1.2/24." },
+          { text: "Verify VM2 can ping VM1 on the 10.0.1.x network. Verify VM2 CANNOT reach the internet (no vmbr0)." },
+          { text: "This simulates a DMZ architecture. Document the topology with a network diagram." }
+        ]
+      },
+      { title: "Proxmox Backup & Restore", diff: "intermediate", tool: "proxmox", time: "35 min",
+        desc: "Configure scheduled VM backups and perform a full restore.",
+        objectives: ["Configure backup storage location", "Run a manual VM backup", "Restore VM from backup"],
+        steps: [
+          { text: "In Proxmox, go to Datacenter → Backup → Add. Select storage (local), select your VM, set schedule (daily at 2am)." },
+          { text: "Run a manual backup: select VM → Backup → Backup Now. Mode: Snapshot. Compression: ZSTD." },
+          { text: "Watch the task log. After completion, go to local storage → Backups. You should see the backup file." },
+          { text: "Note the backup file name format: <code>vzdump-qemu-[VMID]-[date].vma.zst</code>." },
+          { text: "Test restore: select the backup → Restore. Change the VMID to 999 (so you don't overwrite the original)." },
+          { text: "Start the restored VM. Verify it's identical to the backup point." },
+          { text: "Document: What is the difference between snapshot, suspend, and stop backup modes?" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "python", icon: "🐍", name: "Programming", code: "Python & PowerShell",
+    labs: [
+      { title: "Python Environment Setup & First Script", diff: "beginner", tool: "py", time: "30 min",
+        desc: "Install Python, set up VS Code, and write your first useful scripts.",
+        objectives: ["Install Python and VS Code", "Write and run a Python script", "Use variables, input, and print"],
+        steps: [
+          { text: "Download Python from python.org. During install: CHECK 'Add Python to PATH'. Verify: open CMD, run <code>python --version</code>." },
+          { text: "Install VS Code from code.visualstudio.com. Install the Python extension." },
+          { text: "Create a new file: <code>hello.py</code>. Write: <code>name = input('Enter your name: ')</code> and <code>print(f'Hello, {name}! Welcome to CNS.')</code>." },
+          { text: "Run it in VS Code terminal: <code>python hello.py</code>." },
+          { text: "Expand the script: ask for the user's age, calculate birth year, print a message using an f-string." },
+          { text: "Add error handling: use try/except to handle non-numeric age input gracefully." }
+        ]
+      },
+      { title: "Python Network Scanner Script", diff: "intermediate", tool: "py", time: "45 min",
+        desc: "Build a Python script that pings a range of IPs and reports which hosts are alive.",
+        objectives: ["Use subprocess to run system commands", "Loop through IP ranges", "Format and display results"],
+        steps: [
+          { text: "Create <code>scanner.py</code>. Import <code>subprocess</code> and <code>ipaddress</code>." },
+          { text: "Create a function <code>ping_host(ip)</code> that runs <code>ping -n 1 -w 500 {ip}</code> (Windows) or <code>ping -c 1 -W 1 {ip}</code> (Linux) and returns True if the host is alive." },
+          { text: "Ask the user to input a network (e.g., 192.168.1.0/24). Use <code>ipaddress.ip_network()</code> to generate all host IPs." },
+          { text: "Loop through all IPs, call ping_host for each, collect alive hosts in a list." },
+          { text: "Print results in a table format: IP | Status | Response. Show summary count at end." },
+          { text: "Bonus: Add threading to run 10 pings simultaneously — compare the speed difference." }
+        ]
+      },
+      { title: "PowerShell System Audit Script", diff: "intermediate", tool: "win", time: "40 min",
+        desc: "Write a PowerShell script that collects system information and exports a report.",
+        objectives: ["Collect system, hardware, and security data", "Format output as a readable report", "Export to HTML and CSV"],
+        steps: [
+          { text: "Open VS Code with PowerShell extension. Create <code>audit.ps1</code>." },
+          { text: "Set execution policy: <code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code>." },
+          { text: "Collect data using functions: <code>Get-ComputerInfo</code>, <code>Get-LocalUser</code>, <code>Get-Service | Where-Object {$_.Status -eq 'Running'}</code>, <code>Get-NetIPConfiguration</code>." },
+          { text: "Format each section with Write-Host and color coding. Use <code>-ForegroundColor Green</code> for OK items, <code>Red</code> for issues." },
+          { text: "Export users to CSV: <code>Get-LocalUser | Export-Csv 'audit_users.csv' -NoTypeInformation</code>." },
+          { text: "Create HTML report: use PowerShell's <code>ConvertTo-Html</code> to generate a formatted HTML file of running services." },
+          { text: "Add the script to Task Scheduler to run weekly. Document what the script reveals about your system." }
+        ]
+      },
+      { title: "Python File Organizer", diff: "beginner", tool: "py", time: "35 min",
+        desc: "Build a Python script that automatically organizes files by extension into folders.",
+        objectives: ["Use os and shutil modules", "Read directory contents", "Move files based on type"],
+        steps: [
+          { text: "Create <code>organizer.py</code>. Import <code>os</code>, <code>shutil</code>, <code>pathlib</code>." },
+          { text: "Define a dictionary mapping extensions to folder names: <code>{'pdf': 'Documents', 'jpg': 'Images', 'mp4': 'Videos', 'py': 'Scripts'}</code>." },
+          { text: "Ask the user which folder to organize. Use <code>Path(folder).iterdir()</code> to list all files." },
+          { text: "For each file, get its extension, find the destination folder from the dictionary, create the folder if it doesn't exist (<code>os.makedirs</code>), and move the file (<code>shutil.move</code>)." },
+          { text: "Handle unknown extensions: put them in an 'Other' folder." },
+          { text: "Add logging: print each file moved with old and new location. Count total files moved at end." },
+          { text: "Add a dry-run mode (--dry-run argument) that shows what WOULD happen without actually moving files." }
+        ]
+      },
+      { title: "Python OOP — Student Grade Tracker", diff: "intermediate", tool: "py", time: "45 min",
+        desc: "Apply OOP principles to build a class-based grade tracking application.",
+        objectives: ["Create Student and Course classes", "Implement methods and properties", "Save/load data with JSON"],
+        steps: [
+          { text: "Create a <code>Student</code> class with attributes: name, student_id, grades (list). Add methods: <code>add_grade()</code>, <code>get_gpa()</code>, <code>get_letter_grade()</code>." },
+          { text: "Create a <code>Course</code> class: course_name, course_id, students (list). Add methods: <code>enroll()</code>, <code>get_class_average()</code>, <code>get_honor_roll()</code>." },
+          { text: "Implement <code>__str__</code> on both classes for clean printing." },
+          { text: "Create a main program that: creates a course, enrolls 5+ students, adds grades, prints class statistics." },
+          { text: "Add file persistence: <code>save_to_json()</code> and <code>load_from_json()</code> methods using Python's <code>json</code> module." },
+          { text: "Run the program, add students and grades, save to file, restart the program, load the file — verify data persists." }
+        ]
+      }
+    ]
+  }
+];
+
+// ============================================================
+//  RENDER
+// ============================================================
+function init() {
+    const saved = JSON.parse(localStorage.getItem('cns_labs') || '{}');
+
+    const sel = document.getElementById('courseSelector');
+    const panels = document.getElementById('coursePanels');
+
+    courses.forEach(course => {
+        const total = course.labs.length;
+        const done = course.labs.filter((_, i) => saved[`${course.id}_${i}`]).length;
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        // Selector button
+        const btn = document.createElement('button');
+        btn.className = 'course-btn';
+        btn.id = `cbtn_${course.id}`;
+        btn.onclick = () => showCourse(course.id);
+        btn.innerHTML = `<span class="ci">${course.icon}</span><span class="cn">${course.name}</span><span class="cc">${course.code}</span><div class="cp"><div class="cpf" id="cpf_${course.id}" style="width:${pct}%"></div></div>`;
+        sel.appendChild(btn);
+
+        // Panel
+        const panel = document.createElement('div');
+        panel.className = 'course-panel';
+        panel.id = `panel_${course.id}`;
+
+        const panelHtml = `
+            <div class="panel-header">
+                <div class="panel-title">${course.icon} ${course.name} — ${course.code} Labs</div>
+                <div class="panel-stats">
+                    <div class="pstat"><div class="pstat-num">${total}</div><div class="pstat-label">Labs</div></div>
+                    <div class="pstat"><div class="pstat-num" id="done_${course.id}">${done}</div><div class="pstat-label">Done</div></div>
+                    <div class="pstat"><div class="pstat-num" id="pct_${course.id}">${pct}%</div><div class="pstat-label">Complete</div></div>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterLabs('${course.id}', 'all', this)">All</button>
+                <button class="filter-btn" onclick="filterLabs('${course.id}', 'beginner', this)">🟢 Beginner</button>
+                <button class="filter-btn" onclick="filterLabs('${course.id}', 'intermediate', this)">🟡 Intermediate</button>
+                <button class="filter-btn" onclick="filterLabs('${course.id}', 'advanced', this)">🔴 Advanced</button>
+                <button class="filter-btn" onclick="filterLabs('${course.id}', 'incomplete', this)">⬜ Not Done</button>
+                <button class="filter-btn" onclick="filterLabs('${course.id}', 'complete', this)">✅ Done</button>
+            </div>
+            <div class="labs-grid" id="grid_${course.id}">
+                ${course.labs.map((lab, i) => renderLabCard(course.id, lab, i, saved)).join('')}
+            </div>
+            <div class="no-labs" id="nolabs_${course.id}">No labs match this filter.</div>`;
+
+        panel.innerHTML = panelHtml;
+        panels.appendChild(panel);
+    });
+
+    showCourse(courses[0].id);
+}
+
+function renderLabCard(courseId, lab, idx, saved) {
+    const key = `${courseId}_${idx}`;
+    const isComplete = !!saved[key];
+    const toolClass = { pt: 'tool-pt', vm: 'tool-vm', win: 'tool-win', aws: 'tool-aws', py: 'tool-py', linux: 'tool-linux', proxmox: 'tool-proxmox' }[lab.tool] || 'tool-win';
+    const toolLabel = { pt: 'Packet Tracer', vm: 'Virtual Machine', win: 'Windows', aws: 'AWS Free Tier', py: 'Python/VS Code', linux: 'Linux VM', proxmox: 'Proxmox VE' }[lab.tool] || lab.tool;
+    const stepsHtml = lab.steps.map((s, si) => `<div class="step"><div class="step-num">${si + 1}</div><div class="step-text">${s.text}</div></div>`).join('');
+
+    return `
+        <div class="lab-card ${isComplete ? 'completed' : ''}" id="card_${courseId}_${idx}" data-diff="${lab.diff}" data-complete="${isComplete}">
+            <div class="lab-card-header">
+                <div class="lab-top">
+                    <span class="lab-num">Lab ${idx + 1}</span>
+                    <span class="lab-title">${lab.title}</span>
+                </div>
+                <div class="lab-badges">
+                    <span class="badge diff-${lab.diff}">${lab.diff}</span>
+                    <span class="badge ${toolClass}">${toolLabel}</span>
+                    <span class="badge time-badge">⏱ ${lab.time}</span>
+                </div>
+            </div>
+            <div class="lab-card-body">
+                <div class="lab-desc">${lab.desc}</div>
+                <ul class="lab-objectives">${lab.objectives.map(o => `<li>${o}</li>`).join('')}</ul>
+            </div>
+            <button class="lab-steps-toggle" onclick="toggleSteps(this)">
+                📋 View Step-by-Step Instructions <span class="steps-arrow">▶</span>
+            </button>
+            <div class="lab-steps-body">${stepsHtml}</div>
+            <div class="lab-card-footer">
+                <button class="btn-complete ${isComplete ? 'done' : ''}" onclick="toggleComplete('${courseId}', ${idx}, this)">
+                    ${isComplete ? '✅ Completed — Click to Undo' : '⬜ Mark as Complete'}
+                </button>
+            </div>
+        </div>`;
+}
+
+function toggleSteps(btn) {
+    const body = btn.nextElementSibling;
+    const arrow = btn.querySelector('.steps-arrow');
+    const isOpen = body.style.display === 'block';
+    body.style.display = isOpen ? 'none' : 'block';
+    arrow.classList.toggle('open', !isOpen);
+}
+
+function toggleComplete(courseId, idx, btn) {
+    const saved = JSON.parse(localStorage.getItem('cns_labs') || '{}');
+    const key = `${courseId}_${idx}`;
+    const isDone = !saved[key];
+    saved[key] = isDone;
+    localStorage.setItem('cns_labs', JSON.stringify(saved));
+
+    const card = document.getElementById(`card_${courseId}_${idx}`);
+    card.classList.toggle('completed', isDone);
+    card.dataset.complete = isDone;
+    btn.className = `btn-complete ${isDone ? 'done' : ''}`;
+    btn.textContent = isDone ? '✅ Completed — Click to Undo' : '⬜ Mark as Complete';
+
+    updateProgress(courseId);
+}
+
+function updateProgress(courseId) {
+    const course = courses.find(c => c.id === courseId);
+    const saved = JSON.parse(localStorage.getItem('cns_labs') || '{}');
+    const done = course.labs.filter((_, i) => saved[`${courseId}_${i}`]).length;
+    const pct = Math.round((done / course.labs.length) * 100);
+
+    const doneEl = document.getElementById(`done_${courseId}`);
+    const pctEl = document.getElementById(`pct_${courseId}`);
+    const fill = document.getElementById(`cpf_${courseId}`);
+    if (doneEl) doneEl.textContent = done;
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (fill) fill.style.width = pct + '%';
+}
+
+function filterLabs(courseId, filter, btn) {
+    document.querySelectorAll(`#panel_${courseId} .filter-btn`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll(`#grid_${courseId} .lab-card`);
+    let visible = 0;
+    cards.forEach(card => {
+        let show = true;
+        if (filter === 'beginner' && card.dataset.diff !== 'beginner') show = false;
+        if (filter === 'intermediate' && card.dataset.diff !== 'intermediate') show = false;
+        if (filter === 'advanced' && card.dataset.diff !== 'advanced') show = false;
+        if (filter === 'complete' && card.dataset.complete !== 'true') show = false;
+        if (filter === 'incomplete' && card.dataset.complete === 'true') show = false;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+    });
+
+    const noLabs = document.getElementById(`nolabs_${courseId}`);
+    if (noLabs) noLabs.style.display = visible === 0 ? 'block' : 'none';
+}
+
+function showCourse(id) {
+    document.querySelectorAll('.course-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.course-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`cbtn_${id}`).classList.add('active');
+    document.getElementById(`panel_${id}`).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+init();
+</script>
+</body>
+</html>
