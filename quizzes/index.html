@@ -376,12 +376,6 @@ async function startQuiz() {
         errBox.style.display = 'block';
         return;
     }
-    if (API_KEY === "YOUR_ANTHROPIC_API_KEY_HERE") {
-        errBox.textContent = '⚠️ API key not configured. Please add your Anthropic API key to the quiz file.';
-        errBox.style.display = 'block';
-        return;
-    }
-
     currentCourse = course;
     currentNumQ = parseInt(document.getElementById('numQuestions').value);
     currentQ = 0;
