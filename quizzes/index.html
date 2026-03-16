@@ -350,11 +350,7 @@
 </div>
 
 <script>
-// ============================================================
-//  CONFIGURATION — paste your Anthropic API key here
-// ============================================================
-const API_KEY = "YOUR_ANTHROPIC_API_KEY_HERE";
-// ============================================================
+// No API key needed here — handled securely by Netlify Function
 
 let questions = [];
 let currentQ = 0;
@@ -423,51 +419,19 @@ async function startQuiz() {
 }
 
 async function generateQuestions(course, difficulty, num) {
-    const prompt = `You are an expert IT certification instructor creating practice exam questions for students studying ${course}.
-
-Generate exactly ${num} multiple-choice questions at ${difficulty} difficulty level.
-
-STRICT RULES:
-- Each question must have exactly 4 answer options labeled A, B, C, D
-- Only ONE correct answer per question
-- Questions must be realistic and relevant to actual ${course} certification exams
-- Include a mix of conceptual, scenario-based, and command/syntax questions
-- Explanations must be thorough and educational — explain WHY the answer is correct AND why the others are wrong
-
-Respond ONLY with a valid JSON array. No markdown, no backticks, no preamble. Example format:
-[
-  {
-    "question": "Which command displays all IP configuration details on Windows?",
-    "options": ["ipconfig", "ipconfig /all", "netstat -an", "ping localhost"],
-    "correct": 1,
-    "explanation": "ipconfig /all displays the full IP configuration including MAC address, DNS servers, DHCP server, and lease information. Plain ipconfig only shows IP, subnet, and gateway. netstat shows connections, not configuration. ping tests connectivity.",
-    "topic": "Network Commands",
-    "difficulty": "easy"
-  }
-]
-
-correct is the 0-based index of the correct option.
-Generate ${num} questions now for ${course}:`;
-
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    // Calls our secure Netlify serverless function — API key never exposed in browser
+    const resp = await fetch("/.netlify/functions/quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 8000,
-            messages: [{ role: "user", content: prompt }]
-        })
+        body: JSON.stringify({ course, difficulty, num })
     });
 
     if (!resp.ok) {
         const err = await resp.json();
-        throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        throw new Error(err.error || `Server error (${resp.status})`);
     }
 
-    const data = await resp.json();
-    const raw = data.content[0].text.trim();
-    const clean = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
-    const parsed = JSON.parse(clean);
+    const parsed = await resp.json();
     if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Invalid question format returned.");
     return parsed;
 }
