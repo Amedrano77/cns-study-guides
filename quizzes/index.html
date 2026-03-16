@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNS Practice Quizzes · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: #0f2b3d; color: white; padding: 1.5rem 2rem;
+            text-align: center; border-bottom: 6px solid #b91c1c;
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px);
+        }
+        header h1 { font-size: 2rem; font-weight: 700; position: relative; }
+        header p { color: #94a3b8; margin-top: 0.3rem; position: relative; }
+        .back-link {
+            display: inline-block; margin-top: 0.75rem; color: #facc15;
+            text-decoration: none; font-size: 0.9rem; font-weight: 600;
+            position: relative;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* MAIN CONTAINER */
+        .container { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem 3rem; }
+
+        /* SETUP SCREEN */
+        .setup-card {
+            background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.1); padding: 2.5rem;
+        }
+        .setup-card h2 { font-size: 1.5rem; color: #0f2b3d; margin-bottom: 0.5rem; }
+        .setup-card p { color: #64748b; margin-bottom: 2rem; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block; font-weight: 600; color: #1e3a5f;
+            margin-bottom: 0.5rem; font-size: 0.95rem;
+        }
+        select, input {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 10px;
+            border: 2px solid #e2e8f0; font-size: 1rem; font-family: inherit;
+            color: #1e293b; background: white; transition: border-color 0.2s;
+            appearance: none;
+        }
+        select:focus, input:focus { outline: none; border-color: #b91c1c; }
+
+        .difficulty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .diff-btn {
+            padding: 1rem; border-radius: 12px; border: 2px solid #e2e8f0;
+            background: white; cursor: pointer; text-align: center;
+            transition: all 0.2s; font-family: inherit;
+        }
+        .diff-btn:hover { border-color: #b91c1c; background: #fff5f5; }
+        .diff-btn.selected { border-color: #b91c1c; background: #fff5f5; }
+        .diff-btn .diff-icon { font-size: 1.5rem; display: block; margin-bottom: 0.25rem; }
+        .diff-btn .diff-name { font-weight: 700; color: #0f2b3d; }
+        .diff-btn .diff-desc { font-size: 0.8rem; color: #64748b; margin-top: 0.2rem; }
+
+        .api-note {
+            background: #fef9c3; border-left: 4px solid #fbbf24; padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0; font-size: 0.85rem; color: #78350f; margin-bottom: 1.5rem;
+        }
+
+        .btn-start {
+            width: 100%; padding: 1rem; background: #b91c1c; color: white;
+            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
+            font-family: inherit;
+        }
+        .btn-start:hover { background: #991b1b; transform: scale(1.01); }
+        .btn-start:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+        /* LOADING SCREEN */
+        .loading-screen {
+            display: none; background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.1); padding: 4rem 2rem;
+            text-align: center;
+        }
+        .spinner {
+            width: 56px; height: 56px; border: 5px solid #e2e8f0;
+            border-top-color: #b91c1c; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 1.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-screen h3 { font-size: 1.3rem; color: #0f2b3d; margin-bottom: 0.5rem; }
+        .loading-screen p { color: #64748b; }
+
+        /* QUIZ SCREEN */
+        .quiz-screen { display: none; }
+        .progress-bar-wrap {
+            background: white; border-radius: 16px; padding: 1.25rem 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,20,30,0.06); margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .progress-info { flex: 1; }
+        .progress-label { font-size: 0.85rem; color: #64748b; margin-bottom: 0.4rem; }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #b91c1c; border-radius: 999px; transition: width 0.4s ease; }
+        .score-badge {
+            background: #0f2b3d; color: #facc15; font-weight: 700;
+            padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .question-card {
+            background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.1); padding: 2rem;
+        }
+        .q-meta {
+            display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;
+        }
+        .q-tag {
+            font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem;
+            border-radius: 999px; background: #f1f5f9; color: #475569;
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .q-tag.difficulty-easy { background: #dcfce7; color: #15803d; }
+        .q-tag.difficulty-medium { background: #fef9c3; color: #a16207; }
+        .q-tag.difficulty-hard { background: #fee2e2; color: #b91c1c; }
+
+        .q-text {
+            font-size: 1.1rem; font-weight: 600; color: #0f2b3d;
+            line-height: 1.6; margin-bottom: 1.5rem;
+        }
+
+        .options-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+        .option-btn {
+            padding: 1rem 1.25rem; border-radius: 12px; border: 2px solid #e2e8f0;
+            background: white; cursor: pointer; text-align: left; font-size: 0.95rem;
+            font-family: inherit; color: #1e293b; transition: all 0.2s;
+            display: flex; align-items: flex-start; gap: 0.75rem; line-height: 1.5;
+        }
+        .option-btn:hover:not(:disabled) { border-color: #b91c1c; background: #fff5f5; }
+        .option-btn .opt-letter {
+            font-weight: 700; color: #94a3b8; min-width: 1.2rem;
+            font-size: 0.9rem; margin-top: 0.05rem;
+        }
+        .option-btn.correct { border-color: #16a34a; background: #dcfce7; }
+        .option-btn.correct .opt-letter { color: #16a34a; }
+        .option-btn.incorrect { border-color: #b91c1c; background: #fee2e2; }
+        .option-btn.incorrect .opt-letter { color: #b91c1c; }
+        .option-btn.reveal-correct { border-color: #16a34a; background: #f0fdf4; }
+        .option-btn.reveal-correct .opt-letter { color: #16a34a; }
+        .option-btn:disabled { cursor: default; }
+
+        .feedback-box {
+            display: none; margin-top: 1.25rem; padding: 1rem 1.25rem;
+            border-radius: 12px; font-size: 0.95rem; line-height: 1.6;
+        }
+        .feedback-box.correct { background: #f0fdf4; border-left: 5px solid #16a34a; color: #166534; }
+        .feedback-box.incorrect { background: #fff1f1; border-left: 5px solid #b91c1c; color: #991b1b; }
+        .feedback-title { font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem; }
+        .feedback-explanation { color: #374151; margin-top: 0.5rem; font-style: normal; }
+
+        .btn-next {
+            margin-top: 1.25rem; width: 100%; padding: 0.9rem; background: #0f2b3d;
+            color: white; border: none; border-radius: 12px; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: background 0.2s;
+            font-family: inherit; display: none;
+        }
+        .btn-next:hover { background: #1e3a5f; }
+
+        /* RESULTS SCREEN */
+        .results-screen {
+            display: none; background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,20,30,0.1); padding: 2.5rem; text-align: center;
+        }
+        .score-circle {
+            width: 130px; height: 130px; border-radius: 50%;
+            border: 8px solid #b91c1c; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; margin: 0 auto 1.5rem;
+        }
+        .score-num { font-size: 2.5rem; font-weight: 700; color: #0f2b3d; line-height: 1; }
+        .score-denom { font-size: 1rem; color: #64748b; }
+        .score-pct { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .score-msg { font-size: 1rem; color: #64748b; margin-bottom: 2rem; }
+
+        .results-breakdown { text-align: left; margin-bottom: 2rem; }
+        .results-breakdown h3 { font-size: 1.1rem; font-weight: 700; color: #0f2b3d; margin-bottom: 1rem; }
+        .result-item {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.75rem 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.9rem;
+        }
+        .result-item:last-child { border-bottom: none; }
+        .result-icon { font-size: 1.1rem; min-width: 1.5rem; }
+        .result-q { color: #1e293b; line-height: 1.5; flex: 1; }
+        .result-a { font-size: 0.82rem; color: #64748b; margin-top: 0.2rem; }
+
+        .btn-retake {
+            width: 100%; padding: 1rem; background: #b91c1c; color: white;
+            border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: background 0.2s; font-family: inherit; margin-bottom: 0.75rem;
+        }
+        .btn-retake:hover { background: #991b1b; }
+        .btn-home {
+            width: 100%; padding: 0.85rem; background: white; color: #0f2b3d;
+            border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .btn-home:hover { border-color: #0f2b3d; }
+
+        /* ERROR */
+        .error-box {
+            display: none; background: #fff1f1; border: 2px solid #b91c1c;
+            border-radius: 12px; padding: 1rem 1.25rem; color: #991b1b;
+            margin-top: 1rem; font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .difficulty-grid { grid-template-columns: 1fr; }
+            .setup-card { padding: 1.5rem; }
+            .question-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🧠 CNS Practice Quizzes</h1>
+    <p>AI-Powered · Fresh Questions Every Time · TSTC CNS Program</p>
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+</header>
+
+<div class="container">
+
+    <!-- SETUP SCREEN -->
+    <div class="setup-card" id="setupScreen">
+        <h2>Start a Practice Quiz</h2>
+        <p>Select your course and difficulty, then let AI generate a unique set of exam-style questions just for you.</p>
+
+        <div class="api-note">
+            ⚡ Questions are generated by AI and may vary each session — just like real exam conditions.
+        </div>
+
+        <div class="form-group">
+            <label for="courseSelect">📚 Select Course</label>
+            <select id="courseSelect">
+                <option value="">— Choose a course —</option>
+                <option value="CompTIA Linux+ (XK0-005)">🐧 Linux+ — CompTIA XK0-005</option>
+                <option value="CompTIA Network+ (N10-009)">🌐 Network+ — CompTIA N10-009</option>
+                <option value="CompTIA Security+ (SY0-701)">🔐 Security+ — CompTIA SY0-701</option>
+                <option value="CompTIA A+ (220-1101 and 220-1102)">💻 A+ — CompTIA 220-1101/1102</option>
+                <option value="Cisco CCNA 1 — Introduction to Networks (ITN v7)">🔵 CCNA 1 — Intro to Networks</option>
+                <option value="Cisco CCNA 2 — Switching, Routing and Wireless Essentials (SRWE)">🔵 CCNA 2 — Switching, Routing & Wireless</option>
+                <option value="Cisco CCNA 3 — Enterprise Networking, Security and Automation (ENSA)">🔵 CCNA 3 — Enterprise Networking & Automation</option>
+                <option value="Implementing Directory Services — Windows Server Active Directory">🗂️ Directory Services — Active Directory</option>
+                <option value="Computer Virtualization — Proxmox VE and Hypervisors">⚙️ Computer Virtualization — Proxmox VE</option>
+                <option value="Programming Logic and Design — PowerShell and Python">🐍 Programming Logic & Design — Python & PowerShell</option>
+                <option value="Fundamentals of Cloud Computing — CompTIA Cloud+ (CV0-004) and AWS">☁️ Cloud Computing — CompTIA Cloud+ / AWS</option>
+                <option value="Internet and Intranet Server Administration — CompTIA Server+ (SK0-005)">🖧 Internet/Intranet Server — Server+</option>
+                <option value="Network Troubleshooting and Support — IT Help Desk, Diagnostics, and Customer Service">🔧 Network Troubleshooting & Support</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>🎯 Select Difficulty</label>
+            <div class="difficulty-grid">
+                <button class="diff-btn selected" data-diff="mixed" onclick="selectDiff(this)">
+                    <span class="diff-icon">🎲</span>
+                    <span class="diff-name">Mixed</span>
+                    <div class="diff-desc">Easy, medium & hard questions — best for comprehensive review</div>
+                </button>
+                <button class="diff-btn" data-diff="exam simulation" onclick="selectDiff(this)">
+                    <span class="diff-icon">🏆</span>
+                    <span class="diff-name">Exam Simulation</span>
+                    <div class="diff-desc">Harder questions modeled after real certification exams</div>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="numQuestions">❓ Number of Questions</label>
+            <select id="numQuestions">
+                <option value="5">5 questions — Quick check</option>
+                <option value="10" selected>10 questions — Standard session</option>
+                <option value="15">15 questions — Deep review</option>
+                <option value="20">20 questions — Full practice exam</option>
+            </select>
+        </div>
+
+        <div id="errorBox" class="error-box"></div>
+
+        <button class="btn-start" id="startBtn" onclick="startQuiz()">
+            ⚡ Generate Quiz
+        </button>
+    </div>
+
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <h3 id="loadingMsg">Generating your questions...</h3>
+        <p>AI is creating unique exam-style questions for your course.</p>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div class="quiz-screen" id="quizScreen">
+        <div class="progress-bar-wrap">
+            <div class="progress-info">
+                <div class="progress-label" id="progressLabel">Question 1 of 10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width:10%"></div>
+                </div>
+            </div>
+            <div class="score-badge" id="scoreBadge">0 / 0</div>
+        </div>
+
+        <div class="question-card">
+            <div class="q-meta" id="qMeta"></div>
+            <div class="q-text" id="qText"></div>
+            <div class="options-grid" id="optionsGrid"></div>
+            <div class="feedback-box" id="feedbackBox">
+                <div class="feedback-title" id="feedbackTitle"></div>
+                <div id="feedbackText"></div>
+                <div class="feedback-explanation" id="feedbackExplanation"></div>
+            </div>
+            <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+                Next Question →
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="score-circle" id="scoreCircle">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-denom" id="scoreDenom">/ 10</div>
+        </div>
+        <div class="score-pct" id="scorePct"></div>
+        <div class="score-msg" id="scoreMsg"></div>
+
+        <div class="results-breakdown" id="resultsBreakdown">
+            <h3>📋 Question Review</h3>
+            <div id="resultsList"></div>
+        </div>
+
+        <button class="btn-retake" onclick="retakeQuiz()">🔄 New Quiz — Same Course</button>
+        <button class="btn-home" onclick="goHome()">← Choose Different Course</button>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+//  CONFIGURATION — paste your Anthropic API key here
+// ============================================================
+const API_KEY = "YOUR_ANTHROPIC_API_KEY_HERE";
+// ============================================================
+
+let questions = [];
+let currentQ = 0;
+let score = 0;
+let selectedDiff = "mixed";
+let currentCourse = "";
+let currentNumQ = 10;
+let userAnswers = [];
+
+function selectDiff(btn) {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedDiff = btn.dataset.diff;
+}
+
+async function startQuiz() {
+    const course = document.getElementById('courseSelect').value;
+    const errBox = document.getElementById('errorBox');
+    errBox.style.display = 'none';
+
+    if (!course) {
+        errBox.textContent = '⚠️ Please select a course before starting.';
+        errBox.style.display = 'block';
+        return;
+    }
+    if (API_KEY === "YOUR_ANTHROPIC_API_KEY_HERE") {
+        errBox.textContent = '⚠️ API key not configured. Please add your Anthropic API key to the quiz file.';
+        errBox.style.display = 'block';
+        return;
+    }
+
+    currentCourse = course;
+    currentNumQ = parseInt(document.getElementById('numQuestions').value);
+    currentQ = 0;
+    score = 0;
+    userAnswers = [];
+
+    show('loadingScreen');
+    hide('setupScreen');
+
+    const msgs = [
+        "Generating your questions...",
+        "Crafting exam-style scenarios...",
+        "Building answer explanations...",
+        "Almost ready..."
+    ];
+    let mi = 0;
+    const msgInterval = setInterval(() => {
+        mi = (mi + 1) % msgs.length;
+        document.getElementById('loadingMsg').textContent = msgs[mi];
+    }, 1800);
+
+    try {
+        questions = await generateQuestions(course, selectedDiff, currentNumQ);
+        clearInterval(msgInterval);
+        hide('loadingScreen');
+        show('quizScreen');
+        renderQuestion();
+    } catch (err) {
+        clearInterval(msgInterval);
+        hide('loadingScreen');
+        show('setupScreen');
+        errBox.textContent = '❌ Error generating questions: ' + err.message + '. Check your API key and try again.';
+        errBox.style.display = 'block';
+    }
+}
+
+async function generateQuestions(course, difficulty, num) {
+    const prompt = `You are an expert IT certification instructor creating practice exam questions for students studying ${course}.
+
+Generate exactly ${num} multiple-choice questions at ${difficulty} difficulty level.
+
+STRICT RULES:
+- Each question must have exactly 4 answer options labeled A, B, C, D
+- Only ONE correct answer per question
+- Questions must be realistic and relevant to actual ${course} certification exams
+- Include a mix of conceptual, scenario-based, and command/syntax questions
+- Explanations must be thorough and educational — explain WHY the answer is correct AND why the others are wrong
+
+Respond ONLY with a valid JSON array. No markdown, no backticks, no preamble. Example format:
+[
+  {
+    "question": "Which command displays all IP configuration details on Windows?",
+    "options": ["ipconfig", "ipconfig /all", "netstat -an", "ping localhost"],
+    "correct": 1,
+    "explanation": "ipconfig /all displays the full IP configuration including MAC address, DNS servers, DHCP server, and lease information. Plain ipconfig only shows IP, subnet, and gateway. netstat shows connections, not configuration. ping tests connectivity.",
+    "topic": "Network Commands",
+    "difficulty": "easy"
+  }
+]
+
+correct is the 0-based index of the correct option.
+Generate ${num} questions now for ${course}:`;
+
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 8000,
+            messages: [{ role: "user", content: prompt }]
+        })
+    });
+
+    if (!resp.ok) {
+        const err = await resp.json();
+        throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const raw = data.content[0].text.trim();
+    const clean = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+    const parsed = JSON.parse(clean);
+    if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Invalid question format returned.");
+    return parsed;
+}
+
+function renderQuestion() {
+    const q = questions[currentQ];
+    const total = questions.length;
+    const pct = Math.round(((currentQ + 1) / total) * 100);
+
+    document.getElementById('progressLabel').textContent = `Question ${currentQ + 1} of ${total}`;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('scoreBadge').textContent = `${score} / ${currentQ}`;
+
+    // Meta tags
+    const meta = document.getElementById('qMeta');
+    meta.innerHTML = '';
+    if (q.topic) {
+        const t = document.createElement('span');
+        t.className = 'q-tag';
+        t.textContent = q.topic;
+        meta.appendChild(t);
+    }
+    if (q.difficulty) {
+        const d = document.createElement('span');
+        d.className = `q-tag difficulty-${q.difficulty.toLowerCase()}`;
+        d.textContent = q.difficulty;
+        meta.appendChild(d);
+    }
+
+    document.getElementById('qText').textContent = q.question;
+
+    const letters = ['A', 'B', 'C', 'D'];
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="opt-letter">${letters[i]}.</span><span>${opt}</span>`;
+        btn.onclick = () => selectAnswer(i);
+        grid.appendChild(btn);
+    });
+
+    document.getElementById('feedbackBox').style.display = 'none';
+    document.getElementById('btnNext').style.display = 'none';
+}
+
+function selectAnswer(idx) {
+    const q = questions[currentQ];
+    const btns = document.querySelectorAll('.option-btn');
+
+    // Disable all
+    btns.forEach(b => b.disabled = true);
+
+    const isCorrect = idx === q.correct;
+    if (isCorrect) score++;
+
+    userAnswers.push({ qIdx: currentQ, chosen: idx, correct: isCorrect });
+
+    // Style chosen
+    btns[idx].classList.add(isCorrect ? 'correct' : 'incorrect');
+    // Reveal correct if wrong
+    if (!isCorrect) btns[q.correct].classList.add('reveal-correct');
+
+    // Feedback
+    const fb = document.getElementById('feedbackBox');
+    const letters = ['A', 'B', 'C', 'D'];
+    fb.className = `feedback-box ${isCorrect ? 'correct' : 'incorrect'}`;
+    document.getElementById('feedbackTitle').textContent = isCorrect ? '✅ Correct!' : `❌ Incorrect — The answer is ${letters[q.correct]}: ${q.options[q.correct]}`;
+    document.getElementById('feedbackText').textContent = '';
+    document.getElementById('feedbackExplanation').textContent = q.explanation || '';
+    fb.style.display = 'block';
+
+    // Update score badge
+    document.getElementById('scoreBadge').textContent = `${score} / ${currentQ + 1}`;
+
+    // Next button
+    const btnNext = document.getElementById('btnNext');
+    btnNext.textContent = currentQ < questions.length - 1 ? 'Next Question →' : 'See Results →';
+    btnNext.style.display = 'block';
+}
+
+function nextQuestion() {
+    currentQ++;
+    if (currentQ >= questions.length) {
+        showResults();
+    } else {
+        renderQuestion();
+    }
+}
+
+function showResults() {
+    hide('quizScreen');
+    show('resultsScreen');
+
+    const total = questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('scoreNum').textContent = score;
+    document.getElementById('scoreDenom').textContent = `/ ${total}`;
+
+    const circle = document.getElementById('scoreCircle');
+    circle.style.borderColor = pct >= 80 ? '#16a34a' : pct >= 60 ? '#ca8a04' : '#b91c1c';
+
+    document.getElementById('scorePct').textContent = `${pct}% — ${pct >= 80 ? '✅ Pass' : pct >= 60 ? '⚠️ Getting there' : '❌ Keep studying'}`;
+
+    const msgs = {
+        pass: ["Outstanding work! You're ready to tackle the real exam.", "Excellent score! Your knowledge is solid.", "Great job! Keep this momentum going."],
+        mid:  ["Good effort! Review the questions you missed and try again.", "You're on the right track — a little more review and you'll ace it.", "Not bad! Focus on the topics where you struggled."],
+        low:  ["Keep studying — every attempt makes you stronger!", "Don't give up! Review the study guide and try again.", "The real exam will come — keep grinding through the material."]
+    };
+    const cat = pct >= 80 ? 'pass' : pct >= 60 ? 'mid' : 'low';
+    document.getElementById('scoreMsg').textContent = msgs[cat][Math.floor(Math.random() * 3)];
+
+    // Breakdown
+    const list = document.getElementById('resultsList');
+    list.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    userAnswers.forEach(a => {
+        const q = questions[a.qIdx];
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.innerHTML = `
+            <span class="result-icon">${a.correct ? '✅' : '❌'}</span>
+            <div>
+                <div class="result-q">${q.question}</div>
+                <div class="result-a">
+                    ${a.correct
+                        ? `Your answer: ${letters[a.chosen]}. ${q.options[a.chosen]}`
+                        : `Your answer: ${letters[a.chosen]}. ${q.options[a.chosen]} &nbsp;|&nbsp; <strong>Correct: ${letters[q.correct]}. ${q.options[q.correct]}</strong>`
+                    }
+                </div>
+            </div>`;
+        list.appendChild(div);
+    });
+}
+
+function retakeQuiz() {
+    hide('resultsScreen');
+    startQuiz();
+}
+
+function goHome() {
+    hide('resultsScreen');
+    show('setupScreen');
+    document.getElementById('errorBox').style.display = 'none';
+}
+
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>
