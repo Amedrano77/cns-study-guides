@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Decks · CNS Study Guides · TSTC</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+            background: #f5f7fa; color: #1e293b; min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: #0f2b3d; color: white; padding: 2rem 2rem 1.5rem;
+            text-align: center; border-bottom: 6px solid #b91c1c;
+            position: relative; overflow: hidden;
+        }
+        header::before {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 40px,
+                rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px);
+        }
+        header .logo { font-size: 2.5rem; margin-bottom: 0.4rem; position: relative; }
+        header h1 { font-size: 2.2rem; font-weight: 700; position: relative; }
+        header p { color: #94a3b8; margin-top: 0.3rem; position: relative; font-size: 1rem; }
+        .back-link {
+            display: inline-block; margin-top: 0.75rem; color: #facc15;
+            text-decoration: none; font-size: 0.9rem; font-weight: 600; position: relative;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: #1e3a5f; display: flex; justify-content: center;
+            gap: 3rem; padding: 1rem 2rem; flex-wrap: wrap;
+        }
+        .stat { text-align: center; color: white; }
+        .stat-num { font-size: 1.6rem; font-weight: 700; color: #facc15; }
+        .stat-label { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* MAIN */
+        main { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+        .infobox {
+            background: #fff9e6; border-left: 6px solid #fbbf24;
+            border-radius: 0 16px 16px 0; padding: 1.2rem 1.5rem;
+            margin-bottom: 2.5rem; font-size: 0.95rem; color: #78350f;
+        }
+        .infobox strong { color: #92400e; }
+
+        .section-title {
+            font-size: 1.5rem; font-weight: 700; color: #0f2b3d;
+            margin-bottom: 1.5rem; padding-bottom: 0.5rem;
+            border-bottom: 3px solid #b91c1c; display: inline-block;
+        }
+
+        /* DECK GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white; border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,30,0.08);
+            overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,30,0.15); }
+
+        .card-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 3px solid #f1f5f9;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .card-icon { font-size: 2.2rem; line-height: 1; }
+        .card-title { font-size: 1.2rem; font-weight: 700; color: #0f2b3d; }
+        .card-subtitle { font-size: 0.82rem; color: #64748b; margin-top: 0.15rem; }
+
+        .card-body { padding: 1rem 1.5rem; flex: 1; }
+        .card-body p { font-size: 0.92rem; color: #475569; line-height: 1.6; }
+
+        .deck-meta {
+            display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap;
+        }
+        .meta-pill {
+            background: #f1f5f9; color: #475569; font-size: 0.78rem;
+            font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px;
+        }
+        .meta-pill.red { background: #fee2e2; color: #b91c1c; }
+
+        .card-footer { padding: 1rem 1.5rem 1.5rem; }
+
+        .btn {
+            display: inline-block; width: 100%; text-align: center;
+            padding: 0.75rem 1.5rem; border-radius: 12px;
+            font-weight: 600; font-size: 0.95rem; text-decoration: none;
+            transition: background 0.2s, transform 0.1s; border: none; cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-primary { background: #b91c1c; color: white; }
+        .btn-primary:hover { background: #991b1b; transform: scale(1.02); }
+
+        /* MODAL OVERLAY */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(15,43,61,0.85); z-index: 1000;
+            align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: white; border-radius: 24px;
+            width: 100%; max-width: 680px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+            display: flex; flex-direction: column;
+            max-height: 95vh; overflow: hidden;
+        }
+
+        .modal-header {
+            background: #0f2b3d; color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 4px solid #b91c1c; flex-shrink: 0;
+        }
+        .modal-title { font-size: 1.15rem; font-weight: 700; }
+        .modal-close {
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            width: 32px; height: 32px; border-radius: 50%;
+            font-size: 1.1rem; cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: #b91c1c; }
+
+        /* PROGRESS BAR */
+        .progress-wrap {
+            padding: 0.75rem 1.5rem 0.5rem;
+            background: #f8fafc; flex-shrink: 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .progress-info {
+            display: flex; justify-content: space-between;
+            font-size: 0.8rem; color: #64748b; margin-bottom: 0.4rem;
+        }
+        .progress-bar-bg {
+            background: #e2e8f0; border-radius: 999px; height: 8px; overflow: hidden;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #b91c1c, #ef4444);
+            height: 100%; border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        /* FLASHCARD AREA */
+        .flashcard-area {
+            padding: 1.5rem; flex: 1; overflow-y: auto;
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+        }
+
+        /* THE CARD FLIP */
+        .flashcard-scene {
+            width: 100%; max-width: 580px;
+            height: 220px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95);
+        }
+        .flashcard-scene.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute; inset: 0;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 1.5rem 2rem; text-align: center;
+            box-shadow: 0 8px 32px rgba(0,20,40,0.12);
+        }
+        .flashcard-front {
+            background: linear-gradient(135deg, #0f2b3d 0%, #1e3a5f 100%);
+            color: white;
+        }
+        .flashcard-back {
+            background: white;
+            border: 3px solid #b91c1c;
+            transform: rotateY(180deg);
+            color: #1e293b;
+        }
+
+        .card-label {
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; opacity: 0.6; margin-bottom: 0.75rem;
+        }
+        .card-text {
+            font-size: 1.1rem; font-weight: 600; line-height: 1.5;
+        }
+        .flashcard-front .card-text { color: white; }
+        .flashcard-back .card-text { color: #1e293b; font-weight: 400; font-size: 1rem; }
+        .flip-hint {
+            font-size: 0.75rem; opacity: 0.5; margin-top: 0.75rem;
+            display: flex; align-items: center; gap: 0.3rem;
+        }
+
+        /* CONTROLS */
+        .fc-controls {
+            display: flex; gap: 0.75rem; width: 100%; max-width: 580px;
+            justify-content: center; align-items: center;
+        }
+        .fc-btn {
+            padding: 0.6rem 1.4rem; border-radius: 12px; border: none;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .fc-btn-prev { background: #f1f5f9; color: #475569; }
+        .fc-btn-prev:hover { background: #e2e8f0; }
+        .fc-btn-next { background: #0f2b3d; color: white; flex: 1; justify-content: center; }
+        .fc-btn-next:hover { background: #1e3a5f; }
+        .fc-btn-flip { background: #b91c1c; color: white; }
+        .fc-btn-flip:hover { background: #991b1b; }
+
+        /* SHUFFLE / RESTART */
+        .fc-actions {
+            display: flex; gap: 0.5rem; width: 100%; max-width: 580px; justify-content: center;
+        }
+        .fc-action-btn {
+            padding: 0.45rem 1rem; border-radius: 8px; border: none;
+            font-size: 0.82rem; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+            background: #f1f5f9; color: #475569;
+        }
+        .fc-action-btn:hover { background: #e2e8f0; }
+
+        /* DONE SCREEN */
+        .done-screen {
+            display: none; flex-direction: column; align-items: center;
+            gap: 1rem; padding: 2rem; text-align: center;
+        }
+        .done-screen.visible { display: flex; }
+        .done-icon { font-size: 3.5rem; }
+        .done-title { font-size: 1.5rem; font-weight: 700; color: #0f2b3d; }
+        .done-sub { color: #64748b; font-size: 0.95rem; }
+
+        /* FOOTER */
+        footer {
+            background: #0f2b3d; color: #94a3b8; text-align: center;
+            padding: 2rem; font-size: 0.9rem; border-top: 4px solid #b91c1c;
+        }
+        footer strong { color: white; }
+
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+            .stats-bar { gap: 1.5rem; }
+            .flashcard-scene { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">🃏</div>
+    <h1>Flashcard Decks</h1>
+    <p>Term &amp; Definition Review · All 13 CNS Courses · TSTC</p>
+    <a href="../index.html" class="back-link">← Back to All Study Guides</a>
+</header>
+
+<div class="stats-bar">
+    <div class="stat">
+        <div class="stat-num">13</div>
+        <div class="stat-label">Courses Covered</div>
+    </div>
+    <div class="stat">
+        <div class="stat-num">475+</div>
+        <div class="stat-label">Total Flashcards</div>
+    </div>
+    <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Free for CNS Students</div>
+    </div>
+</div>
+
+<main>
+    <div class="infobox">
+        <strong>🃏 How to use flashcards:</strong> Click any deck to start. Tap/click a card to flip it and reveal the answer. Use <strong>Previous</strong> and <strong>Next</strong> to navigate, or <strong>Shuffle</strong> to randomize the order. Great for memorizing ports, commands, acronyms, and key concepts!
+    </div>
+
+    <div class="section-title">🃏 All 13 Flashcard Decks</div>
+    <div class="grid">
+
+        <!-- Linux+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🐧</div>
+                <div>
+                    <div class="card-title">Linux+</div>
+                    <div class="card-subtitle">CompTIA XK0-005</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Commands, filesystem hierarchy, permissions, package management, and system administration.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">40 cards</span>
+                    <span class="meta-pill">Commands</span>
+                    <span class="meta-pill">Permissions</span>
+                    <span class="meta-pill">Filesystem</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('linux')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Network+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🌐</div>
+                <div>
+                    <div class="card-title">Network+</div>
+                    <div class="card-subtitle">CompTIA N10-009</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>OSI model, protocols, ports, subnetting, routing, switching, and wireless concepts.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">45 cards</span>
+                    <span class="meta-pill">OSI Model</span>
+                    <span class="meta-pill">Ports</span>
+                    <span class="meta-pill">Subnetting</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('netplus')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Security+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔐</div>
+                <div>
+                    <div class="card-title">Security+</div>
+                    <div class="card-subtitle">CompTIA SY0-701</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Threats, attacks, cryptography, PKI, IAM, network security, and incident response.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">45 cards</span>
+                    <span class="meta-pill">Threats</span>
+                    <span class="meta-pill">Crypto</span>
+                    <span class="meta-pill">IAM</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('secplus')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- A+ -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">💻</div>
+                <div>
+                    <div class="card-title">A+</div>
+                    <div class="card-subtitle">CompTIA 220-1101 / 1102</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Hardware components, connectors, OS fundamentals, troubleshooting, and security basics.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">40 cards</span>
+                    <span class="meta-pill">Hardware</span>
+                    <span class="meta-pill">OS</span>
+                    <span class="meta-pill">Troubleshooting</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('aplus')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- CCNA 1 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔵</div>
+                <div>
+                    <div class="card-title">CCNA 1</div>
+                    <div class="card-subtitle">Intro to Networks (ITN v7)</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>OSI/TCP-IP models, Cisco IOS CLI, IPv4/IPv6 addressing, subnetting, and basic routing.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">Cisco IOS</span>
+                    <span class="meta-pill">IPv4/IPv6</span>
+                    <span class="meta-pill">CLI</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('ccna1')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- CCNA 2 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔵</div>
+                <div>
+                    <div class="card-title">CCNA 2</div>
+                    <div class="card-subtitle">Switching, Routing &amp; Wireless (SRWE)</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>VLANs, trunking, STP, EtherChannel, inter-VLAN routing, OSPFv2, and wireless config.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">VLANs</span>
+                    <span class="meta-pill">STP</span>
+                    <span class="meta-pill">OSPF</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('ccna2')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- CCNA 3 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔵</div>
+                <div>
+                    <div class="card-title">CCNA 3</div>
+                    <div class="card-subtitle">Enterprise Networking, Security &amp; Automation</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Multi-area OSPF, WAN technologies, ACLs, NAT, QoS, and network automation/SDN.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">WAN</span>
+                    <span class="meta-pill">ACLs/NAT</span>
+                    <span class="meta-pill">SDN</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('ccna3')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Directory Services -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🗂️</div>
+                <div>
+                    <div class="card-title">Directory Services</div>
+                    <div class="card-subtitle">Active Directory</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Active Directory structure, OUs, GPOs, DNS/DHCP integration, Kerberos, and replication.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">AD Structure</span>
+                    <span class="meta-pill">GPO</span>
+                    <span class="meta-pill">Kerberos</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('dirsvcs')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Virtualization -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">⚙️</div>
+                <div>
+                    <div class="card-title">Computer Virtualization</div>
+                    <div class="card-subtitle">Hypervisors, VMs &amp; Proxmox VE</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Hypervisor types, Proxmox VE, virtual networking, storage, snapshots, and templates.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">30 cards</span>
+                    <span class="meta-pill">Proxmox</span>
+                    <span class="meta-pill">Hypervisors</span>
+                    <span class="meta-pill">VMs</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('virt')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Programming -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🐍</div>
+                <div>
+                    <div class="card-title">Programming Logic &amp; Design</div>
+                    <div class="card-subtitle">PowerShell &amp; Python Fundamentals</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Programming concepts, Python syntax, PowerShell cmdlets, OOP, functions, and data structures.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">Python</span>
+                    <span class="meta-pill">PowerShell</span>
+                    <span class="meta-pill">OOP</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('prog')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Cloud Computing -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">☁️</div>
+                <div>
+                    <div class="card-title">Cloud Computing</div>
+                    <div class="card-subtitle">CompTIA Cloud+ / AWS</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Cloud models, AWS core services, IAM, EC2, S3, VPC, auto scaling, and DevOps concepts.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">35 cards</span>
+                    <span class="meta-pill">AWS</span>
+                    <span class="meta-pill">IAM</span>
+                    <span class="meta-pill">Cloud Models</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('cloud')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Internet/Intranet Server -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🖧</div>
+                <div>
+                    <div class="card-title">Internet/Intranet Server</div>
+                    <div class="card-subtitle">CompTIA Server+ SK0-005</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Apache/Nginx, DNS/DHCP config, FTP, SSL/TLS, server hardening, and backup/recovery.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">30 cards</span>
+                    <span class="meta-pill">Apache/Nginx</span>
+                    <span class="meta-pill">SSL/TLS</span>
+                    <span class="meta-pill">DNS/DHCP</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('server')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+        <!-- Network Troubleshooting -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔧</div>
+                <div>
+                    <div class="card-title">Network Troubleshooting</div>
+                    <div class="card-subtitle">IT Support &amp; Diagnostics</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>CLEAR framework, diagnostic tools, malware removal, remote support, and ticketing systems.</p>
+                <div class="deck-meta">
+                    <span class="meta-pill red">30 cards</span>
+                    <span class="meta-pill">CLEAR</span>
+                    <span class="meta-pill">Diagnostics</span>
+                    <span class="meta-pill">Malware</span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="openDeck('troubleshoot')">🃏 Study Deck</button>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title" id="modalTitle">Deck Title</span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="progress-wrap">
+            <div class="progress-info">
+                <span id="progressText">Card 1 of 40</span>
+                <span id="progressPct">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="flashcard-area" id="flashcardArea">
+            <!-- flashcard + controls rendered by JS -->
+        </div>
+    </div>
+</div>
+
+<footer>
+    <strong>TSTC · Computer &amp; Networking Systems</strong><br>
+    Study guides created and maintained by Adrian Medrano &nbsp;·&nbsp; Add your own notes and make them yours!
+</footer>
+
+<script>
+// ─── DECK DATA ───────────────────────────────────────────────────────────────
+const DECKS = {
+
+linux: {
+  title: "🐧 Linux+ Flashcards",
+  cards: [
+    {q:"What command shows all running processes?", a:"ps aux  (or top / htop for live view)"},
+    {q:"What does chmod 755 set on a file?", a:"Owner: read/write/execute (7) · Group: read/execute (5) · Others: read/execute (5)"},
+    {q:"What is the root of the Linux filesystem?", a:"/ (forward slash) — the top-level directory from which all others branch"},
+    {q:"What command changes file ownership?", a:"chown user:group filename"},
+    {q:"Where are system-wide cron jobs stored?", a:"/etc/crontab  and  /etc/cron.d/"},
+    {q:"What does the sticky bit do on a directory?", a:"Only the file owner (or root) can delete/rename files inside, even if others have write permission — used on /tmp"},
+    {q:"What command lists open ports and listening services?", a:"ss -tulnp  (or netstat -tulnp on older systems)"},
+    {q:"What file stores local user account info?", a:"/etc/passwd — stores username, UID, GID, home dir, shell (NOT passwords)"},
+    {q:"Where are hashed passwords stored?", a:"/etc/shadow — readable only by root"},
+    {q:"What command installs packages on Debian/Ubuntu?", a:"apt install package-name  (or apt-get install)"},
+    {q:"What command installs packages on RHEL/CentOS?", a:"dnf install package-name  (or yum on older versions)"},
+    {q:"What does grep -r 'error' /var/log do?", a:"Recursively searches all files in /var/log for the string 'error'"},
+    {q:"What is /dev/null?", a:"A special file that discards all data written to it — used to suppress output"},
+    {q:"What does | (pipe) do in Linux?", a:"Sends the stdout of the left command as stdin to the right command"},
+    {q:"What command shows disk usage by directory?", a:"du -sh * (summary, human-readable) or df -h for filesystem usage"},
+    {q:"What does systemctl enable ssh do?", a:"Configures the SSH service to start automatically at boot"},
+    {q:"What is a symbolic (soft) link?", a:"A pointer/shortcut to another file. Created with ln -s target linkname"},
+    {q:"What is a hard link?", a:"A second directory entry pointing to the same inode. Created with ln target linkname"},
+    {q:"What does the umask value 022 result in?", a:"New files get 644 (rw-r--r--) · New directories get 755 (rwxr-xr-x)"},
+    {q:"What command shows the last 50 lines of a log file in real time?", a:"tail -f -n 50 /var/log/syslog"},
+    {q:"What does SUID (setuid) do on an executable?", a:"The file runs with the permissions of the file's owner, not the user who runs it (e.g., /usr/bin/passwd)"},
+    {q:"What are the run levels / systemd targets?", a:"0=poweroff · 1=rescue · 3=multi-user (no GUI) · 5=graphical · 6=reboot"},
+    {q:"What command adds a new user and creates their home directory?", a:"useradd -m username  (then passwd username to set password)"},
+    {q:"What is the purpose of /etc/fstab?", a:"Defines filesystems to be automatically mounted at boot — lists device, mount point, type, options"},
+    {q:"What does the find command  find / -perm -4000  do?", a:"Finds all files on the system with the SUID bit set — useful for security audits"},
+    {q:"What is the difference between > and >> in redirection?", a:"> overwrites the file · >> appends to the file"},
+    {q:"What command displays the manual page for a command?", a:"man command-name  (e.g., man ls)"},
+    {q:"What is SELinux?", a:"Security-Enhanced Linux — a MAC (Mandatory Access Control) system that enforces security policies beyond standard Unix permissions"},
+    {q:"What command archives and compresses files with gzip?", a:"tar -czvf archive.tar.gz /path/to/files  (c=create, z=gzip, v=verbose, f=file)"},
+    {q:"What does the /proc directory contain?", a:"Virtual filesystem with real-time kernel and process information (not real files — generated on demand)"},
+    {q:"What command shows your current IP address?", a:"ip addr show  (or ip a) — older: ifconfig"},
+    {q:"What is a shell shebang line?", a:"The first line of a script, e.g. #!/bin/bash — tells the OS which interpreter to use"},
+    {q:"What does cron expression  0 2 * * 0  mean?", a:"Run at 2:00 AM every Sunday (minute=0, hour=2, day=*, month=*, weekday=0)"},
+    {q:"What is the purpose of /etc/hosts?", a:"Local DNS override file — maps hostnames to IP addresses before querying a DNS server"},
+    {q:"What command checks the status of a service?", a:"systemctl status service-name  (e.g., systemctl status nginx)"},
+    {q:"What does RAID stand for and what does RAID 1 do?", a:"Redundant Array of Independent Disks · RAID 1 = mirroring (exact copy on 2+ disks, no performance gain, full redundancy)"},
+    {q:"What is the difference between TCP and UDP?", a:"TCP = connection-oriented, reliable, ordered · UDP = connectionless, faster, no delivery guarantee"},
+    {q:"What command shows the routing table in Linux?", a:"ip route show  (or route -n on older systems)"},
+    {q:"What does visudo do?", a:"Safely edits /etc/sudoers with syntax checking — always use visudo, never edit directly"},
+    {q:"What is the Linux /boot directory used for?", a:"Contains the kernel, initramfs, and bootloader (GRUB) config files needed to start the system"},
+  ]
+},
+
+netplus: {
+  title: "🌐 Network+ Flashcards",
+  cards: [
+    {q:"What are the 7 layers of the OSI model (top to bottom)?", a:"7-Application · 6-Presentation · 5-Session · 4-Transport · 3-Network · 2-Data Link · 1-Physical"},
+    {q:"What PDU (data unit) does the Transport layer use?", a:"Segment (TCP) or Datagram (UDP)"},
+    {q:"What port does SSH use?", a:"Port 22 — TCP"},
+    {q:"What port does HTTPS use?", a:"Port 443 — TCP (HTTP is port 80)"},
+    {q:"What port does DNS use?", a:"Port 53 — TCP and UDP"},
+    {q:"What port does DHCP use?", a:"Server: UDP 67 · Client: UDP 68"},
+    {q:"What is the subnet mask for /24?", a:"255.255.255.0 — 256 total hosts, 254 usable"},
+    {q:"What is the subnet mask for /26?", a:"255.255.255.192 — 64 hosts, 62 usable, 4 subnets per /24"},
+    {q:"What does ARP do?", a:"Address Resolution Protocol — resolves IP addresses to MAC addresses on a local network"},
+    {q:"What is a default gateway?", a:"The router IP that a device sends traffic to when the destination is outside its local subnet"},
+    {q:"What is the difference between a hub and a switch?", a:"Hub = broadcasts to ALL ports (Layer 1) · Switch = forwards frames to specific MAC address ports (Layer 2)"},
+    {q:"What is the difference between a switch and a router?", a:"Switch = connects devices on same network using MAC addresses (L2) · Router = connects different networks using IP addresses (L3)"},
+    {q:"What is VLAN?", a:"Virtual LAN — logically segments a physical network into separate broadcast domains"},
+    {q:"What is 802.1Q?", a:"The IEEE standard for VLAN tagging on trunk ports — adds a 4-byte tag to Ethernet frames"},
+    {q:"What is STP (Spanning Tree Protocol)?", a:"Prevents Layer 2 switching loops by blocking redundant paths — elects a root bridge and sets port states"},
+    {q:"What is NAT?", a:"Network Address Translation — maps private IP addresses to a public IP for internet access"},
+    {q:"What is PAT?", a:"Port Address Translation (NAT Overload) — maps many private IPs to one public IP using unique port numbers"},
+    {q:"What is OSPF?", a:"Open Shortest Path First — a link-state routing protocol that uses Dijkstra's algorithm to find the best path"},
+    {q:"What is the loopback address?", a:"127.0.0.1 — used to test the local TCP/IP stack (localhost)"},
+    {q:"What are the three private IPv4 ranges?", a:"10.0.0.0/8 · 172.16.0.0/12 · 192.168.0.0/16"},
+    {q:"What is APIPA?", a:"Automatic Private IP Addressing — assigns 169.254.x.x when DHCP fails"},
+    {q:"What is a broadcast address?", a:"The last IP in a subnet — used to send data to all hosts in the subnet (e.g., 192.168.1.255/24)"},
+    {q:"What is half-duplex vs full-duplex?", a:"Half-duplex = one direction at a time (old hubs) · Full-duplex = simultaneous send/receive (modern switches)"},
+    {q:"What does CSMA/CD stand for?", a:"Carrier Sense Multiple Access with Collision Detection — used in wired Ethernet to handle collisions"},
+    {q:"What is a trunk port?", a:"A switch port that carries traffic for multiple VLANs using 802.1Q tagging — typically connects switches or to routers"},
+    {q:"What is an access port?", a:"A switch port assigned to a single VLAN — connects end devices like PCs and printers"},
+    {q:"What is the difference between TCP and UDP?", a:"TCP = reliable, ordered, connection-oriented (3-way handshake) · UDP = fast, connectionless, no delivery guarantee"},
+    {q:"What is the TCP 3-way handshake?", a:"SYN → SYN-ACK → ACK — establishes a connection before data transfer"},
+    {q:"What is ICMP used for?", a:"Internet Control Message Protocol — used by ping and traceroute to test connectivity and report errors"},
+    {q:"What is the purpose of DHCP?", a:"Automatically assigns IP address, subnet mask, default gateway, and DNS server to network clients"},
+    {q:"What is a proxy server?", a:"An intermediary that forwards client requests to servers — provides caching, filtering, and anonymity"},
+    {q:"What is QoS?", a:"Quality of Service — prioritizes certain traffic types (e.g., voice/video) to ensure performance on congested networks"},
+    {q:"What does RDP use and on which port?", a:"Remote Desktop Protocol — port 3389 TCP — allows GUI remote access to Windows machines"},
+    {q:"What is the 802.11ac standard?", a:"Wi-Fi 5 — 5 GHz band, up to ~3.5 Gbps using MU-MIMO, 160 MHz channel width"},
+    {q:"What is 802.11ax?", a:"Wi-Fi 6 — operates on 2.4 GHz and 5 GHz, uses OFDMA for better efficiency in dense environments"},
+    {q:"What is a DMZ?", a:"Demilitarized Zone — a network segment that exposes external-facing services (web, email) while protecting the internal network"},
+    {q:"What is port mirroring (SPAN)?", a:"Copies traffic from one switch port to another for monitoring/analysis with tools like Wireshark"},
+    {q:"What is LACP?", a:"Link Aggregation Control Protocol — bundles multiple physical links into one logical link for redundancy and increased bandwidth"},
+    {q:"What is the difference between latency and jitter?", a:"Latency = delay in transmission · Jitter = variation in latency — both affect VoIP/video quality"},
+    {q:"What is an IDS vs IPS?", a:"IDS = Intrusion Detection System (alerts only) · IPS = Intrusion Prevention System (detects AND blocks threats)"},
+    {q:"What is BGP?", a:"Border Gateway Protocol — the routing protocol used between ISPs and autonomous systems on the internet (the 'glue' of the internet)"},
+    {q:"What is a MAC address?", a:"48-bit hardware address burned into a NIC — format: XX:XX:XX:XX:XX:XX — first 3 octets = OUI (manufacturer)"},
+    {q:"What does ipconfig /release and /renew do?", a:"Releases the current DHCP IP lease (/release) then requests a new IP from the DHCP server (/renew)"},
+    {q:"What is split horizon?", a:"A routing loop prevention method — a route is not advertised back out the same interface it was learned on"},
+    {q:"What is SNMP used for?", a:"Simple Network Management Protocol (port 161 UDP) — monitors and manages network devices"},
+  ]
+},
+
+secplus: {
+  title: "🔐 Security+ Flashcards",
+  cards: [
+    {q:"What is a zero-day vulnerability?", a:"A flaw exploited before the vendor has released a patch — 'day zero' because the developer has had zero days to fix it"},
+    {q:"What is phishing vs spear phishing?", a:"Phishing = mass generic email attacks · Spear phishing = targeted attack against a specific person/org using personal details"},
+    {q:"What is a man-in-the-middle (MitM) attack?", a:"An attacker secretly intercepts and potentially alters communications between two parties who believe they're talking directly"},
+    {q:"What is SQL injection?", a:"Inserting malicious SQL code into an input field to manipulate the backend database — can dump, modify, or delete data"},
+    {q:"What is the CIA Triad?", a:"Confidentiality (only authorized access) · Integrity (data not altered) · Availability (systems accessible when needed)"},
+    {q:"What is symmetric vs asymmetric encryption?", a:"Symmetric = same key to encrypt/decrypt (fast) · Asymmetric = public key encrypts, private key decrypts (slower, used for key exchange)"},
+    {q:"What is AES?", a:"Advanced Encryption Standard — symmetric block cipher with 128/192/256-bit keys — the gold standard for data encryption"},
+    {q:"What is RSA?", a:"Asymmetric algorithm using large prime factorization — common key sizes: 2048 or 4096 bits — used for key exchange and signatures"},
+    {q:"What is a digital signature?", a:"Encrypted hash of data signed with the sender's private key — proves authenticity and integrity; verified with sender's public key"},
+    {q:"What is PKI?", a:"Public Key Infrastructure — the framework of CAs, certificates, and policies that manages digital certificates and public key encryption"},
+    {q:"What is a Certificate Authority (CA)?", a:"A trusted entity that issues and signs digital certificates — validates the identity of certificate holders"},
+    {q:"What is MFA?", a:"Multi-Factor Authentication — requires 2+ of: something you know (password), something you have (token), something you are (biometric)"},
+    {q:"What is the principle of least privilege?", a:"Users/processes should have only the minimum permissions necessary to perform their job — reduces attack surface"},
+    {q:"What is a DDoS attack?", a:"Distributed Denial of Service — overwhelms a target with traffic from many sources (botnet) to make it unavailable"},
+    {q:"What is ransomware?", a:"Malware that encrypts a victim's files and demands payment (usually cryptocurrency) for the decryption key"},
+    {q:"What is a rootkit?", a:"Malware that hides itself and other malicious software deep in the OS, often at kernel level — very hard to detect/remove"},
+    {q:"What is social engineering?", a:"Manipulating people into revealing confidential information or performing actions — exploits human psychology, not technology"},
+    {q:"What is vishing?", a:"Voice phishing — using phone calls to deceive victims into providing sensitive info (credentials, account numbers)"},
+    {q:"What is pretexting?", a:"Creating a fabricated scenario (pretext) to manipulate a victim — attacker impersonates someone to gain trust"},
+    {q:"What does TLS do?", a:"Transport Layer Security — encrypts data in transit between client and server (replaced SSL) — used by HTTPS"},
+    {q:"What is hashing?", a:"A one-way function that converts data to a fixed-length string (digest) — same input always produces same output — cannot be reversed"},
+    {q:"What is SHA-256?", a:"Secure Hash Algorithm producing a 256-bit digest — commonly used for file integrity, digital signatures, and certificates"},
+    {q:"What is a salt in password hashing?", a:"A random value added to a password before hashing — prevents rainbow table attacks by ensuring identical passwords have different hashes"},
+    {q:"What is RBAC?", a:"Role-Based Access Control — permissions are assigned to roles, and users are assigned to roles — simplifies permission management"},
+    {q:"What is a firewall?", a:"A network security device that monitors/controls incoming and outgoing traffic based on predefined security rules"},
+    {q:"What is a WAF?", a:"Web Application Firewall — filters HTTP/HTTPS traffic to protect web apps from attacks like SQLi, XSS, and CSRF"},
+    {q:"What is cross-site scripting (XSS)?", a:"Injecting malicious scripts into a trusted website that then executes in other users' browsers — can steal session cookies"},
+    {q:"What is a vulnerability scan vs penetration test?", a:"Vuln scan = automated tool identifies known weaknesses · Pen test = human actively exploits vulnerabilities to assess real-world risk"},
+    {q:"What is defense in depth?", a:"A security strategy using multiple layers of controls (physical, technical, administrative) so one failure doesn't compromise everything"},
+    {q:"What is SIEM?", a:"Security Information and Event Management — aggregates and analyzes log data from across the network to detect threats in real time"},
+    {q:"What is an access control list (ACL)?", a:"A set of rules that permits or denies traffic based on criteria like IP address, port, or protocol — applied to interfaces on routers/firewalls"},
+    {q:"What is steganography?", a:"Hiding secret data inside ordinary, non-secret files (like images or audio) — the existence of the message is concealed"},
+    {q:"What is a honeypot?", a:"A decoy system designed to attract attackers — used to detect intrusions, study attack methods, and divert attackers from real systems"},
+    {q:"What is the difference between authentication and authorization?", a:"Authentication = verifying WHO you are (login) · Authorization = determining WHAT you're allowed to do (permissions)"},
+    {q:"What is a brute force attack?", a:"Systematically trying every possible combination of characters to crack a password — countered by lockout policies and strong passwords"},
+    {q:"What is a rainbow table attack?", a:"Uses a pre-computed table of hash values to reverse-lookup plaintext passwords — countered by salting hashes"},
+    {q:"What is HTTPS and what port does it use?", a:"HTTP Secure — HTTP over TLS/SSL — port 443 TCP — encrypts web traffic between browser and server"},
+    {q:"What is a VPN?", a:"Virtual Private Network — creates an encrypted tunnel over a public network, extending a private network securely to remote users"},
+    {q:"What is IPsec?", a:"A suite of protocols that authenticates and encrypts IP packets — operates at Layer 3 — used in VPNs (tunnel and transport modes)"},
+    {q:"What is a security baseline?", a:"A set of minimum security standards applied consistently to systems — defines the 'secure by default' configuration"},
+    {q:"What is an insider threat?", a:"A security risk from someone within the organization (employee, contractor) who misuses authorized access maliciously or accidentally"},
+    {q:"What is data loss prevention (DLP)?", a:"Tools and policies that detect and prevent unauthorized transmission of sensitive data outside the organization"},
+    {q:"What does CVE stand for?", a:"Common Vulnerabilities and Exposures — a publicly disclosed list of known cybersecurity vulnerabilities with unique identifiers (CVE-YEAR-#####)"},
+    {q:"What is the MITRE ATT&CK framework?", a:"A knowledge base of adversary tactics and techniques based on real-world observations — used for threat modeling and defense"},
+    {q:"What is patch management?", a:"The process of regularly applying software updates and security fixes to eliminate known vulnerabilities across systems"},
+  ]
+},
+
+aplus: {
+  title: "💻 A+ Flashcards",
+  cards: [
+    {q:"What does POST stand for?", a:"Power-On Self-Test — firmware diagnostic run at startup that checks CPU, RAM, and hardware before booting the OS"},
+    {q:"What is the difference between BIOS and UEFI?", a:"BIOS = older firmware, 16-bit, MBR only, 2TB max · UEFI = modern firmware, 64-bit, GPT support, drives >2TB, Secure Boot"},
+    {q:"What is the purpose of thermal paste?", a:"Improves heat transfer between CPU and heatsink by filling microscopic air gaps — prevents CPU overheating"},
+    {q:"What does RAM stand for and what type is used in modern desktops?", a:"Random Access Memory — modern desktops use DDR4 or DDR5 SDRAM — volatile (loses data when power is off)"},
+    {q:"What is the difference between HDD and SSD?", a:"HDD = spinning magnetic platters, slower, cheaper per GB · SSD = flash memory, faster, more expensive, no moving parts"},
+    {q:"What is NVMe?", a:"Non-Volatile Memory Express — a high-speed SSD protocol over PCIe — much faster than SATA SSDs (M.2 slot)"},
+    {q:"What does GPU stand for?", a:"Graphics Processing Unit — dedicated processor for rendering graphics — can also be used for parallel computing (AI/mining)"},
+    {q:"What is the PCIe slot used for?", a:"Peripheral Component Interconnect Express — high-speed expansion slot for GPUs, NVMe SSDs, network cards, and capture cards"},
+    {q:"What connector does SATA use and what is it for?", a:"L-shaped data connector — connects HDDs, SSDs, and optical drives to the motherboard — up to 600 MB/s (SATA III)"},
+    {q:"What is the 24-pin ATX connector?", a:"Main power connector from PSU to motherboard — provides multiple voltage rails (3.3V, 5V, 12V)"},
+    {q:"What does ESD stand for and why does it matter?", a:"Electrostatic Discharge — static electricity that can permanently damage sensitive computer components — use anti-static strap"},
+    {q:"What is a KVM switch?", a:"Keyboard, Video, Mouse switch — allows one set of input/display devices to control multiple computers"},
+    {q:"What is the difference between MBR and GPT?", a:"MBR = Master Boot Record, max 4 primary partitions, 2TB limit · GPT = GUID Partition Table, 128 partitions, 9.4 ZB limit"},
+    {q:"What are the Windows 10/11 editions?", a:"Home (consumer) · Pro (business features, BitLocker, RDP) · Enterprise (large org, advanced management) · Education"},
+    {q:"What does msconfig do?", a:"System Configuration utility — manages startup programs, boot options, and services in Windows"},
+    {q:"What command repairs Windows system files?", a:"sfc /scannow (System File Checker) — scans and repairs corrupted Windows system files"},
+    {q:"What is the Windows Task Manager shortcut?", a:"Ctrl+Shift+Esc — or Ctrl+Alt+Del then select Task Manager — shows processes, performance, services"},
+    {q:"What is Safe Mode?", a:"Windows startup option that loads minimal drivers — used to troubleshoot and remove malware, fix driver issues"},
+    {q:"What is BitLocker?", a:"Windows full-disk encryption (Pro/Enterprise only) — uses TPM chip to encrypt entire drives protecting data at rest"},
+    {q:"What does ipconfig /flushdns do?", a:"Clears the local DNS resolver cache — fixes issues where outdated DNS records cause wrong website resolution"},
+    {q:"What is a driver?", a:"Software that allows the OS to communicate with hardware — without drivers, hardware cannot function with the OS"},
+    {q:"What port does RDP use?", a:"Port 3389 TCP — Remote Desktop Protocol — allows GUI access to Windows from another device"},
+    {q:"What is the difference between 32-bit and 64-bit OS?", a:"32-bit (x86) = max 4GB RAM · 64-bit (x64) = theoretically 18 EB RAM, better performance, required for modern software"},
+    {q:"What does RAID 5 require and what does it do?", a:"Minimum 3 drives — stripes data with distributed parity — can survive 1 drive failure, good balance of speed and redundancy"},
+    {q:"What is a trojan?", a:"Malware disguised as legitimate software — creates a backdoor, steals data, or damages the system after installation"},
+    {q:"What does the net user command do?", a:"Windows CLI command to create, modify, or view local user accounts (e.g., net user admin * to reset password)"},
+    {q:"What is a UPS?", a:"Uninterruptible Power Supply — battery backup that provides power during outages and protects against surges/sags"},
+    {q:"What is the purpose of a surge protector?", a:"Absorbs voltage spikes to protect equipment — MOV (Metal Oxide Varistor) component absorbs excess energy"},
+    {q:"What is the difference between USB 2.0, 3.0, and 3.1?", a:"USB 2.0 = 480 Mbps · USB 3.0/3.1 Gen 1 = 5 Gbps · USB 3.1 Gen 2 = 10 Gbps (blue ports = 3.0)"},
+    {q:"What is Bluetooth used for?", a:"Short-range wireless PAN (Personal Area Network) — up to ~10m — connects peripherals like keyboards, mice, headsets"},
+    {q:"What does the Event Viewer show?", a:"Windows log viewer showing System, Application, and Security logs — helps diagnose errors, crashes, and security events"},
+    {q:"What is a TPM chip?", a:"Trusted Platform Module — dedicated security chip that stores encryption keys, certificates, and passwords — required for Windows 11"},
+    {q:"What is Secure Boot?", a:"UEFI feature that prevents unauthorized OSes and bootloaders from loading — only allows signed boot software"},
+    {q:"What does DISM do?", a:"Deployment Image Servicing and Management — repairs Windows image and system files, used when sfc /scannow fails"},
+    {q:"What is the Windows Registry?", a:"A hierarchical database storing configuration settings for Windows OS, users, hardware, and applications"},
+    {q:"What are the five steps of the CompTIA troubleshooting methodology?", a:"1-Identify the problem · 2-Establish a theory · 3-Test the theory · 4-Establish a plan & implement · 5-Verify & document"},
+    {q:"What is a workgroup vs a domain?", a:"Workgroup = peer-to-peer, each PC manages its own accounts, max ~20 computers · Domain = centralized auth via Active Directory"},
+    {q:"What is virtualization?", a:"Running multiple virtual machines on one physical host using a hypervisor — isolates OSes sharing the same hardware"},
+    {q:"What does the acronym CPU stand for?", a:"Central Processing Unit — the primary component that executes program instructions — contains cores, cache, and control unit"},
+    {q:"What is the function of the northbridge and southbridge?", a:"Northbridge = high-speed connection between CPU, RAM, and GPU · Southbridge = slower I/O: USB, SATA, PCI — many modern CPUs integrate both"},
+  ]
+},
+
+ccna1: {
+  title: "🔵 CCNA 1 Flashcards",
+  cards: [
+    {q:"What are the layers of the TCP/IP model?", a:"4-Application · 3-Transport · 2-Internet · 1-Network Access (Link)"},
+    {q:"What Cisco IOS command enters privileged exec mode?", a:"enable  (from user exec mode — prompt changes from > to #)"},
+    {q:"What command enters global configuration mode?", a:"configure terminal  (shortcut: conf t) — prompt shows (config)#"},
+    {q:"What command saves the running config to startup config?", a:"copy running-config startup-config  (shortcut: copy run start)"},
+    {q:"What command shows the running configuration?", a:"show running-config  (shortcut: show run)"},
+    {q:"What command shows interface status and IP addresses?", a:"show ip interface brief  — displays all interfaces, IP, and status (up/up, up/down, etc.)"},
+    {q:"What does 'up/up' mean in show ip interface brief?", a:"Line protocol up / Interface up — both physical and data link layers are operational"},
+    {q:"What does 'administratively down' mean?", a:"Interface has been manually shut down with the shutdown command — use no shutdown to enable it"},
+    {q:"How do you assign an IP to a router interface?", a:"interface GigabitEthernet0/0 → ip address 192.168.1.1 255.255.255.0 → no shutdown"},
+    {q:"What command sets the hostname of a Cisco device?", a:"hostname NewName  (in global config mode)"},
+    {q:"How do you set a console password in Cisco IOS?", a:"line console 0 → password cisco → login"},
+    {q:"How do you encrypt all plaintext passwords in Cisco IOS?", a:"service password-encryption  (in global config mode — uses weak type 7 encryption)"},
+    {q:"What is the enable secret command and why is it better?", a:"enable secret cisco — sets a MD5-hashed privileged exec password — more secure than enable password"},
+    {q:"What command creates a login banner in Cisco IOS?", a:"banner motd # message # — Message of the Day banner shown at login"},
+    {q:"What is a subnet mask and what does /24 equal?", a:"Defines the network vs host portion of an IP — /24 = 255.255.255.0 — first 24 bits are network"},
+    {q:"How many usable hosts does a /28 network have?", a:"2⁴ - 2 = 14 usable hosts (4 host bits, subtract network and broadcast)"},
+    {q:"What is the network address of 192.168.1.130/26?", a:"192.168.1.128 — block size is 64, networks are .0, .64, .128, .192"},
+    {q:"What IPv6 address type replaces IPv4 private addresses?", a:"Unique Local Addresses (ULA) — FC00::/7 range — not routable on the internet"},
+    {q:"What is a link-local IPv6 address?", a:"FE80::/10 — automatically configured on every IPv6 interface — used for local network communication only"},
+    {q:"What is EUI-64?", a:"Method to auto-generate a 64-bit IPv6 interface ID from a 48-bit MAC address by inserting FFFE in the middle and flipping bit 7"},
+    {q:"What is the IPv6 loopback address?", a:"::1/128 — equivalent to 127.0.0.1 in IPv4"},
+    {q:"What command shows the MAC address table on a Cisco switch?", a:"show mac address-table"},
+    {q:"What is the purpose of the ARP table?", a:"Maps IP addresses to MAC addresses — view with show arp (router) or arp -a (Windows/Linux)"},
+    {q:"What is a collision domain?", a:"A network segment where devices can cause frame collisions — each switch port is its own collision domain"},
+    {q:"What is a broadcast domain?", a:"A set of devices that receive broadcast traffic — a router separates broadcast domains; switches do not"},
+    {q:"What command traces the path packets take to a destination?", a:"traceroute IP-address  (Cisco) — tracert on Windows"},
+    {q:"What does ping test?", a:"Tests Layer 3 connectivity using ICMP Echo Request/Reply — verifies IP reachability between hosts"},
+    {q:"What is a straight-through cable used for?", a:"Connects different device types: PC to switch, switch to router — uses same pin-out on both ends (568B-568B)"},
+    {q:"What is a crossover cable used for?", a:"Connects same device types: switch to switch, PC to PC — pins 1&2 cross with 3&6"},
+    {q:"What is Auto-MDIX?", a:"Automatic Medium-Dependent Interface Crossover — modern devices detect cable type and adjust — eliminates need for crossover cables"},
+    {q:"What is the default administrative distance of a static route?", a:"1 — only directly connected routes (AD=0) are more trusted — OSPF=110, EIGRP=90, RIP=120"},
+    {q:"What command adds a default static route on a Cisco router?", a:"ip route 0.0.0.0 0.0.0.0 [next-hop IP or exit interface]"},
+    {q:"What is full-duplex and what enables it on Ethernet?", a:"Simultaneous send and receive — enabled by switches (each port is its own collision domain, eliminating CSMA/CD)"},
+    {q:"What layers do routers, switches, and hubs operate at?", a:"Router = Layer 3 · Switch = Layer 2 · Hub = Layer 1"},
+    {q:"What is the purpose of DNS?", a:"Domain Name System — translates human-readable hostnames (google.com) to IP addresses — port 53 TCP/UDP"},
+  ]
+},
+
+ccna2: {
+  title: "🔵 CCNA 2 Flashcards",
+  cards: [
+    {q:"What is a VLAN?", a:"Virtual LAN — logical grouping of switch ports into separate broadcast domains regardless of physical location"},
+    {q:"What is the default VLAN on a Cisco switch?", a:"VLAN 1 — all ports are in VLAN 1 by default — best practice: don't use VLAN 1 for user traffic"},
+    {q:"How do you assign a port to a VLAN in Cisco IOS?", a:"interface Fa0/1 → switchport mode access → switchport access vlan 10"},
+    {q:"What is a trunk port?", a:"Switch port that carries traffic for multiple VLANs using 802.1Q tagging — connects switches or switch-to-router"},
+    {q:"How do you configure a trunk port on a Cisco switch?", a:"interface Fa0/24 → switchport mode trunk → switchport trunk allowed vlan all"},
+    {q:"What is inter-VLAN routing?", a:"Routing traffic between VLANs — requires Layer 3 device (router or L3 switch)"},
+    {q:"What is 'Router on a Stick'?", a:"Single physical router interface with subinterfaces for each VLAN — one cable from router to switch trunk port"},
+    {q:"How do you create a subinterface for VLAN 10?", a:"interface G0/0.10 → encapsulation dot1Q 10 → ip address 192.168.10.1 255.255.255.0"},
+    {q:"What is STP and why is it needed?", a:"Spanning Tree Protocol (802.1D) — prevents Layer 2 loops by blocking redundant paths — loops would cause broadcast storms"},
+    {q:"What are the STP port states?", a:"Blocking → Listening → Learning → Forwarding (Disabled is also a state) — total convergence ~50 seconds"},
+    {q:"What is RSTP?", a:"Rapid Spanning Tree Protocol (802.1w) — converges in ~6 seconds vs 50 seconds for STP — backwards compatible"},
+    {q:"How is the STP root bridge elected?", a:"Switch with the lowest Bridge ID — Bridge ID = priority (default 32768) + VLAN ID + MAC address"},
+    {q:"What is a PortFast port?", a:"Switch port that skips STP Listening/Learning states — for end devices only — enabled with spanning-tree portfast"},
+    {q:"What is BPDU Guard?", a:"Disables a PortFast port if it receives a BPDU — prevents rogue switches from being connected to access ports"},
+    {q:"What is EtherChannel?", a:"Bundles 2-8 physical links into one logical link — provides redundancy and increased bandwidth"},
+    {q:"What is the difference between LACP and PAgP?", a:"LACP (802.3ad) = open standard · PAgP = Cisco proprietary — both negotiate EtherChannel formation automatically"},
+    {q:"What are LACP port modes?", a:"Active = actively negotiates EtherChannel · Passive = waits for negotiation (Active-Active or Active-Passive works)"},
+    {q:"What is OSPFv2?", a:"Open Shortest Path First v2 — link-state routing protocol for IPv4 — uses Dijkstra's algorithm, AD=110"},
+    {q:"What is the OSPF router ID?", a:"32-bit value identifying the router in OSPF — chosen by: 1) manual config, 2) highest loopback IP, 3) highest active interface IP"},
+    {q:"What is the OSPF DR/BDR?", a:"Designated Router / Backup Designated Router — elected on broadcast networks to reduce LSA flooding — highest priority/RID wins"},
+    {q:"What command enables OSPF on a Cisco router?", a:"router ospf 1 → network 192.168.1.0 0.0.0.255 area 0"},
+    {q:"What does the network command wildcard mask mean in OSPF?", a:"Inverse of subnet mask — 0.0.0.255 = match any host in that /24 network — 0 bits must match exactly"},
+    {q:"What is a loopback interface and why use it with OSPF?", a:"Virtual, always-up interface — used as OSPF router ID because it never goes down (interface loopback 0 → ip address)"},
+    {q:"What is the difference between OSPF area 0 and other areas?", a:"Area 0 = backbone area — all other areas must connect to area 0 — single-area OSPF uses only area 0"},
+    {q:"What is the native VLAN?", a:"VLAN that carries untagged traffic on a trunk port — default is VLAN 1 — both ends of trunk must match"},
+    {q:"What command shows VLAN assignments on a switch?", a:"show vlan brief"},
+    {q:"What command shows trunk port status?", a:"show interfaces trunk"},
+    {q:"What is WLAN security WPA2 vs WPA3?", a:"WPA2 = AES/CCMP encryption, 802.1X or PSK · WPA3 = stronger SAE (replaces PSK), forward secrecy, resistant to offline attacks"},
+    {q:"What is an SSID?", a:"Service Set Identifier — the name of a wireless network broadcast by an access point"},
+    {q:"What is the difference between 2.4 GHz and 5 GHz Wi-Fi?", a:"2.4 GHz = longer range, more interference, slower · 5 GHz = shorter range, less interference, much faster"},
+    {q:"What is DHCP snooping?", a:"Switch security feature that validates DHCP messages — only trusted ports can send DHCP server replies — prevents rogue DHCP"},
+    {q:"What is Dynamic ARP Inspection (DAI)?", a:"Validates ARP packets against DHCP snooping binding table — prevents ARP spoofing/poisoning attacks"},
+    {q:"What is port security?", a:"Switch feature that restricts a port to specific MAC addresses — can shut down port if violation occurs"},
+    {q:"What does show spanning-tree show?", a:"STP topology including root bridge, port roles, and states for each VLAN"},
+    {q:"What is the show ip ospf neighbor command used for?", a:"Displays OSPF neighbor relationships including state (Full = converged), router ID, and interface"},
+  ]
+},
+
+ccna3: {
+  title: "🔵 CCNA 3 Flashcards",
+  cards: [
+    {q:"What is multi-area OSPF and why use it?", a:"Divides the OSPF network into multiple areas connected to backbone (area 0) — reduces LSA flooding, speeds convergence, smaller routing tables"},
+    {q:"What is an ABR in OSPF?", a:"Area Border Router — connects two or more OSPF areas — maintains separate link-state databases for each area"},
+    {q:"What is an ASBR in OSPF?", a:"Autonomous System Boundary Router — connects OSPF domain to external routing domains — redistributes external routes into OSPF"},
+    {q:"What is route summarization?", a:"Combining multiple specific routes into one summary route — reduces routing table size and LSA flooding (e.g., 192.168.0-3.0/24 → 192.168.0.0/22)"},
+    {q:"What are ACLs and what are the two types?", a:"Access Control Lists — filter traffic by permit/deny rules · Standard ACL = filter by source IP only (1-99) · Extended ACL = filter by src/dst IP, protocol, port (100-199)"},
+    {q:"Where should you place a standard ACL?", a:"As close to the destination as possible — because it only matches source IP and would block all traffic from that source if placed near origin"},
+    {q:"Where should you place an extended ACL?", a:"As close to the source as possible — stops unwanted traffic early, before it consumes bandwidth crossing the network"},
+    {q:"What does the implicit deny rule mean in ACLs?", a:"All ACLs end with an invisible 'deny any any' — any traffic not explicitly permitted is dropped"},
+    {q:"What is NAT and what are its three types?", a:"Network Address Translation — maps private to public IPs · Static NAT = 1:1 · Dynamic NAT = pool · PAT/NAT Overload = many:1 using ports"},
+    {q:"What command shows NAT translations on a Cisco router?", a:"show ip nat translations — displays active NAT mapping table"},
+    {q:"What is QoS and why is it needed?", a:"Quality of Service — prioritizes time-sensitive traffic (voice, video) over less critical traffic on congested networks"},
+    {q:"What are the three QoS models?", a:"Best-effort (no QoS) · Integrated Services (IntServ) — reserves bandwidth per flow · Differentiated Services (DiffServ) — marks/classifies traffic"},
+    {q:"What is DSCP?", a:"Differentiated Services Code Point — a 6-bit field in IP header that marks packet priority — EF (Expedited Forwarding) for VoIP"},
+    {q:"What is SNMP and how does it work?", a:"Simple Network Management Protocol (UDP 161/162) — manager polls agents on devices; agents can send traps (unsolicited alerts)"},
+    {q:"What is NetFlow?", a:"Cisco technology that collects IP traffic statistics as it flows through router interfaces — used for traffic analysis and billing"},
+    {q:"What is syslog?", a:"System logging protocol (UDP 514) — sends log messages to a centralized server · Severity 0=Emergency to 7=Debug"},
+    {q:"What is the purpose of NTP?", a:"Network Time Protocol (UDP 123) — synchronizes clocks across network devices — critical for logs, certificates, and Kerberos"},
+    {q:"What is SDN?", a:"Software-Defined Networking — separates the control plane (routing decisions) from the data plane (forwarding) — centralized controller manages network"},
+    {q:"What is the control plane vs data plane?", a:"Control plane = where routing decisions are made (CPU, routing protocols) · Data plane = where packets are actually forwarded (hardware/ASIC)"},
+    {q:"What is an API in networking?", a:"Application Programming Interface — allows software to interact with network devices programmatically — REST APIs use HTTP methods (GET, POST, PUT, DELETE)"},
+    {q:"What is Ansible in network automation?", a:"Agentless automation tool using YAML playbooks to configure network devices — connects via SSH — no software needed on managed devices"},
+    {q:"What is JSON?", a:"JavaScript Object Notation — lightweight data format using key-value pairs — widely used in REST APIs and network automation"},
+    {q:"What is YANG?", a:"Yet Another Next Generation — data modeling language that defines the structure of network configuration and state data — used with NETCONF"},
+    {q:"What is NETCONF?", a:"Network Configuration Protocol — uses XML/YANG to configure network devices — more structured than CLI, uses SSH transport"},
+    {q:"What is a WAN?", a:"Wide Area Network — connects geographically separated networks — examples: MPLS, fiber, broadband, LTE/5G, SD-WAN"},
+    {q:"What is MPLS?", a:"Multiprotocol Label Switching — forwards packets using labels instead of IP lookups — used by service providers for fast, reliable WAN circuits"},
+    {q:"What is SD-WAN?", a:"Software-Defined WAN — uses centralized control to intelligently route traffic across multiple WAN connections (MPLS, broadband, LTE) — cost-effective"},
+    {q:"What is a site-to-site VPN?", a:"Encrypted tunnel between two sites' gateways over the internet — transparent to end users, extends private network across WAN"},
+    {q:"What is GRE?", a:"Generic Routing Encapsulation — tunneling protocol that encapsulates one protocol inside another — often used with IPsec for site-to-site VPNs"},
+    {q:"What command shows OSPF routing table entries?", a:"show ip route ospf — displays all routes learned via OSPF (marked with 'O' or 'O IA' for inter-area)"},
+    {q:"What is a default route and when is it used?", a:"ip route 0.0.0.0 0.0.0.0 — the 'last resort' route used when no specific match exists — typically points to ISP gateway"},
+    {q:"What is route redistribution?", a:"The process of importing routes from one routing protocol into another — requires an ASBR and careful planning to avoid loops"},
+    {q:"What are virtualization functions NFV and SDN used for?", a:"NFV = virtualizes network functions (firewall, router) as VMs · SDN = separates control/data plane — together enable flexible, programmable networks"},
+    {q:"What is the purpose of the ip helper-address command?", a:"Forwards DHCP broadcast requests as unicast to a DHCP server on a different subnet — needed when clients and DHCP server are on different VLANs"},
+    {q:"What is convergence in routing?", a:"The state where all routers in a network have consistent, accurate routing tables — during convergence, routing may be temporarily incorrect"},
+  ]
+},
+
+dirsvcs: {
+  title: "🗂️ Directory Services Flashcards",
+  cards: [
+    {q:"What is Active Directory?", a:"Microsoft's directory service — centralized authentication and authorization for Windows networks — stores objects like users, computers, and groups"},
+    {q:"What is a domain in Active Directory?", a:"A logical grouping of network objects sharing a common database, security policies, and authentication — the basic unit of AD"},
+    {q:"What is a domain controller (DC)?", a:"A Windows Server running Active Directory Domain Services (AD DS) — authenticates users, enforces policies, and replicates directory data"},
+    {q:"What is an OU (Organizational Unit)?", a:"A container within a domain used to organize objects (users, computers, groups) and apply Group Policy Objects (GPOs)"},
+    {q:"What is a GPO?", a:"Group Policy Object — a set of settings applied to users or computers in an OU, site, or domain — controls security, software, and desktop config"},
+    {q:"What is the difference between a user account and a computer account?", a:"User accounts authenticate people · Computer accounts authenticate machines — both are security principals in AD"},
+    {q:"What is a security group vs distribution group?", a:"Security group = used to assign permissions to resources · Distribution group = used for email lists only — no security permissions"},
+    {q:"What is the difference between global, domain local, and universal groups?", a:"Global = members from same domain · Domain Local = permissions for local domain resources · Universal = spans multiple domains in a forest"},
+    {q:"What is Kerberos?", a:"The default authentication protocol in Active Directory — uses tickets (TGT, TGS) for single sign-on — port 88 TCP/UDP"},
+    {q:"What is a TGT?", a:"Ticket Granting Ticket — issued by the KDC after initial login — used to request service tickets without re-entering credentials"},
+    {q:"What is the KDC?", a:"Key Distribution Center — the Kerberos service running on the domain controller — issues TGTs and service tickets"},
+    {q:"What is NTLM and when is it used?", a:"NT LAN Manager — older challenge-response authentication — fallback when Kerberos fails or for non-domain workgroup authentication"},
+    {q:"What is LDAP and what port does it use?", a:"Lightweight Directory Access Protocol — used to query and modify AD objects — TCP 389 (or 636 for LDAPS over SSL)"},
+    {q:"What is the Global Catalog?", a:"A partial replica of all objects in the AD forest — enables cross-domain searches — GC server listens on port 3268"},
+    {q:"What is a forest in Active Directory?", a:"The top-level AD structure — a collection of one or more domains sharing a schema, configuration, and global catalog"},
+    {q:"What is a trust relationship?", a:"Allows users in one domain to access resources in another — all domains in a forest have implicit two-way transitive trusts"},
+    {q:"What is AD replication?", a:"The process of synchronizing directory changes between domain controllers — uses sites and site links to manage replication traffic"},
+    {q:"What is a site in Active Directory?", a:"A collection of well-connected IP subnets — used to control and optimize AD replication and logon traffic between physical locations"},
+    {q:"What is DNS integration with AD?", a:"AD requires DNS — DCs register SRV records so clients can find domain controllers — AD zones are best stored in AD itself (AD-integrated zones)"},
+    {q:"What is the sysvol share?", a:"A replicated folder on all DCs containing GPO files, logon scripts, and group policy templates — accessible via \\domain\SYSVOL"},
+    {q:"What is a FSMO role?", a:"Flexible Single Master Operation — 5 special roles in AD: Schema Master, Domain Naming Master, PDC Emulator, RID Master, Infrastructure Master"},
+    {q:"What does the PDC Emulator do?", a:"Time synchronization source for domain · handles password changes · processes older NTLM authentication · most critical FSMO role"},
+    {q:"What is roaming profile?", a:"User profile stored on a network share — loads on any domain computer the user logs into — settings follow the user"},
+    {q:"What is Group Policy inheritance?", a:"GPOs applied in order: Local → Site → Domain → OU (LSDOU) — lower-level GPOs can override higher-level ones (unless enforced)"},
+    {q:"What does 'gpupdate /force' do?", a:"Immediately refreshes Group Policy on a Windows machine — forces all GPOs to reapply without waiting for the refresh interval"},
+    {q:"What is the default Group Policy refresh interval?", a:"Every 90 minutes (with random 0-30 minute offset) for computers/users · Every 5 minutes for domain controllers"},
+    {q:"What is delegation of control in AD?", a:"Granting specific non-admin users permissions to manage certain AD tasks (e.g., resetting passwords in specific OU) without full admin rights"},
+    {q:"What command joins a computer to a domain (PowerShell)?", a:"Add-Computer -DomainName domain.com -Credential domain\\admin -Restart"},
+    {q:"What is dcpromo?", a:"Old command (Server 2008 and earlier) to promote/demote a domain controller — replaced by Server Manager/PowerShell Install-ADDSDomainController in 2012+"},
+    {q:"What is the difference between AD DS, AD CS, and AD FS?", a:"AD DS = core directory service · AD CS = Certificate Authority (PKI) · AD FS = Federation Services (SSO with external partners/cloud)"},
+    {q:"What is the Active Directory Recycle Bin?", a:"Feature (2008 R2+) that allows deleted AD objects to be restored without rebooting a DC from backup — must be enabled"},
+    {q:"What is a managed service account (MSA)?", a:"AD account for services — password automatically managed by AD, no admin needs to track it — tied to a specific computer"},
+    {q:"What is the netlogon share used for?", a:"Contains logon scripts and is replicated to all DCs — clients access \\domain\\NETLOGON to run login scripts"},
+    {q:"What does the command Get-ADUser -Filter * do?", a:"PowerShell AD module command that retrieves all user objects from Active Directory — requires RSAT or AD module"},
+    {q:"What is Azure AD (Entra ID)?", a:"Microsoft's cloud-based identity service — extends AD to cloud — enables SSO for Microsoft 365, Azure, and SaaS apps"},
+  ]
+},
+
+virt: {
+  title: "⚙️ Computer Virtualization Flashcards",
+  cards: [
+    {q:"What is a hypervisor?", a:"Software that creates and manages virtual machines — abstracts physical hardware so multiple VMs can share one physical host"},
+    {q:"What is a Type 1 (bare-metal) hypervisor?", a:"Runs directly on hardware with no host OS — examples: Proxmox VE, VMware ESXi, Hyper-V, KVM — more efficient, used in production"},
+    {q:"What is a Type 2 (hosted) hypervisor?", a:"Runs on top of a host OS — examples: VirtualBox, VMware Workstation, Parallels — easier to use, used for development/labs"},
+    {q:"What is Proxmox VE?", a:"Open-source Type 1 hypervisor based on Debian Linux with KVM and LXC — manages VMs and containers via web UI on port 8006"},
+    {q:"What is KVM?", a:"Kernel-based Virtual Machine — Linux kernel module that turns Linux into a Type 1 hypervisor — Proxmox uses KVM for full VMs"},
+    {q:"What is LXC?", a:"Linux Containers — OS-level virtualization sharing the host kernel — lighter than VMs, faster to start, less isolation"},
+    {q:"What is the difference between a VM and a container?", a:"VM = full isolated OS with its own kernel · Container = shares host kernel, just isolates processes/filesystem — containers are lighter/faster"},
+    {q:"What is QEMU?", a:"Quick Emulator — hardware emulation layer used by Proxmox/KVM to emulate devices (disk controllers, NICs) for VMs"},
+    {q:"What is a snapshot in virtualization?", a:"A point-in-time capture of a VM's disk, memory, and settings — allows rollback to that exact state — not a substitute for backup"},
+    {q:"What is a VM template?", a:"A pre-configured, sealed VM used as a base for rapid deployment — clone from template to create identical VMs quickly"},
+    {q:"What is SLAT?", a:"Second Level Address Translation — CPU hardware feature (Intel EPT, AMD RVI) that improves VM memory translation performance — required for nested virtualization"},
+    {q:"What is nested virtualization?", a:"Running a hypervisor inside a VM — used for labs (running Proxmox in VMware) — requires SLAT support and hardware virt passthrough"},
+    {q:"What is CPU pinning?", a:"Assigning specific physical CPU cores to a VM — improves performance and reduces latency by preventing VM CPU from migrating"},
+    {q:"What is memory ballooning?", a:"Dynamic memory reallocation — hypervisor reclaims unused RAM from idle VMs and gives it to active VMs — requires guest drivers"},
+    {q:"What are Proxmox storage types?", a:"Directory, LVM, ZFS, NFS, CIFS, Ceph — used to store VM disk images (.qcow2, .raw) and ISO images"},
+    {q:"What is thin provisioning vs thick provisioning?", a:"Thin = allocates disk space on-demand as data is written · Thick = pre-allocates all disk space immediately — thick has more predictable performance"},
+    {q:"What is a virtual switch (vSwitch)?", a:"Software-based Layer 2 switch that connects VMs to each other and to physical network interfaces on the host"},
+    {q:"What is a Linux bridge in Proxmox?", a:"The default virtual network in Proxmox — vmbr0 connects VMs to the physical NIC — functions like a Layer 2 switch"},
+    {q:"What is a VLAN in Proxmox?", a:"VMs can be tagged with VLAN IDs on virtual interfaces — the physical NIC and upstream switch must support trunking"},
+    {q:"What is live migration?", a:"Moving a running VM from one physical host to another with minimal/no downtime — requires shared storage (or Ceph/ZFS over network)"},
+    {q:"What is HA (High Availability) in Proxmox?", a:"Proxmox cluster feature that automatically restarts VMs on another node if a node fails — requires 3+ nodes and shared storage"},
+    {q:"What is VirtIO?", a:"Paravirtualized device drivers for VMs — provides higher performance than emulated devices for disk (virtio-blk/scsi) and network (virtio-net)"},
+    {q:"What is an ISO image?", a:"An exact copy of an optical disc (CD/DVD) stored as a file — used to install operating systems in virtual machines"},
+    {q:"What is the qcow2 disk format?", a:"QEMU Copy-On-Write — Proxmox's default VM disk format — supports snapshots, thin provisioning, and compression"},
+    {q:"What is PCIe passthrough?", a:"Directly assigning a physical PCIe device (GPU, NIC) to a VM — VM gets exclusive, near-native performance access to the hardware"},
+    {q:"What command clones a VM in Proxmox CLI?", a:"qm clone <vmid> <newid> --name newname --full (--full = full clone, not linked)"},
+    {q:"What is the Proxmox web UI default port and protocol?", a:"https://hostname:8006 — HTTPS — self-signed certificate by default"},
+    {q:"What is ZFS and why use it in Proxmox?", a:"Advanced filesystem/volume manager with built-in RAID, snapshots, compression, and checksumming — great for VM storage integrity"},
+    {q:"What is the difference between a linked clone and a full clone?", a:"Linked clone = references base template disk (saves space, depends on template) · Full clone = independent copy of all data"},
+    {q:"What CPU features are required for virtualization?", a:"Intel VT-x or AMD-V (hardware virtualization) — must be enabled in BIOS/UEFI — verified with: grep -m1 vmx /proc/cpuinfo"},
+  ]
+},
+
+prog: {
+  title: "🐍 Programming Logic & Design Flashcards",
+  cards: [
+    {q:"What is a variable?", a:"A named storage location in memory that holds a value — in Python: x = 5 · in PowerShell: $x = 5"},
+    {q:"What are Python's basic data types?", a:"int (integer), float (decimal), str (string), bool (True/False), list, tuple, dict, set"},
+    {q:"What is the difference between a list and a tuple in Python?", a:"List = mutable (can change): [1,2,3] · Tuple = immutable (cannot change): (1,2,3) — tuples are faster for fixed data"},
+    {q:"What is a dictionary in Python?", a:"Key-value pairs: {'name': 'Alice', 'age': 30} — keys must be unique and immutable — access with dict['key']"},
+    {q:"What is a function?", a:"A reusable block of code defined with def in Python or function/verb-noun in PowerShell — reduces repetition, improves organization"},
+    {q:"What is the difference between a parameter and an argument?", a:"Parameter = variable in the function definition · Argument = actual value passed when calling the function"},
+    {q:"What is a return statement?", a:"Sends a value back from a function to the caller — in Python: return value — without it, function returns None"},
+    {q:"What is a for loop vs a while loop?", a:"for = iterates a known number of times or over a collection · while = repeats as long as a condition is True (can loop indefinitely)"},
+    {q:"What is a conditional statement in Python?", a:"if / elif / else — executes code blocks based on whether conditions evaluate to True or False"},
+    {q:"What is exception handling in Python?", a:"try/except/finally blocks — catches and handles runtime errors (exceptions) gracefully instead of crashing the program"},
+    {q:"What is OOP?", a:"Object-Oriented Programming — organizes code into objects with attributes (data) and methods (functions) — uses classes as blueprints"},
+    {q:"What is a class in Python?", a:"A blueprint for creating objects — defined with class ClassName: — contains __init__ method and other methods"},
+    {q:"What is __init__ in Python?", a:"The constructor method — automatically called when a new object is created from a class — initializes object attributes"},
+    {q:"What is inheritance in OOP?", a:"A child class inherits attributes and methods from a parent class — promotes code reuse — class Dog(Animal): syntax"},
+    {q:"What is encapsulation?", a:"Bundling data and methods inside a class, hiding internal details — private attributes use _ or __ prefix in Python"},
+    {q:"What is polymorphism?", a:"Different classes implementing the same method name differently — allows one interface to work with multiple data types"},
+    {q:"What is a module in Python?", a:"A .py file containing reusable code (functions, classes) — imported with import module_name or from module import function"},
+    {q:"What does import os do in Python?", a:"Imports the OS module — provides functions for file/directory operations, environment variables, and OS interaction"},
+    {q:"What is a list comprehension in Python?", a:"Compact syntax to create a list: [x*2 for x in range(10)] — creates [0,2,4,6,8,10,12,14,16,18]"},
+    {q:"What is f-string formatting in Python?", a:"f'Hello {name}!' — embeds variable values directly in strings — faster and more readable than .format() or % formatting"},
+    {q:"What is a PowerShell cmdlet?", a:"A lightweight command in PowerShell using Verb-Noun naming (Get-Process, Set-Item, Remove-Item) — returns .NET objects"},
+    {q:"What does Get-Help do in PowerShell?", a:"Displays documentation for any cmdlet — Get-Help Get-Process -Examples shows usage examples"},
+    {q:"What is the PowerShell pipeline?", a:"Passes objects (not text) from one cmdlet to the next with | — e.g., Get-Process | Sort-Object CPU | Select-Object -First 10"},
+    {q:"What is $_ in PowerShell?", a:"The automatic variable representing the current object in the pipeline — used in Where-Object and ForEach-Object"},
+    {q:"What does Get-ChildItem do in PowerShell?", a:"Lists files and directories (like ls or dir) — alias: ls, dir, gci — works with file system, registry, certificate store"},
+    {q:"What is a PowerShell script file extension?", a:".ps1 — PowerShell scripts — must have appropriate execution policy (Set-ExecutionPolicy RemoteSigned) to run"},
+    {q:"What is Set-ExecutionPolicy in PowerShell?", a:"Controls whether PowerShell scripts can run — Restricted (no scripts), RemoteSigned (local scripts OK), Unrestricted (all OK)"},
+    {q:"What is recursion?", a:"A function that calls itself — must have a base case to stop — used for tree traversal, factorials, Fibonacci series"},
+    {q:"What is the difference between == and = in Python?", a:"= is assignment (x = 5) · == is comparison (if x == 5:) — common bug is using = where == is needed"},
+    {q:"What is a boolean expression?", a:"An expression that evaluates to True or False — uses comparison operators (==, !=, <, >, <=, >=) and logical operators (and, or, not)"},
+    {q:"What is file I/O in Python?", a:"Reading/writing files — open('file.txt', 'r') to read, 'w' to write, 'a' to append — use with statement for automatic close"},
+    {q:"What does len() do in Python?", a:"Returns the number of items in a sequence (string, list, tuple, dict) — e.g., len([1,2,3]) returns 3"},
+    {q:"What is a regex (regular expression)?", a:"A pattern used to match/search text — Python: import re · re.search(r'\\d+', text) — used for validation and parsing"},
+    {q:"What is the difference between print() and return?", a:"print() = displays output to console, no value returned · return = passes value back to caller, no output displayed"},
+    {q:"What is pseudocode?", a:"An informal description of an algorithm using plain language — not actual code — used for planning before writing real code"},
+  ]
+},
+
+cloud: {
+  title: "☁️ Cloud Computing Flashcards",
+  cards: [
+    {q:"What are the three cloud service models?", a:"IaaS = Infrastructure as a Service (VMs, storage, networking) · PaaS = Platform as a Service (dev environments) · SaaS = Software as a Service (apps)"},
+    {q:"What are the four cloud deployment models?", a:"Public (provider-owned, multi-tenant) · Private (org-owned) · Hybrid (public + private) · Community (shared by similar orgs)"},
+    {q:"What is AWS EC2?", a:"Elastic Compute Cloud — virtual servers (instances) in the cloud — choose instance type, OS, storage, and networking"},
+    {q:"What is AWS S3?", a:"Simple Storage Service — object storage for files, backups, static websites — objects stored in buckets, globally unique names"},
+    {q:"What is AWS VPC?", a:"Virtual Private Cloud — logically isolated network in AWS — you control IP ranges, subnets, route tables, and gateways"},
+    {q:"What is AWS IAM?", a:"Identity and Access Management — manages users, groups, roles, and policies controlling who can access what AWS resources"},
+    {q:"What is the principle of least privilege in AWS?", a:"IAM users/roles should have only the minimum permissions needed — deny by default, grant only what's required"},
+    {q:"What is an IAM role vs IAM user?", a:"IAM user = long-term identity for a person (has credentials) · IAM role = temporary identity assumed by services/apps — no static credentials"},
+    {q:"What is an Availability Zone (AZ)?", a:"Isolated data center within an AWS Region — multiple AZs per region provide fault tolerance — deploy across AZs for HA"},
+    {q:"What is an AWS Region?", a:"Geographic area with multiple Availability Zones — e.g., us-east-1 (N. Virginia) — choose region based on latency, compliance, cost"},
+    {q:"What is Auto Scaling?", a:"Automatically increases or decreases the number of EC2 instances based on demand — ensures performance and cost efficiency"},
+    {q:"What is an Elastic Load Balancer (ELB)?", a:"Distributes incoming traffic across multiple EC2 instances — improves availability and fault tolerance — types: ALB, NLB, CLB"},
+    {q:"What is the difference between ALB and NLB?", a:"ALB (Application) = Layer 7, HTTP/HTTPS routing by URL/headers · NLB (Network) = Layer 4, TCP/UDP, extreme performance/low latency"},
+    {q:"What is AWS RDS?", a:"Relational Database Service — managed database (MySQL, PostgreSQL, SQL Server, etc.) — AWS handles patching, backups, failover"},
+    {q:"What is AWS Lambda?", a:"Serverless compute — runs code in response to events without provisioning servers — billed per invocation and duration"},
+    {q:"What is serverless computing?", a:"You write/deploy code without managing infrastructure — provider automatically scales and manages servers — examples: Lambda, Azure Functions"},
+    {q:"What is AWS CloudWatch?", a:"Monitoring and observability service — collects metrics, logs, and alarms for AWS resources — triggers auto scaling and notifications"},
+    {q:"What is AWS CloudTrail?", a:"Logs all API calls made in your AWS account — used for auditing, compliance, and security investigation"},
+    {q:"What is the AWS Shared Responsibility Model?", a:"AWS = responsible for security OF the cloud (hardware, infrastructure) · Customer = responsible for security IN the cloud (data, OS, apps)"},
+    {q:"What is a Security Group in AWS?", a:"Virtual firewall for EC2 instances — controls inbound/outbound traffic by port, protocol, and IP — stateful (return traffic auto-allowed)"},
+    {q:"What is an NACL?", a:"Network Access Control List — subnet-level firewall in a VPC — stateless (must define both inbound and outbound rules) — rules evaluated in number order"},
+    {q:"What is the difference between a Security Group and NACL?", a:"Security Group = instance-level, stateful, allow rules only · NACL = subnet-level, stateless, allow AND deny rules"},
+    {q:"What is AWS Route 53?", a:"AWS's managed DNS service — routes traffic to AWS resources or external endpoints — supports health checks and failover"},
+    {q:"What is Amazon CloudFront?", a:"AWS CDN (Content Delivery Network) — caches content at edge locations worldwide — reduces latency for global users"},
+    {q:"What is the difference between vertical and horizontal scaling?", a:"Vertical (scale up) = bigger instance (more CPU/RAM) · Horizontal (scale out) = more instances — horizontal is preferred for cloud HA"},
+    {q:"What is DevOps?", a:"Cultural practice combining Development and Operations teams — emphasizes automation, CI/CD, collaboration, and fast delivery"},
+    {q:"What is CI/CD?", a:"Continuous Integration / Continuous Delivery — automatically build, test, and deploy code changes — tools: Jenkins, GitHub Actions, AWS CodePipeline"},
+    {q:"What is Infrastructure as Code (IaC)?", a:"Managing infrastructure through machine-readable config files instead of manual processes — examples: Terraform, AWS CloudFormation"},
+    {q:"What is AWS CloudFormation?", a:"AWS's IaC service — define infrastructure in JSON/YAML templates — creates, updates, and deletes AWS resources as a stack"},
+    {q:"What is an S3 bucket policy?", a:"A resource-based IAM policy attached directly to an S3 bucket — controls who can access the bucket and what actions are allowed"},
+    {q:"What is data sovereignty/residency?", a:"Legal requirements that data must remain within certain geographic boundaries — important when choosing AWS regions for compliance"},
+    {q:"What is the AWS Well-Architected Framework?", a:"Five pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization — best practices for cloud design"},
+    {q:"What is elasticity in cloud computing?", a:"The ability to automatically scale resources up AND down in real time based on demand — key advantage over traditional on-premises infrastructure"},
+    {q:"What is a CDN?", a:"Content Delivery Network — distributed network of servers that caches content geographically close to users — reduces latency and load on origin"},
+    {q:"What is the difference between CapEx and OpEx in cloud?", a:"CapEx = capital expenditure (upfront hardware purchase, on-premises) · OpEx = operational expenditure (pay-as-you-go, cloud) — cloud shifts IT to OpEx"},
+  ]
+},
+
+server: {
+  title: "🖧 Internet/Intranet Server Flashcards",
+  cards: [
+    {q:"What is Apache HTTP Server?", a:"The most widely used open-source web server — serves web content via HTTP/HTTPS — config file: /etc/apache2/apache2.conf (Debian) or /etc/httpd/httpd.conf (RHEL)"},
+    {q:"What is Nginx?", a:"High-performance web server and reverse proxy — known for handling high concurrency with low memory — config: /etc/nginx/nginx.conf"},
+    {q:"What is a virtual host?", a:"Configuration that allows one web server to host multiple websites on the same IP/port — differentiated by domain name (name-based) or IP"},
+    {q:"What is a reverse proxy?", a:"A server that sits in front of web servers and forwards client requests — provides load balancing, SSL termination, caching, and security"},
+    {q:"What is SSL/TLS and what does it provide?", a:"Secure Sockets Layer / Transport Layer Security — encrypts data in transit, authenticates the server, ensures data integrity — HTTPS uses TLS"},
+    {q:"What is an SSL/TLS certificate?", a:"A digital certificate issued by a CA that binds a public key to a domain name — enables HTTPS — contains domain, org, expiry, public key"},
+    {q:"What is Let's Encrypt?", a:"Free, automated, open CA — issues 90-day TLS certificates for any domain — used with Certbot for automatic renewal"},
+    {q:"What is the purpose of a CSR?", a:"Certificate Signing Request — generated on the server, contains public key and domain info — submitted to CA to get a signed certificate"},
+    {q:"What is DHCP and what are the four steps (DORA)?", a:"DORA: Discover (client broadcasts) → Offer (server offers IP) → Request (client requests) → Acknowledge (server confirms)"},
+    {q:"What is a DHCP lease?", a:"The time period an IP address is assigned to a client — client renews at 50% of lease time, rebinds at 87.5% — default is often 8 or 24 hours"},
+    {q:"What is a DHCP reservation?", a:"Assigns the same IP to a device every time based on its MAC address — ensures consistent addressing for servers, printers, and network devices"},
+    {q:"What is DNS zone?", a:"A portion of the DNS namespace managed by a specific name server — a zone file contains resource records for a domain"},
+    {q:"What is an A record?", a:"DNS Address record — maps a hostname to an IPv4 address — example: www.example.com → 203.0.113.10"},
+    {q:"What is an AAAA record?", a:"DNS record that maps a hostname to an IPv6 address — quad-A because IPv6 is 4x 32-bit = 128 bits"},
+    {q:"What is a CNAME record?", a:"Canonical Name — DNS alias — maps one hostname to another hostname (not an IP) — e.g., mail.example.com → example.com"},
+    {q:"What is an MX record?", a:"Mail Exchange — DNS record specifying the mail server for a domain — priority value determines preference (lower = higher priority)"},
+    {q:"What is an SOA record?", a:"Start of Authority — contains administrative info about a DNS zone: primary NS, admin email, serial number, refresh/retry intervals"},
+    {q:"What is a PTR record?", a:"Pointer record — reverse DNS — maps an IP address back to a hostname — used in reverse lookup zones (e.g., 10.1.168.192.in-addr.arpa)"},
+    {q:"What is FTP and what ports does it use?", a:"File Transfer Protocol — transfers files between client and server · Port 21 = control · Port 20 = data transfer"},
+    {q:"What is SFTP vs FTPS?", a:"SFTP = SSH File Transfer Protocol (port 22, encrypted by SSH) · FTPS = FTP over TLS (ports 990/21) — SFTP preferred, simpler to firewall"},
+    {q:"What is Samba?", a:"Open-source implementation of SMB protocol for Linux — allows Linux to share files/printers with Windows clients via SMB"},
+    {q:"What is SMB?", a:"Server Message Block — Windows file/printer sharing protocol — port 445 TCP — used for network shares (\\\\server\\share)"},
+    {q:"What is NFS?", a:"Network File System — Linux/Unix network file sharing protocol — server exports directories — client mounts them — port 2049"},
+    {q:"What is server hardening?", a:"Reducing a server's attack surface — disabling unused services, applying patches, strong passwords, firewall rules, and least privilege"},
+    {q:"What is a firewall rule for a web server (UFW)?", a:"ufw allow 80/tcp (HTTP) and ufw allow 443/tcp (HTTPS) — ufw enable — ufw status to verify"},
+    {q:"What does fail2ban do?", a:"Monitors log files and temporarily bans IPs that show malicious signs (too many failed logins) — protects SSH, web, mail servers"},
+    {q:"What is a web server document root?", a:"The directory from which the web server serves files — Apache: /var/www/html — Nginx: /usr/share/nginx/html (default)"},
+    {q:"What does .htaccess do in Apache?", a:"Per-directory configuration file — can override main Apache config — used for URL rewriting, authentication, access control, redirects"},
+    {q:"What is a 301 vs 302 redirect?", a:"301 = Permanent redirect (browsers and search engines update their records) · 302 = Temporary redirect (browser doesn't cache)"},
+    {q:"What is the difference between HTTP 200, 403, 404, and 500?", a:"200=OK · 403=Forbidden (no permission) · 404=Not Found · 500=Internal Server Error"},
+  ]
+},
+
+troubleshoot: {
+  title: "🔧 Network Troubleshooting Flashcards",
+  cards: [
+    {q:"What does the CLEAR framework stand for?", a:"Clarify the problem · Locate the cause · Evaluate options · Act and implement · Review and document"},
+    {q:"What are the 5 steps of the CompTIA troubleshooting methodology?", a:"1-Identify · 2-Establish theory · 3-Test theory · 4-Plan & implement · 5-Verify & document"},
+    {q:"What command tests basic IP connectivity?", a:"ping IP-address — sends ICMP Echo Requests · ping -t (continuous Windows) · ping -c 4 (Linux, 4 packets)"},
+    {q:"What does tracert / traceroute do?", a:"Traces the path packets take to a destination, showing each router hop and latency — identifies where failures or delays occur"},
+    {q:"What does ipconfig show?", a:"Windows command showing IP address, subnet mask, default gateway, and DNS for all network adapters"},
+    {q:"What does ipconfig /all show additionally?", a:"MAC address, DHCP server, DNS servers, lease obtained/expires — much more detail than plain ipconfig"},
+    {q:"What does nslookup do?", a:"Queries DNS — tests if a hostname resolves correctly — nslookup google.com or nslookup 8.8.8.8 to query specific DNS server"},
+    {q:"What does netstat -ano show?", a:"Active network connections with process IDs — shows local/foreign addresses, state (LISTENING, ESTABLISHED), and PID"},
+    {q:"What does arp -a show?", a:"The local ARP cache — lists IP-to-MAC address mappings for recently communicated hosts"},
+    {q:"What does pathping do?", a:"Windows tool combining ping and tracert — shows packet loss at each hop over a longer measurement period — better for intermittent issues"},
+    {q:"What is Wireshark used for?", a:"Packet capture and protocol analysis — captures and inspects raw network traffic — used to diagnose connectivity, slow performance, and security issues"},
+    {q:"What is a loopback test?", a:"Pinging 127.0.0.1 — tests if the local TCP/IP stack is working — if this fails, network stack needs to be repaired"},
+    {q:"What does 169.254.x.x IP address indicate?", a:"APIPA address — DHCP failed — check DHCP server connectivity, cable, switch port, and DHCP service status"},
+    {q:"What are the common causes of 'limited connectivity'?", a:"DHCP server unreachable · IP conflict · bad NIC · incorrect VLAN · firewall blocking DHCP · duplicate IP"},
+    {q:"What is the first thing to check when a user can't connect to the internet?", a:"Check physical connection (link light) → ipconfig (has IP?) → ping default gateway → ping 8.8.8.8 → nslookup — isolate the layer"},
+    {q:"What are common symptoms of a DNS issue?", a:"Can ping by IP but not by name · websites don't load but IP resources work · nslookup fails or returns wrong IP"},
+    {q:"What is port scanning and what tool is used?", a:"Testing which ports are open on a host — used with Nmap (nmap -sV 192.168.1.1) — helps find open/unexpected services"},
+    {q:"What does Malwarebytes scan for?", a:"Malware, ransomware, spyware, trojans, adware, PUPs (Potentially Unwanted Programs) — run from Safe Mode for best results"},
+    {q:"What are signs of a malware infection?", a:"Slow performance · unexpected pop-ups · unknown processes · browser redirects · disabled Task Manager or antivirus · high CPU/network usage"},
+    {q:"What is the malware removal process?", a:"1-Quarantine (disconnect from network) · 2-Boot Safe Mode · 3-Run full scans · 4-Remove threats · 5-Update/patch · 6-Monitor · 7-Document"},
+    {q:"What is a remote support tool?", a:"Software allowing technicians to remotely view and control a user's computer — examples: TeamViewer, AnyDesk, Windows Quick Assist"},
+    {q:"What is RDP and how is it used for support?", a:"Remote Desktop Protocol (port 3389) — allows full GUI access to Windows machines — must be enabled on target PC and firewall open"},
+    {q:"What is a ticketing system?", a:"IT service management tool to track, prioritize, and document support requests — examples: ServiceNow, Jira Service Management, Zendesk"},
+    {q:"What information should be in a support ticket?", a:"User info · date/time · problem description · steps taken · affected devices · priority level · resolution and root cause"},
+    {q:"What is SLA?", a:"Service Level Agreement — defines expected response and resolution times for support issues — e.g., P1 critical = 1hr response, 4hr resolution"},
+    {q:"What is a knowledge base article?", a:"Documented solution to a known problem — allows technicians to resolve recurring issues faster — reduces repeat escalations"},
+    {q:"What is escalation in IT support?", a:"Transferring a ticket to a higher tier (L1→L2→L3) when the current technician cannot resolve it — should include all diagnostic steps taken"},
+    {q:"What does 'duplicate IP address' cause?", a:"Network conflict — one or both devices lose connectivity intermittently — seen as IP conflict warning in Windows — fix: assign static IPs or fix DHCP scope"},
+    {q:"What is a network baseline?", a:"Documented normal network performance metrics (bandwidth, latency, error rates) — used to compare against when troubleshooting 'slower than usual' reports"},
+    {q:"What does the event log show during troubleshooting?", a:"System errors, driver failures, service crashes, security events — check Event Viewer → Windows Logs → System for hardware/OS issues"},
+  ]
+}
+}; // END DECKS
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentDeck = null;
+let currentCards = [];
+let currentIndex = 0;
+let isFlipped = false;
+
+// ─── OPEN / CLOSE ─────────────────────────────────────────────────────────────
+function openDeck(key) {
+  const deck = DECKS[key];
+  if (!deck) return;
+  currentDeck = key;
+  currentCards = [...deck.cards];
+  currentIndex = 0;
+  isFlipped = false;
+
+  document.getElementById('modalTitle').textContent = deck.title;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderCard();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderCard() {
+  const area = document.getElementById('flashcardArea');
+  const total = currentCards.length;
+  const card = currentCards[currentIndex];
+  const pct = Math.round(((currentIndex + 1) / total) * 100);
+
+  document.getElementById('progressText').textContent = `Card ${currentIndex + 1} of ${total}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  area.innerHTML = `
+    <div class="flashcard-scene${isFlipped ? ' flipped' : ''}" id="fcScene" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-face flashcard-front">
+          <div class="card-label">Question</div>
+          <div class="card-text">${card.q}</div>
+          <div class="flip-hint">🖱️ Tap to reveal answer</div>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <div class="card-label">Answer</div>
+          <div class="card-text">${card.a}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fc-controls">
+      <button class="fc-btn fc-btn-prev" onclick="prevCard()" ${currentIndex === 0 ? 'disabled style="opacity:0.4"' : ''}>← Prev</button>
+      <button class="fc-btn fc-btn-flip" onclick="flipCard()">🔄 Flip</button>
+      <button class="fc-btn fc-btn-next" onclick="nextCard()">
+        ${currentIndex < currentCards.length - 1 ? 'Next →' : '✅ Finish'}
+      </button>
+    </div>
+
+    <div class="fc-actions">
+      <button class="fc-action-btn" onclick="shuffleDeck()">🔀 Shuffle</button>
+      <button class="fc-action-btn" onclick="restartDeck()">↩ Restart</button>
+      <button class="fc-action-btn" onclick="closeModal()">✕ Close</button>
+    </div>
+  `;
+}
+
+function renderDone() {
+  const area = document.getElementById('flashcardArea');
+  area.innerHTML = `
+    <div class="done-screen visible">
+      <div class="done-icon">🎉</div>
+      <div class="done-title">Deck Complete!</div>
+      <div class="done-sub">You reviewed all ${currentCards.length} cards.</div>
+      <div class="fc-actions" style="margin-top:1rem; justify-content:center;">
+        <button class="fc-btn fc-btn-next" style="flex:unset; padding:0.7rem 2rem;" onclick="restartDeck()">↩ Restart Deck</button>
+        <button class="fc-action-btn" onclick="shuffleDeck()">🔀 Shuffle & Restart</button>
+        <button class="fc-action-btn" onclick="closeModal()">✕ Close</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('progressText').textContent = `Complete! ${currentCards.length} cards reviewed`;
+  document.getElementById('progressPct').textContent = '100%';
+  document.getElementById('progressFill').style.width = '100%';
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function flipCard() {
+  isFlipped = !isFlipped;
+  const scene = document.getElementById('fcScene');
+  if (scene) {
+    if (isFlipped) scene.classList.add('flipped');
+    else scene.classList.remove('flipped');
+  }
+}
+
+function nextCard() {
+  if (currentIndex < currentCards.length - 1) {
+    currentIndex++;
+    isFlipped = false;
+    renderCard();
+  } else {
+    renderDone();
+  }
+}
+
+function prevCard() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    isFlipped = false;
+    renderCard();
+  }
+}
+
+function shuffleDeck() {
+  for (let i = currentCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
+  }
+  currentIndex = 0;
+  isFlipped = false;
+  renderCard();
+}
+
+function restartDeck() {
+  currentCards = [...DECKS[currentDeck].cards];
+  currentIndex = 0;
+  isFlipped = false;
+  renderCard();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('modalOverlay').classList.contains('open')) return;
+  if (e.key === 'ArrowRight' || e.key === 'Enter') nextCard();
+  else if (e.key === 'ArrowLeft') prevCard();
+  else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
