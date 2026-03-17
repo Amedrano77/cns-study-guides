@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Packet Visualizer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 16px; }
+
+  h2 { font-size: 1.1rem; color: #c4b5fd; margin-bottom: 12px; font-weight: 600; letter-spacing: 0.03em; }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab { padding: 7px 18px; border-radius: 20px; border: 1.5px solid #3730a3; background: #1e1b4b; color: #a5b4fc; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .tab:hover { background: #2e27a0; }
+  .tab.on { background: #6d28d9; color: #fff; border-color: #7c3aed; box-shadow: 0 0 12px rgba(109,40,217,0.4); }
+
+  canvas { display: block; border-radius: 14px; border: 1.5px solid #312e81; width: 100%; }
+
+  .controls { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .btn { padding: 8px 22px; border-radius: 20px; border: 1.5px solid #4338ca; background: #1e1b4b; color: #a5b4fc; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn:hover { background: #2e27a0; transform: translateY(-1px); }
+  .btn.on { background: #6d28d9; color: #fff; border-color: #7c3aed; box-shadow: 0 4px 12px rgba(109,40,217,0.3); }
+  .spd { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .spd span { font-size: 12px; color: #94a3b8; }
+  input[type=range] { accent-color: #7c3aed; }
+
+  #info { margin-top: 12px; background: #1e1b4b; border: 1.5px solid #312e81; border-radius: 12px; padding: 14px 18px; min-height: 80px; }
+  #info h3 { font-size: 13px; font-weight: 600; color: #c4b5fd; margin-bottom: 5px; }
+  #info p { font-size: 12px; color: #94a3b8; line-height: 1.7; }
+  #info .badge { display: inline-block; font-size: 10px; background: #312e81; color: #818cf8; padding: 2px 10px; border-radius: 10px; margin-bottom: 6px; font-weight: 500; }
+
+  #tbar-wrap { height: 4px; background: #1e1b4b; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  #tbar { height: 100%; width: 0%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 2px; transition: none; }
+  #pbar-wrap { height: 3px; background: #1e1b4b; border-radius: 2px; margin-top: 3px; }
+  #pbar { height: 100%; width: 0%; background: #4338ca; border-radius: 2px; transition: width 0.5s; }
+
+  #osi { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 12px; }
+  .ol { border-radius: 7px; padding: 6px 3px; text-align: center; background: #1e1b4b; border: 1px solid #312e81; transition: all 0.3s; }
+  .ol.on { background: #2e1065; border-color: #7c3aed; box-shadow: 0 0 8px rgba(124,58,237,0.3); }
+  .oln { font-size: 9px; color: #64748b; }
+  .olname { font-size: 10px; font-weight: 500; color: #94a3b8; }
+  .ol.on .oln { color: #a78bfa; }
+  .ol.on .olname { color: #c4b5fd; }
+</style>
+</head>
+<body>
+
+<h2>🌐 Network Packet Highway</h2>
+
+<div class="tabs">
+  <div class="tab on" onclick="setSc('tcp',this)">TCP/IP Journey</div>
+  <div class="tab" onclick="setSc('dns',this)">DNS Lookup</div>
+  <div class="tab" onclick="setSc('osi',this)">OSI Layers</div>
+</div>
+
+<canvas id="cv"></canvas>
+
+<div id="tbar-wrap"><div id="tbar"></div></div>
+<div id="pbar-wrap"><div id="pbar"></div></div>
+
+<div class="controls">
+  <button class="btn" id="playBtn" onclick="togglePlay()">▶ Play</button>
+  <button class="btn" onclick="doStep()">Step →</button>
+  <button class="btn" onclick="doReset()">↺ Reset</button>
+  <div class="spd">
+    <span>Pause:</span>
+    <input type="range" min="5" max="15" value="8" step="1" id="psl" oninput="pauseSec=+this.value;document.getElementById('psv').textContent=this.value+'s'">
+    <span id="psv">8s</span>
+  </div>
+</div>
+
+<div id="info">
+  <h3>Select a scenario and press Play</h3>
+  <p>The packet car will stop at each network device for several seconds so you can read the information.</p>
+</div>
+
+<div id="osi">
+  <div class="ol" id="ol7"><div class="oln">L7</div><div class="olname">App</div></div>
+  <div class="ol" id="ol6"><div class="oln">L6</div><div class="olname">Present</div></div>
+  <div class="ol" id="ol5"><div class="oln">L5</div><div class="olname">Session</div></div>
+  <div class="ol" id="ol4"><div class="oln">L4</div><div class="olname">Transport</div></div>
+  <div class="ol" id="ol3"><div class="oln">L3</div><div class="olname">Network</div></div>
+  <div class="ol" id="ol2"><div class="oln">L2</div><div class="olname">Data Link</div></div>
+  <div class="ol" id="ol1"><div class="oln">L1</div><div class="olname">Physical</div></div>
+</div>
+
+<script>
+const DATA = {
+  tcp: {
+    nodes: [
+      { label:'Your PC', sub:'Source', color:'#7c3aed', icon:'PC' },
+      { label:'Switch', sub:'L2 Device', color:'#059669', icon:'SW' },
+      { label:'Router', sub:'L3 Device', color:'#dc2626', icon:'RT' },
+      { label:'ISP', sub:'Backbone', color:'#d97706', icon:'ISP' },
+      { label:'Web Server', sub:'Destination', color:'#db2777', icon:'SRV' }
+    ],
+    steps: [
+      { n:0, osi:7, title:'Application Layer — HTTP Request Created', badge:'OSI Layer 7 | Application', body:'Your browser creates an HTTP GET request for google.com. This is Layer 7 — the top of the OSI model where human-readable data lives. DNS already resolved the domain to 142.250.80.46 before this step.', code:'GET / HTTP/1.1 | Host: google.com | Accept: text/html' },
+      { n:0, osi:4, title:'Transport Layer — TCP Segment Formed', badge:'OSI Layer 4 | Transport', body:'The HTTP data is wrapped in a TCP segment. Source port 54231 is randomly assigned. Port 80 is standard for HTTP. Sequence numbers ensure packets are reassembled in the correct order at the destination.', code:'SRC:54231 → DST:80 | SEQ:1001 | FLAGS: PSH,ACK | Window:65535' },
+      { n:0, osi:3, title:'Network Layer — IP Packet Assembled', badge:'OSI Layer 3 | Network', body:'The TCP segment is wrapped in an IP packet with your source IP (192.168.1.5) and the destination IP (142.250.80.46). TTL is set to 64 — it decrements at each router to prevent infinite loops.', code:'SRC:192.168.1.5 → DST:142.250.80.46 | TTL:64 | Protocol:TCP' },
+      { n:1, osi:2, title:'Switch — Layer 2 MAC Address Forwarding', badge:'OSI Layer 2 | Data Link', body:'The switch ignores IP addresses entirely. It reads ONLY the destination MAC address in the Ethernet frame. It checks its MAC address table and forwards the frame out the correct port toward the router.', code:'DST MAC: AA:BB:CC:DD:EE:01 | SRC MAC: 11:22:33:44:55:66 | FCS: 0x3F2A' },
+      { n:2, osi:3, title:'Router — IP Routing Decision Made', badge:'OSI Layer 3 | Network', body:'The router strips the Ethernet frame and reads the IP header. It performs a longest-prefix match in its routing table. It forwards toward the ISP and decrements TTL to 63. A new MAC header is added for the next hop.', code:'Lookup: 142.250.80.46 → Match: default gw | Next hop: 10.0.0.1 | TTL: 63' },
+      { n:3, osi:3, title:'ISP — Backbone Routing via BGP', badge:'OSI Layer 3 | Network', body:'The ISP routes the packet across its backbone using BGP (Border Gateway Protocol). Multiple core routers exchange AS path information to find the best route toward Googles autonomous system AS15169. TTL is now 58.', code:'BGP AS Path → 15169 | Next hop: 209.85.240.1 | TTL:58 | MTU:1500' },
+      { n:4, osi:7, title:'Web Server — Packet Received and Processed!', badge:'OSI Layer 7 | Application', body:'The web server receives the packet and processes it UP the OSI stack (L1→L7), stripping each header layer by layer. It reads the HTTP GET request and sends back an HTTP 200 OK response with the full webpage.', code:'HTTP/1.1 200 OK | Content-Type: text/html | Content-Length: 48291' }
+    ]
+  },
+  dns: {
+    nodes: [
+      { label:'Your PC', sub:'DNS Client', color:'#7c3aed', icon:'PC' },
+      { label:'Resolver', sub:'8.8.8.8', color:'#059669', icon:'RES' },
+      { label:'Root NS', sub:'. zone', color:'#dc2626', icon:'ROOT' },
+      { label:'.com TLD', sub:'Verisign', color:'#d97706', icon:'TLD' },
+      { label:'Auth NS', sub:'ns1.google', color:'#db2777', icon:'NS' },
+      { label:'Got IP!', sub:'Done!', color:'#16a34a', icon:'✓' }
+    ],
+    steps: [
+      { n:0, osi:7, title:'Step 1 — Browser Checks Local DNS Cache', badge:'OSI Layer 7 | Application', body:'Before any network query, the browser checks its internal DNS cache. Every DNS response is stored with a TTL (Time to Live). When TTL expires, the entry is deleted and a full resolution chain must begin again.', code:'Cache: google.com → MISS | TTL expired | OS cache: MISS | Starting recursion...' },
+      { n:1, osi:4, title:'Step 2 — Recursive Resolver Queried (UDP 53)', badge:'OSI Layer 4 | Transport', body:'Your OS sends a DNS query via UDP port 53 to your configured resolver (e.g. 8.8.8.8). UDP is used because DNS queries are small and speed matters. The resolver checks its cache. Cache miss — it must recurse up the hierarchy.', code:'Protocol: UDP | Port: 53 | Query: google.com A record | Cache: MISS' },
+      { n:2, osi:3, title:'Step 3 — Root Name Server Queried', badge:'OSI Layer 3 | Network', body:'The resolver contacts one of 13 root server clusters (a-m.root-servers.net). The root does NOT know googles IP — it only knows who manages .com. It returns a referral to Verisigns TLD nameservers.', code:'Query: . (root) | Server: a.root-servers.net | Reply: REFERRAL → ns1.verisign.com' },
+      { n:3, osi:3, title:'Step 4 — .com TLD Server Queried', badge:'OSI Layer 3 | Network', body:'The resolver asks Verisigns .com TLD server about google.com. The TLD manages the entire .com zone but stores only NS records, not A records. It refers to Googles own authoritative nameservers.', code:'Query: google.com NS | TLD: .com (Verisign) | Reply: ns1.google.com 216.239.32.10' },
+      { n:4, osi:7, title:'Step 5 — Authoritative Nameserver Answers', badge:'OSI Layer 7 | Application', body:'Googles own authoritative nameserver has the official, definitive answer. It returns the A record with the actual IP address and a TTL of 300 seconds — telling resolvers how long they can safely cache this result.', code:'Query: google.com A | Auth: YES | Answer: 142.250.80.46 | TTL: 300s' },
+      { n:5, osi:7, title:'Step 6 — IP Address Delivered to Browser!', badge:'OSI Layer 7 | Application', body:'The full DNS chain completes in under 50ms. The IP is cached at every level for 300 seconds. Your browser now has 142.250.80.46 and immediately begins a TCP three-way handshake (SYN → SYN-ACK → ACK).', code:'google.com = 142.250.80.46 | Cached: 300s | Next: TCP SYN → port 80 | Time: ~35ms' }
+    ]
+  },
+  osi: {
+    nodes: [
+      { label:'App', sub:'Layer 7', color:'#7c3aed', icon:'L7' },
+      { label:'Present', sub:'Layer 6', color:'#4f46e5', icon:'L6' },
+      { label:'Session', sub:'Layer 5', color:'#0891b2', icon:'L5' },
+      { label:'Transport', sub:'Layer 4', color:'#059669', icon:'L4' },
+      { label:'Network', sub:'Layer 3', color:'#d97706', icon:'L3' },
+      { label:'Data Link', sub:'Layer 2', color:'#dc2626', icon:'L2' },
+      { label:'Physical', sub:'Layer 1', color:'#be185d', icon:'L1' }
+    ],
+    steps: [
+      { n:0, osi:7, title:'Layer 7 — Application: Data is Born', badge:'OSI Layer 7 | Application', body:'The browser creates human-readable data. All user-facing protocols live here: HTTP, HTTPS, FTP, SMTP, DNS, SSH, and Telnet. This is the only layer the user directly sees and interacts with.', code:'"GET / HTTP/1.1" | "Host: google.com" | "Accept: text/html"' },
+      { n:1, osi:6, title:'Layer 6 — Presentation: Translate and Encrypt', badge:'OSI Layer 6 | Presentation', body:'Data is encoded (ASCII→UTF-8), compressed to reduce bandwidth, and encrypted with TLS 1.3 for security. This layer is the universal translator ensuring sender and receiver understand the same data format.', code:'Encoding: UTF-8 | Compression: gzip | Encryption: TLS 1.3 | [ENCRYPTED PAYLOAD]' },
+      { n:2, osi:5, title:'Layer 5 — Session: Manage the Connection', badge:'OSI Layer 5 | Session', body:'The session layer opens, manages, and closes communication sessions. It handles authentication and can restore sessions if a connection drops. Key protocols: NetBIOS, RPC, PPTP, SIP (VoIP calls).', code:'Session ID: 0xA4F3B2C1 | Auth: complete | State: ESTABLISHED | Keep-alive: 30s' },
+      { n:3, osi:4, title:'Layer 4 — Transport: Segment and Deliver', badge:'OSI Layer 4 | Transport', body:'Large data is broken into numbered TCP segments with sequence numbers for ordered reassembly. TCP provides reliable, acknowledged delivery. UDP skips reliability for speed — used in DNS, video streaming, and gaming.', code:'[TCP HDR][DATA] | SEQ:1001 | SRC:54231 | DST:443 (HTTPS) | Window:65535' },
+      { n:4, osi:3, title:'Layer 3 — Network: Route Across Networks', badge:'OSI Layer 3 | Network', body:'Each segment is wrapped in an IP packet with source and destination IPs. Routers ONLY read the IP header to make forwarding decisions. The TTL field prevents packets from looping forever across the internet.', code:'[IP HDR][TCP][DATA] | SRC:192.168.1.5 | DST:142.250.80.46 | TTL:64 | Proto:TCP' },
+      { n:5, osi:2, title:'Layer 2 — Data Link: Frame for Next Hop', badge:'OSI Layer 2 | Data Link', body:'The packet is wrapped in an Ethernet frame with MAC addresses — but ONLY for the very next device (next hop), not the final destination. The FCS (Frame Check Sequence) at the end detects any bit errors in transmission.', code:'[ETH][IP][TCP][DATA][FCS] | DST MAC:AA:BB:CC:11 | EtherType:0x0800' },
+      { n:6, osi:1, title:'Layer 1 — Physical: Bits Hit the Wire!', badge:'OSI Layer 1 | Physical', body:'The frame converts to a raw bitstream — voltage changes on copper wire, pulses of light on fiber optic cable, or 2.4/5 GHz radio waves for WiFi. Every 0 and 1 becomes a physical signal at nearly the speed of light.', code:'01001000 01101001 10110101 | IEEE 802.3 Ethernet | Speed: 1 Gbps UTP Cat6' }
+    ]
+  }
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let sc = 'tcp';
+let curStep = -1;
+let playing = false;
+let pauseSec = 8;
+let playTimer = null;
+let timerIv = null;
+
+// Car animation state
+let carX = 0, carY = 0;
+let animating = false;
+let animRaf = null;
+
+// Draw loop
+let drawRaf = null;
+let pulseT = 0;
+
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ── Resize ─────────────────────────────────────────────────────────────────
+function resize() {
+  const w = cv.parentElement.clientWidth;
+  cv.width = w;
+  cv.height = Math.min(320, Math.max(240, w * 0.45));
+  carX = 0; carY = 0;
+  draw();
+}
+window.addEventListener('resize', resize);
+
+// ── Data helpers ───────────────────────────────────────────────────────────
+function S() { return DATA[sc]; }
+function lname(n) { return ['','Physical','Data Link','Network','Transport','Session','Presentation','Application'][n] || ''; }
+
+function nodePos(i) {
+  const s = S(), n = s.nodes.length;
+  const W = cv.width, H = cv.height;
+  const isOsi = sc === 'osi';
+  if (isOsi) {
+    return { x: W / 2, y: 28 + i * (H - 56) / (n - 1) };
+  }
+  const mg = 60, sp = (W - mg * 2) / (n - 1);
+  return { x: mg + i * sp, y: H * 0.55 };
+}
+
+// ── Drawing ────────────────────────────────────────────────────────────────
+function drawSky() {
+  const W = cv.width, H = cv.height;
+  const grad = ctx.createLinearGradient(0, 0, 0, H * 0.6);
+  grad.addColorStop(0, '#0f0c29');
+  grad.addColorStop(1, '#1e1b4b');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H * 0.6);
+
+  // Stars
+  ctx.fillStyle = '#fff';
+  const starSeeds = [[0.1,0.05],[0.2,0.12],[0.35,0.03],[0.5,0.08],[0.65,0.04],[0.8,0.1],[0.9,0.06],
+    [0.15,0.18],[0.45,0.15],[0.75,0.2],[0.05,0.22],[0.55,0.25],[0.85,0.18],[0.3,0.28]];
+  starSeeds.forEach(([sx,sy], idx) => {
+    const alpha = 0.4 + 0.6 * Math.abs(Math.sin(pulseT * 0.8 + idx * 1.3));
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(sx * W, sy * H, 1 + Math.random() * 0.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // Purple glow
+  const glow = ctx.createRadialGradient(W/2, 0, 0, W/2, 0, W * 0.6);
+  glow.addColorStop(0, 'rgba(99,102,241,0.15)');
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H * 0.6);
+}
+
+function drawMountains() {
+  const W = cv.width, H = cv.height;
+  const baseY = H * 0.56;
+  ctx.fillStyle = '#1e1b4b';
+  [[0.05,0.28],[0.18,0.18],[0.38,0.22],[0.55,0.15],[0.72,0.23],[0.88,0.17]].forEach(([cx,ht],i) => {
+    const bw = W * 0.18;
+    ctx.beginPath();
+    ctx.moveTo(cx*W - bw, baseY);
+    ctx.lineTo(cx*W, baseY - ht*H);
+    ctx.lineTo(cx*W + bw, baseY);
+    ctx.closePath();
+    ctx.fillStyle = i % 2 === 0 ? '#1e1b4b' : '#16123b';
+    ctx.fill();
+  });
+}
+
+function drawGround() {
+  const W = cv.width, H = cv.height;
+  const grad = ctx.createLinearGradient(0, H*0.55, 0, H);
+  grad.addColorStop(0, '#14532d');
+  grad.addColorStop(0.4, '#166534');
+  grad.addColorStop(1, '#15803d');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, H * 0.55, W, H * 0.45);
+}
+
+function drawRoad() {
+  const W = cv.width, H = cv.height;
+  const isOsi = sc === 'osi';
+  if (isOsi) {
+    const cx = W / 2;
+    // Road
+    const rg = ctx.createLinearGradient(cx-22, 0, cx+22, 0);
+    rg.addColorStop(0, '#374151'); rg.addColorStop(0.5, '#1f2937'); rg.addColorStop(1, '#374151');
+    ctx.fillStyle = rg;
+    ctx.fillRect(cx - 24, 20, 48, H - 40);
+    // Edges
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillRect(cx - 24, 20, 3, H - 40);
+    ctx.fillRect(cx + 21, 20, 3, H - 40);
+    // Dashes
+    for (let y = 40; y < H - 30; y += 28) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(cx - 2, y, 4, 14);
+    }
+  } else {
+    const ry = H * 0.55, rh = 60;
+    const rg = ctx.createLinearGradient(0, ry, 0, ry + rh);
+    rg.addColorStop(0, '#374151'); rg.addColorStop(0.5, '#1f2937'); rg.addColorStop(1, '#374151');
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, ry, W, rh);
+    // Edge lines
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillRect(0, ry + 3, W, 3);
+    ctx.fillRect(0, ry + rh - 6, W, 3);
+    // Dashes
+    for (let x = 40; x < W - 20; x += 44) {
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(x, ry + rh/2 - 3, 22, 6);
+    }
+  }
+}
+
+function drawNode(i) {
+  const s = S();
+  const node = s.nodes[i];
+  const { x, y } = nodePos(i);
+  const active = curStep >= 0 && s.steps[curStep] && s.steps[curStep].n === i;
+  const done = curStep > 0 && (function() {
+    for (let k = 0; k < curStep; k++) if (s.steps[k].n === i) return true;
+    return false;
+  })();
+  const r = active ? 28 : 22;
+
+  // Sign post (horizontal mode)
+  if (sc !== 'osi') {
+    const signY = y - r - 44;
+    ctx.strokeStyle = '#6b7280';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x, y - r);
+    ctx.lineTo(x, signY + 18);
+    ctx.stroke();
+
+    // Sign box
+    const sw = 68, sh = 22;
+    ctx.fillStyle = active ? node.color : done ? node.color + 'bb' : '#374151';
+    ctx.beginPath();
+    ctx.roundRect(x - sw/2, signY - sh/2, sw, sh, 5);
+    ctx.fill();
+    ctx.strokeStyle = active ? '#fff' : 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(node.label, x, signY - 4);
+    ctx.font = '7.5px Segoe UI, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillText(node.sub, x, signY + 7);
+  }
+
+  // Pulse ring
+  if (active) {
+    const pr = r + 8 + 6 * Math.sin(pulseT * 3);
+    ctx.beginPath();
+    ctx.arc(x, y, pr, 0, Math.PI * 2);
+    ctx.strokeStyle = node.color + '55';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // Circle
+  const grad = ctx.createRadialGradient(x - r*0.3, y - r*0.3, 1, x, y, r);
+  grad.addColorStop(0, lighten(node.color));
+  grad.addColorStop(1, node.color);
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = active ? grad : done ? node.color + '88' : '#374151';
+  ctx.fill();
+  ctx.strokeStyle = active ? '#fff' : node.color + (done ? 'cc' : '66');
+  ctx.lineWidth = active ? 2.5 : 1.5;
+  ctx.stroke();
+
+  // Icon text
+  ctx.fillStyle = active || done ? '#fff' : '#94a3b8';
+  ctx.font = `${active ? 'bold ' : ''}${node.icon.length > 2 ? '9' : '11'}px Segoe UI, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(node.icon, x, y);
+
+  // OSI mode label on side
+  if (sc === 'osi') {
+    ctx.font = `${active ? 'bold ' : ''}11px Segoe UI, sans-serif`;
+    ctx.fillStyle = active ? node.color : done ? '#94a3b8' : '#64748b';
+    ctx.textAlign = 'left';
+    ctx.fillText(node.label + '  (' + node.sub + ')', x + r + 10, y);
+  }
+}
+
+function lighten(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.min(255,r+60)},${Math.min(255,g+60)},${Math.min(255,b+60)})`;
+}
+
+function drawCar() {
+  if (curStep < 0 && !animating) return;
+  const x = carX, y = carY;
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(0, 14, 22, 5, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fill();
+
+  // Car roof
+  ctx.beginPath();
+  ctx.roundRect(-14, -22, 28, 14, [6, 6, 0, 0]);
+  ctx.fillStyle = '#a78bfa';
+  ctx.fill();
+
+  // Car body
+  ctx.beginPath();
+  ctx.roundRect(-20, -10, 40, 18, 5);
+  const bodyGrad = ctx.createLinearGradient(0, -10, 0, 8);
+  bodyGrad.addColorStop(0, '#8b5cf6');
+  bodyGrad.addColorStop(1, '#4f46e5');
+  ctx.fillStyle = bodyGrad;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Windshield
+  ctx.beginPath();
+  ctx.roundRect(-12, -9, 24, 10, 3);
+  ctx.fillStyle = 'rgba(196,181,253,0.85)';
+  ctx.fill();
+
+  // Label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 7px Segoe UI, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('PKT', 0, 2);
+
+  // Headlight
+  ctx.beginPath();
+  ctx.arc(21, -1, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#fef08a';
+  ctx.fill();
+  const hglow = ctx.createRadialGradient(21, -1, 0, 21, -1, 10);
+  hglow.addColorStop(0, 'rgba(254,240,138,0.5)');
+  hglow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = hglow;
+  ctx.beginPath();
+  ctx.arc(21, -1, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Taillight
+  ctx.beginPath();
+  ctx.arc(-21, -1, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#f87171';
+  ctx.fill();
+
+  // Wheels
+  [[-12, 10], [12, 10]].forEach(([wx, wy]) => {
+    ctx.beginPath();
+    ctx.arc(wx, wy, 6, 0, Math.PI * 2);
+    const wg = ctx.createRadialGradient(wx-2, wy-2, 1, wx, wy, 6);
+    wg.addColorStop(0, '#6b7280');
+    wg.addColorStop(1, '#111827');
+    ctx.fillStyle = wg;
+    ctx.fill();
+    ctx.strokeStyle = '#9ca3af';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  ctx.restore();
+}
+
+function draw() {
+  pulseT += 0.03;
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  drawSky();
+  drawMountains();
+  drawGround();
+  drawRoad();
+  S().nodes.forEach((_, i) => drawNode(i));
+  drawCar();
+  drawRaf = requestAnimationFrame(draw);
+}
+
+// ── Car animation ──────────────────────────────────────────────────────────
+function animateCar(toIdx, cb) {
+  const { x: tx, y: ty } = nodePos(toIdx);
+  if (carX === 0 && carY === 0) {
+    const p = nodePos(0);
+    carX = p.x; carY = p.y;
+  }
+  const fx = carX, fy = carY;
+  const dur = 1600;
+  const t0 = performance.now();
+  animating = true;
+  function tick(now) {
+    let t = Math.min((now - t0) / dur, 1);
+    t = t < 0.5 ? 2 * t * t : (4 - 2 * t) * t - 1;
+    carX = fx + (tx - fx) * t;
+    carY = fy + (ty - fy) * t;
+    if (t < 1) {
+      animRaf = requestAnimationFrame(tick);
+    } else {
+      animating = false;
+      carX = tx; carY = ty;
+      if (cb) cb();
+    }
+  }
+  animRaf = requestAnimationFrame(tick);
+}
+
+// ── Info panel ────────────────────────────────────────────────────────────
+function showInfo(step) {
+  const tot = S().steps.length;
+  document.getElementById('info').innerHTML = `
+    <div class="badge">${step.badge}</div>
+    <h3>${step.title}</h3>
+    <p>${step.body}<br><br><strong style="color:#818cf8;font-size:11px">${step.code}</strong></p>`;
+  document.getElementById('info-c') && (document.getElementById('info-c').textContent = 'Stop ' + (curStep + 1) + ' of ' + tot);
+  document.getElementById('pbar').style.width = ((curStep + 1) / tot * 100) + '%';
+  for (let i = 1; i <= 7; i++) document.getElementById('ol' + i).classList.toggle('on', step.osi === i);
+  if (playing) startTBar();
+}
+
+function startTBar() {
+  clearInterval(timerIv);
+  document.getElementById('tbar').style.width = '0%';
+  const t0 = performance.now(), dur = pauseSec * 1000;
+  timerIv = setInterval(() => {
+    const p = Math.min((performance.now() - t0) / dur * 100, 100);
+    document.getElementById('tbar').style.width = p + '%';
+    if (p >= 100) clearInterval(timerIv);
+  }, 50);
+}
+
+// ── Step control ──────────────────────────────────────────────────────────
+function goStep(idx) {
+  const s = S();
+  if (idx < 0 || idx >= s.steps.length) return;
+  cancelAnimationFrame(animRaf);
+  clearInterval(timerIv);
+  document.getElementById('tbar').style.width = '0%';
+  curStep = idx;
+  const step = s.steps[idx];
+  animateCar(step.n, () => showInfo(step));
+}
+
+function schedNext() {
+  if (!playing) return;
+  const s = S();
+  if (curStep + 1 >= s.steps.length) {
+    playing = false;
+    document.getElementById('playBtn').textContent = '▶ Play';
+    document.getElementById('playBtn').classList.remove('on');
+    return;
+  }
+  goStep(curStep + 1);
+  playTimer = setTimeout(schedNext, 1700 + pauseSec * 1000);
+}
+
+function togglePlay() {
+  playing = !playing;
+  const btn = document.getElementById('playBtn');
+  btn.textContent = playing ? '⏸ Pause' : '▶ Play';
+  btn.classList.toggle('on', playing);
+  if (playing) schedNext();
+  else { clearTimeout(playTimer); clearInterval(timerIv); }
+}
+
+function doStep() {
+  clearTimeout(playTimer); clearInterval(timerIv);
+  if (playing) { playing = false; document.getElementById('playBtn').textContent = '▶ Play'; document.getElementById('playBtn').classList.remove('on'); }
+  if (curStep + 1 < S().steps.length) goStep(curStep + 1);
+  else doReset();
+}
+
+function doReset() {
+  playing = false; clearTimeout(playTimer); clearInterval(timerIv);
+  cancelAnimationFrame(animRaf); animating = false;
+  document.getElementById('playBtn').textContent = '▶ Play';
+  document.getElementById('playBtn').classList.remove('on');
+  document.getElementById('tbar').style.width = '0%';
+  document.getElementById('pbar').style.width = '0%';
+  curStep = -1; carX = 0; carY = 0;
+  document.getElementById('info').innerHTML = '<h3>Select a scenario and press Play</h3><p>The packet car will stop at each network device for several seconds so you can read the information.</p>';
+  for (let i = 1; i <= 7; i++) document.getElementById('ol' + i).classList.remove('on');
+}
+
+function setSc(name, el) {
+  doReset(); sc = name;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── Start ─────────────────────────────────────────────────────────────────
+resize();
+draw();
+</script>
+</body>
+</html>
