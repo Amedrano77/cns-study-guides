@@ -105,6 +105,12 @@
         .badge-external { background: #fef9c3; color: #a16207; }
         .badge-coming { background: #f1f5f9; color: #64748b; }
 
+        /* TABLE WRAPPER */
+        .table-wrap {
+            background: white; border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,20,30,0.07); overflow: hidden;
+        }
+
         /* CERT ROADMAP */
         .roadmap {
             background: white; border-radius: 20px;
@@ -448,7 +454,7 @@
             <span class="section-title">Ports & Protocols Quick Reference</span>
             <button class="print-btn" onclick="window.print()">🖨️ Print</button>
         </div>
-        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+        <div class="table-wrap">
             <table class="port-table">
                 <tr><th>Port</th><th>Protocol</th><th>Transport</th><th>Description</th><th>Courses</th></tr>
                 <tr><td class="port-num">20</td><td>FTP Data</td><td><span class="proto-tcp">TCP</span></td><td>FTP data transfer channel</td><td>Net+, Server+</td></tr>
@@ -486,7 +492,7 @@
             <span class="section-title">Subnetting Quick Reference</span>
             <button class="print-btn" onclick="window.print()">🖨️ Print</button>
         </div>
-        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+        <div class="table-wrap">
             <table class="subnet-table">
                 <tr><th>CIDR</th><th>Subnet Mask</th><th>Wildcard</th><th>Hosts/Subnet</th><th>Usable Hosts</th><th>Subnets from /24</th></tr>
                 <tr><td>/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>65,536</td><td>65,534</td><td>—</td></tr>
@@ -520,7 +526,7 @@
             <span class="section-title">OSI Model Reference</span>
             <button class="print-btn" onclick="window.print()">🖨️ Print</button>
         </div>
-        <div style="background:white; border-radius:16px; box-shadow:0 2px 12px rgba(0,20,30,0.07); overflow:hidden;">
+        <div class="table-wrap">
             <table class="osi-table">
                 <tr><th>#</th><th>Layer</th><th>PDU</th><th>Protocols / Technologies</th><th>Mnemonic</th></tr>
                 <tr><td class="osi-num">7</td><td><strong>Application</strong></td><td>Data</td><td>HTTP, HTTPS, FTP, DNS, DHCP, SMTP, SSH, Telnet, SNMP</td><td><strong>A</strong>ll</td></tr>
