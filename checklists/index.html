@@ -675,7 +675,7 @@ function init() {
         const voucherHtml = `
             <div class="voucher-box">
                 <h3>🎫 Exam Information & Registration</h3>
-                <p>Register at <a href="${cert.link}" target="_blank">Pearson VUE</a> when you're ready.
+                <p>View exam details on <a href="${cert.link}" target="_blank">the official certification page</a>. When ready, register at <a href="https://home.pearsonvue.com" target="_blank">Pearson VUE</a>.
                 Ask your instructor about TSTC student voucher discounts before purchasing at full price.</p>
             </div>`;
 
@@ -706,7 +706,6 @@ function init() {
             return `
                 <div class="checklist-section">
                     <button class="section-toggle" onclick="toggleSection(this)">
-                        <span class="toggle-icon">${sec.icon}</span>
                         <span class="toggle-title">${sec.title}</span>
                         <span class="toggle-count" id="count_${cert.id}_${si}">${secTotal} items</span>
                         <span class="toggle-arrow open">▶</span>
